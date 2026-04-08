@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>camera.nest — Quản Lý Thuê Máy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  /* Crimson palette from logo */
+  --cr:       #6B1A1A;  /* primary crimson */
+  --cr-d:     #4A1010;  /* dark crimson */
+  --cr-l:     #8B2525;  /* lighter crimson */
+  --cr-ll:    #A83030;  /* accent crimson */
+  --cr-bg:    rgba(107,26,26,0.08);
+  --cr-bg2:   rgba(107,26,26,0.13);
+
+  /* Neutrals — warm parchment feel */
+  --bg:       #F9F6F3;
+  --bg2:      #F2EDE8;
+  --bg3:      #E9E2DA;
+  --white:    #FFFFFF;
+
+  /* Ink */
+  --ink:      #1C1410;
+  --ink2:     #3B2F28;
+  --ink3:     #6B5D54;
+  --ink4:     #9C8E85;
+  --ink5:     #C8BDB7;
+
+  --line:     #E5DDD7;
+  --line2:    #D6CBC3;
+
+  --green:    #2E6B47;
+  --green-bg: rgba(46,107,71,0.09);
+  --orange:   #B35A1A;
+  --orange-bg:rgba(179,90,26,0.08);
+  --gold:     #8B6914;
+  --gold-bg:  rgba(139,105,20,0.08);
+
+  /* cam accent colors */
+  --c1:#5C3D11;--c1bg:rgba(92,61,17,0.1);
+  --c2:#1E4D6B;--c2bg:rgba(30,77,107,0.1);
+  --c3:#2D4A22;--c3bg:rgba(45,74,34,0.1);
+  --c4:#4A2060;--c4bg:rgba(74,32,96,0.1);
+  --c5:#6B1A1A;--c5bg:rgba(107,26,26,0.1);
+  --c6:#1A4A4A;--c6bg:rgba(26,74,74,0.1);
+  --c7:#4A3A10;--c7bg:rgba(74,58,16,0.1);
+  --c8:#30304A;--c8bg:rgba(48,48,74,0.1);
+
+  --shadow:   0 1px 14px rgba(28,20,16,0.08);
+  --shadow-lg:0 8px 44px rgba(28,20,16,0.16);
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  font-size:14px;
+  line-height:1.6;
+}
+
+/* ── HEADER ── */
+.header{
+  background:var(--cr-d);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:58px;
+  position:sticky;top:0;z-index:200;
+}
+.logo-text{
+  font-family:'DM Serif Display',serif;
+  font-size:20px;
+  font-weight:400;
+  color:#fff;
+  letter-spacing:-0.3px;
+  user-select:none;
+}
+.logo-text span{color:rgba(255,255,255,0.45);font-style:italic;}
+.header-right{display:flex;gap:6px;align-items:center;}
+.nav-btn{
+  padding:7px 14px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:7px;
+  color:rgba(255,255,255,0.55);
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:700;
+  letter-spacing:0.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.15s;
+}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,0.1);}
+.nav-btn.active{background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.2);}
+.btn-new{
+  background:#fff;
+  color:var(--cr);
+  border:none;border-radius:7px;
+  padding:9px 16px;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:0.3px;
+  cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;
+}
+.btn-new:hover{background:var(--bg2);}
+
+/* ── PAGES ── */
+.page{display:none;}
+.page.active{display:block;animation:fadeUp 0.18s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LAYOUT ── */
+.cal-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;padding:20px 28px;}
+.cal-sidebar{position:sticky;top:78px;}
+
+/* ── STATS STRIP ── */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:12px;padding:13px 15px;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--cr);border-radius:12px 12px 0 0;
+  opacity:0.6;
+}
+.stat-lbl{font-size:9px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink4);margin-bottom:4px;}
+.stat-val{font-size:22px;font-weight:800;color:var(--ink);line-height:1.2;}
+.stat-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:3px;margin-top:5px;}
+.chip-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;width:fit-content;}
+
+/* ── CALENDAR CONTROLS ── */
+.cal-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-nav{display:flex;align-items:center;gap:10px;}
+.cal-title{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--ink);min-width:190px;}
+.arr{
+  width:30px;height:30px;background:var(--white);
+  border:1px solid var(--line2);border-radius:7px;
+  color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:all 0.15s;
+}
+.arr:hover{background:var(--cr);color:#fff;border-color:var(--cr);}
+
+/* ── CALENDAR GRID ── */
+.cal-grid{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.cal-head-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--cr-d);}
+.cal-head-cell{padding:9px 2px;text-align:center;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);}
+.cal-head-cell:nth-child(6),.cal-head-cell:nth-child(7){color:rgba(255,255,255,0.3);}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line);}
+.cal-week:last-child{border-bottom:none;}
+.cal-day{border-right:1px solid var(--line);padding:5px 4px 6px;min-height:82px;cursor:default;overflow:hidden;}
+.cal-day:last-child{border-right:none;}
+.cal-day.other-month{background:var(--bg);opacity:0.5;}
+.cal-day.is-today{background:#FFF8F5;}
+.cal-day.is-weekend{background:var(--bg);}
+.cal-day.is-today.is-weekend{background:#FFF8F5;}
+.day-header{display:flex;align-items:center;gap:4px;margin-bottom:4px;}
+.day-num{font-size:11px;font-weight:700;color:var(--ink4);line-height:1;}
+.cal-day.is-today .day-num{
+  background:var(--cr);color:#fff;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:9px;
+}
+.cal-day.other-month .day-num{color:var(--ink5);}
+
+/* booking pills */
+.bpill{
+  display:flex;align-items:center;gap:4px;border-radius:5px;
+  padding:3px 7px;font-size:9px;font-weight:700;margin-bottom:2px;
+  cursor:pointer;overflow:hidden;transition:opacity 0.12s;position:relative;
+}
+.bpill:hover{opacity:0.72;}
+.bpill-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
+.bpill.mode-daily{background:rgba(28,20,16,0.07);color:var(--ink2);}
+.bpill.mode-blocked{background:rgba(107,26,26,0.08);color:var(--cr);border:1px dashed rgba(107,26,26,0.3);}
+.note-dot{width:4px;height:4px;border-radius:50%;background:var(--orange);flex-shrink:0;}
+
+.cc-0{background:var(--c1bg)!important;color:var(--c1)!important;}
+.cc-1{background:var(--c2bg)!important;color:var(--c2)!important;}
+.cc-2{background:var(--c3bg)!important;color:var(--c3)!important;}
+.cc-3{background:var(--c4bg)!important;color:var(--c4)!important;}
+.cc-4{background:var(--c5bg)!important;color:var(--c5)!important;}
+.cc-5{background:var(--c6bg)!important;color:var(--c6)!important;}
+.cc-6{background:var(--c7bg)!important;color:var(--c7)!important;}
+.cc-7{background:var(--c8bg)!important;color:var(--c8)!important;}
+
+/* tooltip */
+.tip-host{position:relative;display:block;}
+.tip-box{
+  display:none;position:fixed;z-index:600;
+  background:var(--white);border:1px solid var(--line2);
+  border-radius:12px;padding:14px 16px;
+  width:270px;max-width:calc(100vw - 16px);
+  max-height:calc(100vh - 48px);overflow-y:auto;
+  box-shadow:var(--shadow-lg);white-space:normal;pointer-events:auto;
+}
+.tip-box.open{display:block;}
+.tip-h{
+  font-size:10px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;
+  color:var(--cr);margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:5px;
+}
+.tip-r{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:3px;gap:10px;}
+.tip-l{color:var(--ink3);font-weight:500;}
+.tip-v{color:var(--ink);font-weight:700;text-align:right;}
+.tip-note{font-size:11px;color:var(--orange);margin-top:6px;padding-top:5px;border-top:1px solid var(--line);line-height:1.4;}
+.tip-refund{font-size:12px;font-weight:800;margin-top:6px;padding-top:5px;border-top:1px solid var(--line);}
+.tip-refund.pos{color:var(--green);}
+.tip-refund.neg{color:var(--cr);}
+.tip-overlay{display:none;position:fixed;inset:0;z-index:590;}
+.tip-overlay.open{display:block;}
+
+/* ── SIDEBAR ── */
+.sidebar-card{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.sidebar-head{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--cr-d);}
+.sidebar-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.7);}
+.sidebar-body{padding:12px 14px;}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink4);margin-bottom:6px;}
+.sb-field{margin-bottom:10px;}
+.sb-result{margin-top:10px;display:flex;flex-direction:column;gap:7px;}
+.sb-cam-row{border:1px solid var(--line);border-radius:9px;padding:10px 12px;}
+.sb-cam-row.available{border-color:rgba(46,107,71,0.35);background:var(--green-bg);}
+.sb-cam-row.busy{opacity:0.45;}
+.sb-cam-name{font-size:12px;font-weight:800;color:var(--ink);}
+.sb-cam-price{font-size:11px;color:var(--ink3);margin-top:1px;}
+.sb-cam-total{font-size:13px;font-weight:900;color:var(--green);margin-top:3px;}
+.sb-cam-busy{font-size:11px;font-weight:600;color:var(--cr);margin-top:3px;}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(28,20,16,0.45);
+  z-index:300;overflow-y:auto;padding:20px;
+}
+.overlay.open{display:block;}
+.modal{
+  background:var(--white);border-radius:16px;
+  width:100%;max-width:640px;margin:0 auto;
+  box-shadow:var(--shadow-lg);animation:fadeUp 0.2s ease;
+}
+.modal-hd{
+  padding:20px 24px;
+  border-bottom:1px solid var(--line);
+  background:var(--cr-d);
+  display:flex;align-items:center;justify-content:space-between;
+  border-radius:16px 16px 0 0;
+}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;color:#fff;}
+.modal-x{
+  width:30px;height:30px;background:rgba(255,255,255,0.12);
+  border:none;border-radius:7px;font-size:14px;cursor:pointer;
+  color:rgba(255,255,255,0.7);transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-x:hover{background:rgba(255,255,255,0.25);color:#fff;}
+.modal-bd{padding:22px 24px;}
+.modal-ft{padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+
+/* ── FORM ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px;}
+.f1{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label,.flbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);}
+input,select,textarea{
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;
+  color:var(--ink);background:var(--bg);
+  border:1px solid var(--line2);border-radius:8px;
+  padding:9px 12px;outline:none;
+  transition:border-color 0.15s,background 0.15s;width:100%;
+}
+input::placeholder,textarea::placeholder{color:var(--ink5);}
+input:focus,select:focus,textarea:focus{border-color:var(--cr);background:var(--white);}
+select{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239C8E85'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;
+}
+textarea{resize:vertical;min-height:56px;line-height:1.5;}
+.slbl{
+  font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--ink4);margin-top:14px;margin-bottom:8px;display:block;
+}
+.divline{border:none;border-top:1px solid var(--line);margin:14px 0;}
+
+/* cam tile */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px;}
+.ctile{
+  border:1px solid var(--line2);border-radius:9px;padding:11px 12px;
+  cursor:pointer;background:var(--bg);transition:all 0.15s;
+}
+.ctile:hover{border-color:var(--cr-ll);}
+.ctile.on{background:var(--cr-d);border-color:var(--cr-d);}
+.ctile .cn{font-size:13px;font-weight:800;color:var(--ink);}
+.ctile.on .cn{color:#fff;}
+.ctile .cs{font-size:9px;font-weight:600;color:var(--ink4);}
+.ctile.on .cs{color:rgba(255,255,255,0.5);}
+
+/* early / late */
+.eltile{
+  border:1px solid var(--line2);border-radius:9px;padding:10px 12px;
+  cursor:pointer;background:var(--bg);transition:all 0.15s;
+}
+.eltile:hover{border-color:var(--ink3);}
+.eltile.on{border-color:var(--orange);background:var(--orange-bg);}
+.elt-name{font-size:12px;font-weight:700;color:var(--ink);}
+.eltile.on .elt-name{color:var(--orange);}
+.elt-desc{font-size:10px;color:var(--ink4);margin-top:1px;}
+.elt-fee{font-size:10px;font-weight:800;color:var(--orange);margin-top:3px;}
+
+/* price preview */
+.pbox{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:13px 15px;margin-top:10px;}
+.prow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--ink3);}
+.prow b{color:var(--ink);font-weight:700;}
+.ptotal{display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:var(--ink);border-top:1px solid var(--line);padding-top:9px;margin-top:5px;}
+
+/* action btns */
+.btn-cancel{
+  padding:9px 18px;background:transparent;
+  border:1px solid var(--line2);border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
+  color:var(--ink3);cursor:pointer;transition:all 0.15s;
+}
+.btn-cancel:hover{border-color:var(--ink3);color:var(--ink);}
+.btn-ok{
+  padding:9px 22px;background:var(--cr);border:none;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  color:#fff;cursor:pointer;transition:all 0.15s;
+}
+.btn-ok:hover{background:var(--cr-l);}
+
+/* ── MANAGEMENT PAGE ── */
+.mgmt-wrap{padding:20px 28px;}
+.mgmt-lock{
+  background:var(--white);border:1px solid var(--line);
+  border-radius:16px;padding:48px;
+  text-align:center;max-width:380px;margin:60px auto;box-shadow:var(--shadow);
+}
+.mgmt-lock-icon{font-size:36px;margin-bottom:12px;opacity:0.25;}
+.mgmt-lock-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:18px;color:var(--ink);}
+.mgmt-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:22px;}
+.mtab{
+  padding:10px 20px;background:transparent;border:none;
+  border-bottom:2px solid transparent;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.6px;text-transform:uppercase;color:var(--ink4);
+  cursor:pointer;margin-bottom:-1px;transition:all 0.15s;
+}
+.mtab:hover{color:var(--ink);}
+.mtab.on{color:var(--cr);border-bottom-color:var(--cr);}
+.mpanel{display:none;}
+.mpanel.on{display:block;}
+.mcard{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:14px;}
+.mcard-title{
+  font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+
+/* price table */
+.pt{width:100%;border-collapse:collapse;font-size:12px;}
+.pt th{background:var(--bg2);padding:7px 10px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--ink4);text-align:left;border-bottom:1px solid var(--line);}
+.pt td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:middle;}
+.pt tr:last-child td{border-bottom:none;}
+.pt input[type=number]{padding:5px 9px;font-size:12px;border-radius:6px;}
+
+/* booking table */
+.bt{width:100%;border-collapse:collapse;font-size:12px;}
+.bt th{background:var(--bg2);padding:8px 11px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--ink4);text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+.bt td{padding:8px 11px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:middle;}
+.bt tr:last-child td{border-bottom:none;}
+.bt tr:hover td{background:var(--bg);}
+
+/* revenue */
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.rev-card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+.rev-m{font-size:10px;font-weight:700;color:var(--ink4);margin-bottom:3px;}
+.rev-v{font-size:17px;font-weight:800;color:var(--ink);}
+.rev-s{font-size:10px;color:var(--ink4);margin-top:2px;}
+
+/* buttons */
+.btn-sm{
+  padding:5px 11px;background:var(--bg2);border:1px solid var(--line2);
+  border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
+  color:var(--ink3);cursor:pointer;transition:all 0.15s;
+}
+.btn-sm:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn-sm.red{color:var(--cr);}
+.btn-sm.red:hover{background:var(--cr-bg);color:var(--cr);border-color:var(--cr);}
+.btn-add{
+  padding:7px 14px;background:var(--cr);border:none;border-radius:7px;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#fff;cursor:pointer;
+}
+.btn-add:hover{background:var(--cr-l);}
+.btn-exp{
+  padding:7px 14px;background:transparent;border:1px solid var(--line2);
+  border-radius:7px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
+  color:var(--ink3);cursor:pointer;transition:all 0.15s;
+}
+.btn-exp:hover{background:var(--cr);color:#fff;border-color:var(--cr);}
+.bk-chk{
+  padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:11px;
+  border-radius:7px;border:1px solid var(--line2);background:var(--bg);color:var(--ink);cursor:pointer;
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--cr-d);color:#fff;padding:10px 18px;border-radius:9px;
+  font-size:12px;font-weight:700;opacity:0;transition:all 0.22s;z-index:700;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:var(--white);border-top:1px solid var(--line);z-index:300;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  justify-content:space-around;align-items:center;
+}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:4px 16px;min-width:60px;}
+.bnav-icon{font-size:20px;line-height:1;}
+.bnav-lbl{font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink4);}
+.bnav-btn.active .bnav-lbl{color:var(--cr);}
+
+/* ── AVAIL SHEET (mobile) ── */
+.avail-sheet{display:none;position:fixed;inset:0;z-index:400;}
+.avail-sheet.open{display:block;}
+.avail-backdrop{position:absolute;inset:0;background:rgba(28,20,16,0.45);}
+.avail-panel{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--white);border-radius:20px 20px 0 0;
+  padding:0 0 max(20px,env(safe-area-inset-bottom));
+  max-height:90vh;overflow-y:auto;animation:slideUp 0.25s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.avail-handle{width:40px;height:4px;background:var(--line2);border-radius:2px;margin:12px auto 16px;}
+.avail-panel-head{padding:0 20px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+.avail-panel-title{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;}
+.avail-panel-body{padding:16px 20px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .cal-layout{grid-template-columns:1fr;padding:14px 16px;gap:14px;}
+  .cal-sidebar{position:static;}
+  .stats-strip{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:768px){
+  .header{padding:0 14px;height:50px;}
+  .logo-text{font-size:18px;}
+  .header-right .nav-btn,.header-right .btn-new{display:none;}
+  .bottom-nav{display:flex;}
+  body{padding-bottom:68px;}
+  .cal-layout{padding:8px 10px;gap:8px;}
+  .cal-sidebar{display:none;}
+  .mgmt-wrap{padding:8px 10px;}
+  .stats-strip{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+  .stat-card{padding:8px 10px;border-radius:8px;}
+  .stat-lbl{font-size:7.5px;letter-spacing:0.8px;margin-bottom:2px;}
+  .stat-val{font-size:16px;}
+  .cal-controls{margin-bottom:8px;}
+  .cal-title{font-size:17px;min-width:0;}
+  .arr{width:26px;height:26px;font-size:11px;}
+  .cal-grid{border-radius:8px;}
+  .cal-head-cell{font-size:7px;padding:6px 1px;letter-spacing:0;}
+  .cal-day{min-height:62px;padding:3px 2px 4px;}
+  .day-num{font-size:9px;}
+  .cal-day.is-today .day-num{width:16px;height:16px;font-size:8px;}
+  .bpill{font-size:7.5px;padding:2px 3px;border-radius:3px;gap:2px;margin-bottom:1px;}
+  .bpill-label{font-size:7px;}
+  .note-dot{width:3px;height:3px;}
+  .overlay{padding:0;}
+  .modal{border-radius:18px 18px 0 0;max-width:100%;width:100%;max-height:92dvh;overflow-y:auto;margin:auto 0 0;}
+  .modal-hd{border-radius:18px 18px 0 0;}
+  .modal-bd{padding:12px 16px;}
+  .modal-ft{padding:10px 16px;padding-bottom:max(14px,env(safe-area-inset-bottom));}
+  .fg{grid-template-columns:1fr;gap:8px;margin-bottom:8px;}
+  .fg3{grid-template-columns:1fr;gap:8px;margin-bottom:8px;}
+  .cg{grid-template-columns:1fr 1fr 1fr;gap:6px;}
+  .ctile{padding:9px 8px;}
+  .mcard{padding:12px 12px;}
+  .mcard-title{flex-direction:column;align-items:flex-start;gap:6px;}
+  .mgmt-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mtab{white-space:nowrap;padding:8px 12px;font-size:10px;}
+  .rev-grid{grid-template-columns:1fr 1fr;}
+  .bt{font-size:9.5px;}
+  .bt th,.bt td{padding:5px 6px;}
+  .mgmt-lock{padding:28px 20px;margin:32px auto;}
+}
+
+@media(max-width:390px){
+  .cal-head-cell{font-size:6.5px;padding:5px 0;}
+  .cal-day{min-height:54px;padding:2px 2px 3px;}
+  .bpill{font-size:6.5px;padding:1px 3px;}
+  .stats-strip{gap:5px;}
+  .stat-card{padding:7px 8px;}
+  .stat-val{font-size:14px;}
+  .cg{grid-template-columns:1fr 1fr;}
+  .bottom-nav{padding:6px 0 max(6px,env(safe-area-inset-bottom));}
+  .bnav-btn{padding:3px 10px;min-width:50px;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-text">camera<span>.</span>nest</div>
+  <div class="header-right">
+    <button class="nav-btn active" onclick="showPage('calendar',this)">Lịch</button>
+    <button class="nav-btn" onclick="showPage('mgmt',this)">Quản lý</button>
+    <button class="btn-new" onclick="openModal()">＋ Đặt lịch mới</button>
+  </div>
+</header>
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-cal" onclick="showPage('calendar',null);setBottomNav('cal')">
+    <span class="bnav-icon">📅</span>
+    <span class="bnav-lbl">Lịch</span>
+  </button>
+  <button class="bnav-btn" id="bnav-book" onclick="openModal();setBottomNav('book')">
+    <span class="bnav-icon">＋</span>
+    <span class="bnav-lbl">Đặt lịch</span>
+  </button>
+  <button class="bnav-btn" id="bnav-avail" onclick="openAvailSheet()">
+    <span class="bnav-icon">🔍</span>
+    <span class="bnav-lbl">Kiểm tra</span>
+  </button>
+  <button class="bnav-btn" id="bnav-mgmt" onclick="showPage('mgmt',null);setBottomNav('mgmt')">
+    <span class="bnav-icon">⚙️</span>
+    <span class="bnav-lbl">Quản lý</span>
+  </button>
+</nav>
+
+<!-- ── AVAILABILITY SHEET (mobile) ── -->
+<div class="avail-sheet" id="avail-sheet">
+  <div class="avail-backdrop" onclick="closeAvailSheet()"></div>
+  <div class="avail-panel">
+    <div class="avail-handle"></div>
+    <div class="avail-panel-head">
+      <div class="avail-panel-title">Kiểm tra máy trống</div>
+      <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3)" onclick="closeAvailSheet()">✕</button>
+    </div>
+    <div class="avail-panel-body">
+      <div class="sb-field">
+        <div class="sb-lbl">Ngày bắt đầu</div>
+        <input type="date" id="sb-start-m" onchange="syncAvailDates('m')">
+      </div>
+      <div class="sb-field" style="margin-bottom:12px">
+        <div class="sb-lbl">Ngày kết thúc</div>
+        <input type="date" id="sb-end-m" onchange="syncAvailDates('m')">
+      </div>
+      <button class="btn-ok" style="width:100%;margin-bottom:14px" onclick="runAvailMobile()">Kiểm tra ngay</button>
+      <div id="sb-result-m" class="sb-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CALENDAR PAGE ═══════ -->
+<div class="page active" id="page-calendar">
+  <div class="cal-layout">
+    <!-- LEFT: calendar -->
+    <div class="cal-main">
+      <!-- Stats strip -->
+      <div class="stats-strip">
+        <div class="stat-card">
+          <div class="stat-lbl">Khách tháng này</div>
+          <div class="stat-val" id="s-cust">0</div>
+          <div style="font-size:10px;color:var(--ink4);margin-top:2px">khách hàng</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Đang thuê hôm nay</div>
+          <div class="stat-val" id="s-busy">0</div>
+          <div class="stat-chips" id="s-busy-chips"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Còn trống hôm nay</div>
+          <div class="stat-val" id="s-free">0</div>
+          <div class="stat-chips" id="s-free-chips"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Giao máy hôm nay</div>
+          <div class="stat-val" id="s-deliver">0</div>
+          <div class="stat-chips" id="s-deliver-chips"></div>
+        </div>
+      </div>
+
+      <!-- Calendar controls -->
+      <div class="cal-controls">
+        <div class="cal-nav">
+          <button class="arr" onclick="changeMonth(-1)">←</button>
+          <div class="cal-title" id="cal-title"></div>
+          <button class="arr" onclick="changeMonth(1)">→</button>
+        </div>
+      </div>
+
+      <!-- Calendar grid -->
+      <div class="cal-grid">
+        <div class="cal-head-row">
+          <div class="cal-head-cell">Thứ 2</div>
+          <div class="cal-head-cell">Thứ 3</div>
+          <div class="cal-head-cell">Thứ 4</div>
+          <div class="cal-head-cell">Thứ 5</div>
+          <div class="cal-head-cell">Thứ 6</div>
+          <div class="cal-head-cell">Thứ 7</div>
+          <div class="cal-head-cell">CN</div>
+        </div>
+        <div class="cal-weeks" id="cal-weeks"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <div class="cal-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-head">
+          <div class="sidebar-title">Kiểm tra máy trống</div>
+        </div>
+        <div class="sidebar-body">
+          <div class="field" style="margin-bottom:8px">
+            <div class="sb-lbl">Từ ngày</div>
+            <input type="date" id="sb-start" onchange="syncAvailDates('d');runAvail()" style="padding:7px 8px;font-size:12px">
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <div class="sb-lbl">Đến ngày</div>
+            <input type="date" id="sb-end" onchange="syncAvailDates('d');runAvail()" style="padding:7px 8px;font-size:12px">
+          </div>
+          <div id="sb-result" style="display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 400px);overflow-y:auto;margin-top:2px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MGMT PAGE ═══════ -->
+<div class="page" id="page-mgmt">
+  <div class="mgmt-wrap">
+    <div id="mgmt-lock" class="mgmt-lock">
+      <div class="mgmt-lock-icon">🔒</div>
+      <div class="mgmt-lock-title">Khu vực quản lý</div>
+      <div class="field" style="margin-bottom:10px;text-align:left">
+        <label>Mật khẩu</label>
+        <input type="password" id="mgmt-pw" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')checkPw()">
+      </div>
+      <button class="btn-ok" style="width:100%;margin-top:4px" onclick="checkPw()">Đăng nhập</button>
+      <div id="pw-err" style="color:var(--cr);font-size:12px;margin-top:8px;display:none">Mật khẩu không đúng</div>
+    </div>
+    <div id="mgmt-body" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400">Quản lý hệ thống</div>
+        <button class="btn-sm" onclick="lockMgmt()">Đăng xuất</button>
+      </div>
+      <div class="mgmt-tabs">
+        <button class="mtab on" onclick="switchTab('cameras',this)">Máy & Giá</button>
+        <button class="mtab" onclick="switchTab('bookings',this)">Lịch thuê</button>
+        <button class="mtab" onclick="switchTab('revenue',this)">Doanh thu</button>
+        <button class="mtab" onclick="switchTab('settings',this)">Cài đặt</button>
+      </div>
+      <div class="mpanel on" id="mp-cameras">
+        <div class="mcard">
+          <div class="mcard-title">Danh sách máy <button class="btn-add" onclick="addCamera()">+ Thêm máy</button></div>
+          <div id="cam-list"></div>
+        </div>
+      </div>
+      <div class="mpanel" id="mp-bookings">
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Lịch thuê tổng hợp</span>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+              <input type="month" id="f-month" class="bk-chk" onchange="renderBkTable()">
+              <input type="date" id="f-from" class="bk-chk" onchange="renderBkTable()">
+              <input type="date" id="f-to" class="bk-chk" onchange="renderBkTable()">
+              <button class="btn-exp" onclick="exportCSV()">Xuất CSV</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto"><table class="bt" id="bk-table"><thead></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+      <div class="mpanel" id="mp-revenue">
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Thống kê tháng</span>
+            <input type="month" id="rev-month" class="bk-chk" onchange="renderRevenue()">
+          </div>
+          <div id="rev-detail"></div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-title">Tất cả các tháng</div>
+          <div class="rev-grid" id="rev-grid"></div>
+        </div>
+      </div>
+      <div class="mpanel" id="mp-settings">
+        <!-- Phí lấy sớm / trả muộn -->
+        <div class="mcard">
+          <div class="mcard-title">Phí lấy sớm / Trả muộn</div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Phí cộng thêm khi khách lấy máy sớm hoặc trả máy muộn hơn khung giờ thuê.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field">
+              <label>Phí lấy sớm (đ)</label>
+              <input type="number" id="fee-early" min="0" step="10000" value="50000">
+            </div>
+            <div class="field">
+              <label>Phí trả muộn (đ)</label>
+              <input type="number" id="fee-late" min="0" step="10000" value="50000">
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+            <button class="btn-ok" onclick="saveFees()">Lưu phí</button>
+            <span id="fee-saved" style="font-size:12px;color:var(--green);display:none;font-weight:600">✓ Đã lưu</span>
+          </div>
+        </div>
+        <!-- Đổi mật khẩu -->
+        <div class="mcard">
+          <div class="mcard-title">Đổi mật khẩu quản lý</div>
+          <div style="display:flex;flex-direction:column;gap:10px;max-width:360px">
+            <div class="field"><label>Mật khẩu hiện tại</label><input type="password" id="pw-cur" placeholder="Nhập mật khẩu hiện tại"></div>
+            <div class="field"><label>Mật khẩu mới</label><input type="password" id="pw-new" placeholder="Tối thiểu 4 ký tự"></div>
+            <div class="field"><label>Xác nhận mật khẩu mới</label><input type="password" id="pw-confirm" placeholder="Nhập lại mật khẩu mới"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:2px">
+              <button class="btn-ok" onclick="changePassword()">Đổi mật khẩu</button>
+              <span id="pw-msg" style="font-size:12px;display:none;font-weight:600"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ BOOKING MODAL ═══════ -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">Đặt lịch mới</div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <!-- Customer -->
+      <div class="fg">
+        <div class="field"><label>Họ và tên *</label><input type="text" id="f-name" placeholder="Nguyễn Văn A"></div>
+        <div class="field"><label>Số điện thoại</label><input type="tel" id="f-phone" placeholder="0901 234 567"></div>
+      </div>
+
+      <!-- Daily dates only -->
+      <div class="fg">
+        <div class="field"><label>Ngày bắt đầu</label><input type="date" id="f-start" onchange="onDateChange()"></div>
+        <div class="field"><label>Ngày kết thúc</label><input type="date" id="f-end" onchange="onDateChange()"></div>
+      </div>
+      <div id="daily-preview" style="display:none" class="pbox">
+        <div class="prow"><span>Số ngày</span><b id="pp-days">—</b></div>
+        <div class="prow"><span>Mức giá</span><b id="pp-tier">—</b></div>
+        <div id="pp-cam-rows"></div>
+      </div>
+
+      <!-- Cameras -->
+      <span class="slbl">Chọn máy ảnh</span>
+      <div class="cg" id="cam-grid"></div>
+
+      <!-- Early / Late -->
+      <span class="slbl">Lấy sớm / Trả muộn</span>
+      <div class="fg">
+        <div class="eltile" id="el-early" onclick="toggleEL('early')">
+          <div class="elt-name">Lấy sớm</div>
+          <div class="elt-desc" id="el-early-d">Buổi chiều ngày trước</div>
+          <div class="elt-fee" id="el-early-fee">+50.000đ</div>
+        </div>
+        <div class="eltile" id="el-late" onclick="toggleEL('late')">
+          <div class="elt-name">Trả muộn</div>
+          <div class="elt-desc" id="el-late-d">Buổi sáng ngày sau</div>
+          <div class="elt-fee" id="el-late-fee">+50.000đ</div>
+        </div>
+      </div>
+
+      <hr class="divline">
+
+      <div class="fg">
+        <div class="field"><label>Hình thức cọc</label>
+          <select id="f-dep">
+            <option value="">Chưa chọn</option>
+            <option value="cash">Tiền mặt</option>
+            <option value="valuables">Vật dụng có giá trị</option>
+            <option value="docs">Giấy tờ bổ sung</option>
+          </select>
+        </div>
+        <div class="field"><label>Hình thức giao máy</label>
+          <select id="f-del">
+            <option value="">Chưa chọn</option>
+            <option value="direct">Trực tiếp</option>
+            <option value="online">Trực tuyến / Ship</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="field"><label>Số tiền đã cọc (đ)</label><input type="number" id="f-dep-amt" value="100000" min="0"></div>
+        <div class="field"><label>Chiết khấu (%)</label><input type="number" id="f-disc" value="0" min="0" max="100" oninput="updateFinal()"></div>
+      </div>
+      <div class="field" style="margin-bottom:4px"><label>Ghi chú / Yêu cầu đặc biệt</label><input type="text" id="f-note" placeholder="Ví dụ: cần thêm lens 35mm..."></div>
+
+      <!-- Final price -->
+      <div id="final-box" class="pbox" style="display:none;margin-top:12px">
+        <div class="prow"><span>Tiền thuê</span><b id="fb-sub">—</b></div>
+        <div id="fb-el"></div>
+        <div class="prow" id="fb-disc-r" style="display:none"><span>Chiết khấu</span><b id="fb-disc" style="color:var(--green)"></b></div>
+        <div class="ptotal"><span>Khách phải trả</span><span id="fb-total">—</span></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+      <button class="btn-ok" onclick="submitBooking()">Xác nhận đặt lịch</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="tip-overlay" id="tip-overlay" onclick="closeAllTips()"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  getFirestore, collection, doc,
+  onSnapshot, setDoc, deleteDoc,
+  getDocs, writeBatch, getDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+// ════════════════════════════════════════════
+// 🔥 FIREBASE CONFIG — thay bằng project mới của bạn
+// ════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// ════════════════════════════════════════════
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── CONSTANTS ──
+const MONTHS_VI=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+const CAM_COLORS=['c0','c1','c2','c3','c4','c5','c6','c7'];
+const DEFAULT_CAMERAS=[
+  {id:'X100V',name:'X100V',p1:250000,p3:220000,p5:190000,p10:170000,p15:150000},
+  {id:'XS20', name:'X-S20',p1:220000,p3:200000,p5:175000,p10:155000,p15:135000},
+  {id:'XS10', name:'X-S10',p1:200000,p3:180000,p5:160000,p10:140000,p15:120000},
+  {id:'XT4',  name:'X-T4', p1:230000,p3:210000,p5:185000,p10:165000,p15:145000},
+];
+
+// ── STATE ──
+let cameras=[...DEFAULT_CAMERAS];
+let bookings=[];
+let EL_FEES={early:50000,late:50000};
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+let fSelCams=[], fEL={early:false,late:false};
+
+// ── FIRESTORE LISTENERS ──
+function startListeners(){
+  onSnapshot(collection(db,'bookings'), snap=>{
+    bookings=snap.docs.map(d=>d.data());
+    if(document.getElementById('page-calendar').classList.contains('active')){
+      renderCalendar();runAvail();
+    }
+  });
+  onSnapshot(collection(db,'cameras'), snap=>{
+    if(!snap.empty) cameras=snap.docs.map(d=>d.data());
+    if(document.getElementById('page-calendar').classList.contains('active')) renderCalendar();
+  });
+  onSnapshot(collection(db,'settings'), snap=>{
+    snap.docs.forEach(d=>{
+      if(d.id==='fees'){EL_FEES.early=d.data().early||50000;EL_FEES.late=d.data().late||50000;updateELFeeLabels();}
+    });
+  });
+}
+
+async function seedIfEmpty(){
+  const cs=await getDocs(collection(db,'cameras'));
+  if(cs.empty){const b=writeBatch(db);DEFAULT_CAMERAS.forEach(c=>b.set(doc(db,'cameras',c.id),c));await b.commit();}
+  const fs=await getDoc(doc(db,'settings','fees'));
+  if(!fs.exists()) await setDoc(doc(db,'settings','fees'),{early:50000,late:50000});
+  const ps=await getDoc(doc(db,'settings','auth'));
+  if(!ps.exists()) await setDoc(doc(db,'settings','auth'),{password:'nest2024'});
+}
+
+// ── UTILS ──
+function fmtD(ds){if(!ds)return'';const[y,m,d]=ds.split('-');return`${d}/${m}/${y}`;}
+function fmtVND(n){return(Math.round(n)||0).toLocaleString('vi-VN')+'đ';}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function camColorIdx(id){const i=cameras.findIndex(c=>c.id===id);return i>=0?i%8:0;}
+function getTierKey(d){if(d>=15)return'p15';if(d>=10)return'p10';if(d>=5)return'p5';if(d>=3)return'p3';return'p1';}
+function getTierLabel(d){return{p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'}[getTierKey(d)]||'';}
+
+// ── PAGES ──
+window.showPage=function(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(el)el.classList.add('active');
+  if(p==='calendar')renderCalendar();
+  if(p==='mgmt')renderMgmt();
+};
+
+// ── CALENDAR ──
+window.changeMonth=function(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();};
+
+function getWeeks(){
+  const first=new Date(calYear,calMonth,1),last=new Date(calYear,calMonth+1,0);
+  const weeks=[],cur=new Date(first);
+  const dow=cur.getDay();cur.setDate(cur.getDate()-(dow===0?6:dow-1));
+  while(cur<=last){const w=[];for(let i=0;i<7;i++){w.push(new Date(cur));cur.setDate(cur.getDate()+1);}weeks.push(w);}
+  return weeks;
+}
+
+function renderCalendar(){
+  document.getElementById('cal-title').textContent=MONTHS_VI[calMonth]+' '+calYear;
+  const todayLocal=new Date();
+  const today=`${todayLocal.getFullYear()}-${String(todayLocal.getMonth()+1).padStart(2,'0')}-${String(todayLocal.getDate()).padStart(2,'0')}`;
+  let html='';
+  getWeeks().forEach(week=>{
+    html+='<div class="cal-week">';
+    week.forEach((date,di)=>{
+      const ds=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      const inM=date.getMonth()===calMonth,isT=ds===today,isW=di>=5;
+      let cls='cal-day';
+      if(!inM)cls+=' other-month';if(isT)cls+=' is-today';if(isW)cls+=' is-weekend';
+      html+=`<div class="${cls}"><div class="day-header"><span class="day-num">${date.getDate()}</span></div>`;
+      const bks=bookings.filter(b=>ds>=b.start&&ds<=b.end);
+      bks.forEach(b=>{
+        const ci=camColorIdx(b.cam);
+        const hasNote=!!(b.note&&b.note.trim()),isBlocked=!!b.blocked;
+        let pillCls=`bpill `;
+        if(isBlocked)pillCls='bpill mode-blocked';
+        else pillCls+=`cc-${ci} mode-daily`;
+        const camObj=cameras.find(c=>c.id===b.cam);
+        const camName=camObj?camObj.name:(b.camName||b.cam);
+        let lbl=isBlocked?(b.name.includes('Lấy sớm')?'Lấy sớm':'Trả muộn')+' · '+camName:b.name+' · '+camName;
+        const refund=(b.depositAmt||0)-(b.price||0);
+        let tip=`<div class="tip-h">${esc(b.name)} · ${esc(camName)}</div>`;
+        if(!isBlocked){
+          tip+=`<div class="tip-r"><span class="tip-l">Thời gian</span><span class="tip-v">${fmtD(b.start)}${b.start!==b.end?' → '+fmtD(b.end):''}</span></div>`;
+          tip+=`<div class="tip-r"><span class="tip-l">Số ngày</span><span class="tip-v">${b.days||1} ngày</span></div>`;
+          tip+=`<div class="tip-r"><span class="tip-l">SĐT</span><span class="tip-v">${esc(b.phone||'—')}</span></div>`;
+          tip+=`<div class="tip-r"><span class="tip-l">Đã cọc</span><span class="tip-v">${fmtVND(b.depositAmt||0)}</span></div>`;
+          tip+=`<div class="tip-r"><span class="tip-l">Phải trả</span><span class="tip-v">${fmtVND(b.price||0)}</span></div>`;
+          tip+=`<div class="tip-refund ${refund>=0?'pos':'neg'}">${refund>=0?'Hoàn lại':'Còn nợ'}: ${fmtVND(Math.abs(refund))}</div>`;
+        }else{
+          tip+=`<div class="tip-r"><span class="tip-l">Trạng thái</span><span class="tip-v" style="color:var(--cr)">Khóa lịch</span></div>`;
+        }
+        tip+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--line)"><button onclick="deleteBookingId('${b.id}')" style="background:rgba(107,26,26,0.07);border:1px solid rgba(107,26,26,0.3);color:var(--cr);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif">Xóa lịch này</button></div>`;
+        if(hasNote)tip+=`<div class="tip-note">⚠ ${esc(b.note)}</div>`;
+        html+=`<div class="tip-host" onclick="toggleTip(event,'tip-${b.id}')"><div class="${pillCls}"><span class="bpill-label">${esc(lbl)}</span>${hasNote&&!isBlocked?'<span class="note-dot"></span>':''}</div><div class="tip-box" id="tip-${b.id}" onclick="event.stopPropagation()">${tip}</div></div>`;
+      });
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('cal-weeks').innerHTML=html;
+  updateStats();
+}
+
+window.deleteBookingId=async function(id){
+  if(!confirm('Xác nhận xóa lịch này?'))return;
+  closeAllTips();
+  const batch=writeBatch(db);
+  batch.delete(doc(db,'bookings',id));
+  batch.delete(doc(db,'bookings',id+'-E'));
+  batch.delete(doc(db,'bookings',id+'-L'));
+  await batch.commit();
+  toast('Đã xóa lịch');
+};
+
+function updateStats(){
+  const td=new Date();
+  const today=`${td.getFullYear()}-${String(td.getMonth()+1).padStart(2,'0')}-${String(td.getDate()).padStart(2,'0')}`;
+  const mb=bookings.filter(b=>!b.blocked&&new Date(b.start).getMonth()===calMonth&&new Date(b.start).getFullYear()===calYear);
+  document.getElementById('s-cust').textContent=new Set(mb.map(b=>b.name)).size;
+  const busyCams=cameras.filter(c=>bookings.some(b=>!b.blocked&&b.cam===c.id&&today>=b.start&&today<=b.end));
+  const freeCams=cameras.filter(c=>!bookings.some(b=>!b.blocked&&b.cam===c.id&&today>=b.start&&today<=b.end));
+  const delivBks=bookings.filter(b=>!b.blocked&&b.start===today);
+  document.getElementById('s-busy').textContent=busyCams.length;
+  document.getElementById('s-busy-chips').innerHTML=busyCams.length?busyCams.map(c=>`<span class="chip-tag" style="background:rgba(107,26,26,0.08);color:var(--cr)">${c.name}</span>`).join(''):`<span style="font-size:10px;color:var(--ink4)">Không có</span>`;
+  document.getElementById('s-free').textContent=freeCams.length;
+  document.getElementById('s-free-chips').innerHTML=freeCams.length?freeCams.map(c=>`<span class="chip-tag" style="background:var(--green-bg);color:var(--green)">${c.name}</span>`).join(''):`<span style="font-size:10px;color:var(--ink4)">Tất cả đang bận</span>`;
+  document.getElementById('s-deliver').textContent=delivBks.length;
+  document.getElementById('s-deliver-chips').innerHTML=delivBks.length?[...new Set(delivBks.map(b=>b.cam))].map(id=>{const c=cameras.find(x=>x.id===id);return`<span class="chip-tag" style="background:var(--gold-bg);color:var(--gold)">${c?c.name:id}</span>`;}).join(''):`<span style="font-size:10px;color:var(--ink4)">Không có</span>`;
+}
+
+// ── AVAILABILITY ──
+function camAvailable(camId,startDs,endDs){
+  return !bookings.some(b=>{
+    if(b.blocked||b.cam!==camId)return false;
+    if(endDs<b.start||startDs>b.end)return false;
+    return true;
+  });
+}
+
+function buildAvailHtml(startDs,endDs,days){
+  const key=getTierKey(days);
+  let html=`<div style="font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600">${days} ngày · mức ${getTierLabel(days)}</div>`;
+  cameras.forEach(c=>{
+    const avail=camAvailable(c.id,startDs,endDs);
+    const ppd=c[key]||c.p1||0;
+    if(avail){
+      html+=`<div class="sb-cam-row available"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-price">${fmtVND(ppd)}/ngày</div><div class="sb-cam-total">Tổng: ${fmtVND(ppd*days)}</div></div>`;
+    }else{
+      html+=`<div class="sb-cam-row busy"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-busy">Đã được đặt</div></div>`;
+    }
+  });
+  return html;
+}
+
+window.runAvail=function(){
+  const res=document.getElementById('sb-result');
+  const s=document.getElementById('sb-start').value,e=document.getElementById('sb-end').value;
+  if(!s||!e){res.innerHTML='';return;}
+  const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
+  if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--cr)">Ngày không hợp lệ</div>`;return;}
+  res.innerHTML=buildAvailHtml(s,e,days);
+};
+
+window.runAvailMobile=function(){
+  syncAvailDates('m');
+  const res=document.getElementById('sb-result-m');
+  const s=document.getElementById('sb-start-m').value,e=document.getElementById('sb-end-m').value;
+  if(!s||!e){res.innerHTML='';return;}
+  const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
+  if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--cr)">Ngày không hợp lệ</div>`;return;}
+  res.innerHTML=buildAvailHtml(s,e,days);
+  document.getElementById('sb-result').innerHTML=res.innerHTML;
+};
+
+// ── BOOKING FORM ──
+window.openModal=function(){resetForm();buildCamGrid();updateELFeeLabels();document.getElementById('overlay').classList.add('open');};
+window.closeModal=function(){document.getElementById('overlay').classList.remove('open');};
+
+function resetForm(){
+  fSelCams=[];fEL={early:false,late:false};
+  ['f-name','f-phone','f-start','f-end','f-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f-dep').value='';document.getElementById('f-del').value='';
+  document.getElementById('f-dep-amt').value=100000;document.getElementById('f-disc').value=0;
+  ['el-early','el-late'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  ['daily-preview','final-box'].forEach(id=>document.getElementById(id).style.display='none');
+  updateELDesc();
+}
+
+function buildCamGrid(){
+  document.getElementById('cam-grid').innerHTML=cameras.map(c=>`
+    <div class="ctile" data-cam="${c.id}" onclick="toggleCam('${c.id}',this)">
+      <div class="cn">${c.name}</div><div class="cs">Camera</div>
+    </div>`).join('');
+}
+
+window.toggleCam=function(id,el){
+  const i=fSelCams.indexOf(id);
+  if(i>-1){fSelCams.splice(i,1);el.classList.remove('on');}else{fSelCams.push(id);el.classList.add('on');}
+  updatePricePreview();updateFinal();
+};
+window.toggleEL=function(which){
+  fEL[which]=!fEL[which];document.getElementById('el-'+which).classList.toggle('on',fEL[which]);updateFinal();
+};
+window.onDateChange=function(){updatePricePreview();updateFinal();updateELDesc();};
+
+function updateELDesc(){
+  const base=document.getElementById('f-start').value;
+  const end=document.getElementById('f-end').value;
+  if(base){const prev=new Date(base);prev.setDate(prev.getDate()-1);document.getElementById('el-early-d').textContent='Buổi chiều '+fmtD(`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`);}
+  else document.getElementById('el-early-d').textContent='Buổi chiều ngày trước';
+  if(end){const next=new Date(end);next.setDate(next.getDate()+1);document.getElementById('el-late-d').textContent='Buổi sáng '+fmtD(`${next.getFullYear()}-${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}`);}
+  else document.getElementById('el-late-d').textContent='Buổi sáng ngày sau';
+}
+
+function getDays(){const s=document.getElementById('f-start').value,e=document.getElementById('f-end').value;if(!s||!e)return 0;const d=Math.round((new Date(e)-new Date(s))/86400000)+1;return d>0?d:0;}
+
+function updatePricePreview(){
+  const days=getDays();
+  if(!days||!fSelCams.length){document.getElementById('daily-preview').style.display='none';return;}
+  const key=getTierKey(days);
+  document.getElementById('pp-days').textContent=days+' ngày';
+  document.getElementById('pp-tier').textContent=getTierLabel(days);
+  let rows='';
+  fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(!c)return;rows+=`<div class="prow"><span>${c.name}</span><b>${fmtVND(c[key]||c.p1||0)}/ngày × ${days} = ${fmtVND((c[key]||c.p1||0)*days)}</b></div>`;});
+  document.getElementById('pp-cam-rows').innerHTML=rows;
+  document.getElementById('daily-preview').style.display='block';
+}
+
+function updateFinal(){
+  const days=getDays();
+  if(!fSelCams.length||!days){document.getElementById('final-box').style.display='none';return;}
+  const key=getTierKey(days);
+  let sub=0;fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(c)sub+=(c[key]||c.p1||0)*days;});
+  const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
+  const disc=parseFloat(document.getElementById('f-disc').value)||0;
+  const total=Math.round(sub*(1-disc/100))+elFee;
+  document.getElementById('fb-sub').textContent=fmtVND(sub);
+  let elHtml='';
+  if(fEL.early)elHtml+=`<div class="prow"><span>Lấy sớm</span><b>+${fmtVND(EL_FEES.early)}</b></div>`;
+  if(fEL.late)elHtml+=`<div class="prow"><span>Trả muộn</span><b>+${fmtVND(EL_FEES.late)}</b></div>`;
+  document.getElementById('fb-el').innerHTML=elHtml;
+  const dr=document.getElementById('fb-disc-r');
+  if(disc>0){dr.style.display='flex';document.getElementById('fb-disc').textContent='-'+disc+'%';}else dr.style.display='none';
+  document.getElementById('fb-total').textContent=fmtVND(total);
+  document.getElementById('final-box').style.display='block';
+}
+window.updateFinal=updateFinal;
+
+window.submitBooking=async function(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Vui lòng nhập tên khách hàng');return;}
+  if(!fSelCams.length){toast('Vui lòng chọn máy ảnh');return;}
+  const start=document.getElementById('f-start').value,end=document.getElementById('f-end').value;
+  if(!start||!end){toast('Vui lòng chọn ngày bắt đầu và kết thúc');return;}
+  if(new Date(end)<new Date(start)){toast('Ngày kết thúc phải sau ngày bắt đầu');return;}
+  const days=getDays();
+  const key=getTierKey(days);
+  const disc=parseFloat(document.getElementById('f-disc').value)||0;
+  const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
+  const depAmt=parseFloat(document.getElementById('f-dep-amt').value)||0;
+  const batch=writeBatch(db);
+  fSelCams.forEach(id=>{
+    const c=cameras.find(x=>x.id===id);if(!c)return;
+    const base=(c[key]||c.p1||0)*days;
+    const price=Math.round(base*(1-disc/100))+elFee;
+    const bkId=Date.now()+'-'+id+'-'+Math.random().toString(36).slice(2,6);
+    const bk={id:bkId,name,phone:document.getElementById('f-phone').value.trim(),note:document.getElementById('f-note').value.trim(),cam:id,camName:c.name,mode:'daily',shift:null,start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:base,discount:disc,elFee,price,depositAmt:depAmt,deposit:document.getElementById('f-dep').value,delivery:document.getElementById('f-del').value,earlyLate:{...fEL},blocked:false,createdAt:new Date().toISOString()};
+    batch.set(doc(db,'bookings',bkId),bk);
+    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);const pds=`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;const eid=bkId+'-E';batch.set(doc(db,'bookings',eid),{id:eid,name:name+' (Lấy sớm)',cam:id,camName:c.name,mode:'shift',shift:'afternoon-evening',start:pds,end:pds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);const nds=`${nxt.getFullYear()}-${String(nxt.getMonth()+1).padStart(2,'0')}-${String(nxt.getDate()).padStart(2,'0')}`;const lid=bkId+'-L';batch.set(doc(db,'bookings',lid),{id:lid,name:name+' (Trả muộn)',cam:id,camName:c.name,mode:'shift',shift:'morning-afternoon',start:nds,end:nds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+  });
+  try{await batch.commit();toast('Đặt lịch thành công!');window.closeModal();}catch(e){toast('Lỗi: '+e.message);}
+};
+
+// ── MANAGEMENT ──
+window.checkPw=async function(){
+  const pw=document.getElementById('mgmt-pw').value;
+  try{const snap=await getDoc(doc(db,'settings','auth'));if(snap.exists()&&snap.data().password===pw){document.getElementById('mgmt-lock').style.display='none';document.getElementById('mgmt-body').style.display='block';renderMgmt();}else document.getElementById('pw-err').style.display='block';}
+  catch{document.getElementById('pw-err').style.display='block';}
+};
+window.lockMgmt=function(){document.getElementById('mgmt-lock').style.display='block';document.getElementById('mgmt-body').style.display='none';document.getElementById('mgmt-pw').value='';document.getElementById('pw-err').style.display='none';};
+window.switchTab=function(p,el){
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.mpanel').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');document.getElementById('mp-'+p).classList.add('on');
+  if(p==='bookings')renderBkTable();if(p==='revenue')renderRevenue();if(p==='cameras')renderCamList();if(p==='settings')renderSettings();
+};
+function renderMgmt(){renderCamList();}
+
+function renderCamList(){
+  const tiers=['p1','p3','p5','p10','p15'];
+  const tLabels={p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'};
+  document.getElementById('cam-list').innerHTML=cameras.map((c,idx)=>`
+    <div style="border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div>
+          <input type="text" value="${esc(c.name)}" id="cn-${idx}" onchange="saveCamName(${idx})"></div>
+        <button class="btn-sm red" onclick="removeCam(${idx})">Xóa</button>
+      </div>
+      <table class="pt"><thead><tr><th>Mức thuê</th><th>Đơn giá / ngày (đ)</th></tr></thead>
+        <tbody>${tiers.map(t=>`<tr><td>${tLabels[t]}</td><td><input type="number" value="${c[t]||0}" min="0" step="1000" onchange="saveCamPrice(${idx},'${t}',this.value)"></td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('');
+}
+
+window.saveCamName=async function(idx){
+  const v=document.getElementById('cn-'+idx).value.trim();
+  if(!v){toast('Tên không được để trống');return;}
+  cameras[idx].name=v;await setDoc(doc(db,'cameras',cameras[idx].id),cameras[idx]);toast('Đã cập nhật');
+};
+window.saveCamPrice=async function(idx,tier,val){cameras[idx][tier]=parseInt(val)||0;await setDoc(doc(db,'cameras',cameras[idx].id),cameras[idx]);};
+window.addCamera=async function(){const newId='CAM'+Date.now();const nc={id:newId,name:'Máy mới',p1:200000,p3:180000,p5:160000,p10:140000,p15:120000};await setDoc(doc(db,'cameras',newId),nc);toast('Đã thêm máy mới');};
+window.removeCam=async function(idx){if(!confirm('Xóa máy '+cameras[idx].name+'?'))return;await deleteDoc(doc(db,'cameras',cameras[idx].id));toast('Đã xóa');};
+
+function renderBkTable(){
+  const month=document.getElementById('f-month').value,from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
+  let list=bookings.filter(b=>!b.blocked);
+  if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
+  if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
+  list.sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const t=document.getElementById('bk-table');
+  t.querySelector('thead').innerHTML=`<tr><th>Khách hàng</th><th>SĐT</th><th>Máy</th><th>Bắt đầu</th><th>Kết thúc</th><th>Ngày</th><th>Đơn giá</th><th>Phải trả</th><th>Đã cọc</th><th>Hoàn/Nợ</th><th>CK</th><th>Ghi chú</th><th></th></tr>`;
+  t.querySelector('tbody').innerHTML=list.map(b=>{
+    const rf=(b.depositAmt||0)-(b.price||0);
+    return`<tr><td style="font-weight:700">${esc(b.name)}</td><td>${esc(b.phone||'—')}</td><td>${esc(b.camName||b.cam)}</td><td>${fmtD(b.start)}</td><td>${fmtD(b.end)}</td><td>${b.days||1}</td><td>${fmtVND(b.pricePerUnit||0)}</td><td style="font-weight:700">${fmtVND(b.price||0)}</td><td>${fmtVND(b.depositAmt||0)}</td><td style="color:${rf>=0?'var(--green)':'var(--cr)'}">${rf>=0?'+':''}${fmtVND(rf)}</td><td>${b.discount?'-'+b.discount+'%':'—'}</td><td style="color:var(--orange)">${esc(b.note||'')}</td><td><button onclick="deleteBookingId('${b.id}')" style="background:none;border:1px solid var(--cr);color:var(--cr);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700">Xóa</button></td></tr>`;
+  }).join('')||`<tr><td colspan="13" style="text-align:center;padding:28px;color:var(--ink4)">Không có dữ liệu</td></tr>`;
+}
+window.renderBkTable=renderBkTable;
+
+window.exportCSV=function(){
+  const month=document.getElementById('f-month').value,from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
+  let list=bookings.filter(b=>!b.blocked);
+  if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
+  if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
+  const H=['Khách hàng','SĐT','Máy','Bắt đầu','Kết thúc','Số ngày','Đơn giá','Phải trả','Đã cọc','Hoàn/Nợ','Chiết khấu','Ghi chú'];
+  const R=list.map(b=>{const rf=(b.depositAmt||0)-(b.price||0);return[b.name,b.phone||'',b.camName||b.cam,b.start,b.end,b.days||1,b.pricePerUnit||0,b.price||0,b.depositAmt||0,rf,b.discount?'-'+b.discount+'%':'',b.note||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');});
+  const csv='\uFEFF'+[H.join(','),...R].join('\n');
+  const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  const a=document.createElement('a');a.href=url;a.download='camera-nest-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
+};
+
+window.renderRevenue=function(){
+  const byM={};
+  bookings.filter(b=>!b.blocked).forEach(b=>{
+    const s=new Date(b.start+'T00:00:00'),e=new Date(b.end+'T00:00:00');
+    const totalDays=Math.round((e-s)/86400000)+1;if(totalDays<=0)return;
+    const ppd=(b.price||0)/totalDays;const cur=new Date(s);
+    while(cur<=e){const mk=cur.getFullYear()+'-'+(cur.getMonth()+1);if(!byM[mk])byM[mk]={rev:0,custs:new Set()};byM[mk].rev+=ppd;byM[mk].custs.add(b.name);cur.setDate(cur.getDate()+1);}
+  });
+  const keys=Object.keys(byM).sort().reverse();
+  document.getElementById('rev-grid').innerHTML=keys.length?keys.map(k=>{const[y,m]=k.split('-');return`<div class="rev-card"><div class="rev-m">Tháng ${m}/${y}</div><div class="rev-v">${fmtVND(Math.round(byM[k].rev))}</div><div class="rev-s">${byM[k].custs.size} khách hàng</div></div>`;}).join(''):`<div style="color:var(--ink4);font-size:13px">Chưa có dữ liệu</div>`;
+
+  const selMonth=document.getElementById('rev-month').value;
+  if(!selMonth){document.getElementById('rev-detail').innerHTML='<div style="color:var(--ink4);font-size:12px;margin-bottom:16px">Chọn tháng để xem chi tiết</div>';return;}
+  const[sy,sm]=selMonth.split('-');const y=parseInt(sy),m=parseInt(sm)-1;
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const monthBks=bookings.filter(b=>{if(b.blocked)return false;const s=new Date(b.start);const e=new Date(b.end);return!(new Date(y,m+1,1)<=s||new Date(y,m,1)>e);});
+  const uniqueCusts=new Set(monthBks.map(b=>b.name)).size;
+  let revMonth=0;
+  monthBks.forEach(b=>{
+    const s=new Date(b.start+'T00:00:00'),e=new Date(b.end+'T00:00:00');
+    const totalDays=Math.round((e-s)/86400000)+1;if(totalDays<=0)return;
+    const ppd=(b.price||0)/totalDays;const cur=new Date(s);
+    while(cur<=e){if(cur.getFullYear()===y&&cur.getMonth()===m)revMonth+=ppd;cur.setDate(cur.getDate()+1);}
+  });
+  const camStats=cameras.map(c=>{
+    const daysBusy=new Set();
+    bookings.filter(b=>!b.blocked&&b.cam===c.id).forEach(b=>{
+      const s=new Date(Math.max(new Date(b.start+'T00:00:00'),new Date(y,m,1)));
+      const e=new Date(Math.min(new Date(b.end+'T00:00:00'),new Date(y,m,daysInMonth)));
+      const cur=new Date(s);
+      while(cur<=e){daysBusy.add(cur.toISOString().split('T')[0]);cur.setDate(cur.getDate()+1);}
+    });
+    const pct=Math.round(daysBusy.size/daysInMonth*100);
+    return{name:c.name,days:daysBusy.size,pct};
+  });
+  document.getElementById('rev-detail').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="rev-card" style="background:var(--white)"><div class="rev-m">Khách tháng ${sm}/${sy}</div><div class="rev-v">${uniqueCusts}</div><div class="rev-s">khách hàng</div></div>
+      <div class="rev-card" style="background:var(--white)"><div class="rev-m">Doanh thu tháng ${sm}/${sy}</div><div class="rev-v">${fmtVND(Math.round(revMonth))}</div><div class="rev-s">ước tính</div></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px">Tỷ lệ lấp đầy (${daysInMonth} ngày)</div>
+    ${camStats.map(c=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:700">${c.name}</span><span style="color:var(--ink3)">${c.days} ngày · <strong style="color:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'}">${c.pct}%</strong></span></div><div style="background:var(--bg2);border-radius:4px;height:8px;overflow:hidden"><div style="background:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'};height:100%;width:${c.pct}%;border-radius:4px;transition:width 0.4s"></div></div></div>`).join('')}
+    <div style="height:12px"></div>
+  `;
+};
+
+function renderSettings(){
+  document.getElementById('fee-early').value=EL_FEES.early;
+  document.getElementById('fee-late').value=EL_FEES.late;
+  document.getElementById('fee-saved').style.display='none';
+  ['pw-cur','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pw-msg').style.display='none';
+}
+
+window.saveFees=async function(){
+  const early=parseInt(document.getElementById('fee-early').value)||0,late=parseInt(document.getElementById('fee-late').value)||0;
+  EL_FEES={early,late};await setDoc(doc(db,'settings','fees'),{early,late});
+  updateELFeeLabels();const msg=document.getElementById('fee-saved');msg.style.display='inline';setTimeout(()=>msg.style.display='none',2500);
+};
+
+function updateELFeeLabels(){
+  const ef=document.getElementById('el-early-fee'),lf=document.getElementById('el-late-fee');
+  if(ef)ef.textContent='+'+fmtVND(EL_FEES.early);if(lf)lf.textContent='+'+fmtVND(EL_FEES.late);
+}
+
+window.changePassword=async function(){
+  const cur=document.getElementById('pw-cur').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-confirm').value;
+  const msg=document.getElementById('pw-msg');const show=(t,c)=>{msg.textContent=t;msg.style.color=c;msg.style.display='inline';};
+  if(nw.length<4){show('Mật khẩu mới phải có ít nhất 4 ký tự','var(--cr)');return;}
+  if(nw!==cf){show('Xác nhận mật khẩu không khớp','var(--cr)');return;}
+  const snap=await getDoc(doc(db,'settings','auth'));
+  if(!snap.exists()||snap.data().password!==cur){show('Mật khẩu hiện tại không đúng','var(--cr)');return;}
+  await setDoc(doc(db,'settings','auth'),{password:nw});
+  ['pw-cur','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  show('✓ Đổi mật khẩu thành công','var(--green)');setTimeout(()=>msg.style.display='none',3000);
+};
+
+// ── MOBILE ──
+window.setBottomNav=function(which){document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));const el=document.getElementById('bnav-'+which);if(el)el.classList.add('active');};
+window.openAvailSheet=function(){document.getElementById('sb-start-m').value=document.getElementById('sb-start').value;document.getElementById('sb-end-m').value=document.getElementById('sb-end').value;document.getElementById('avail-sheet').classList.add('open');document.body.style.overflow='hidden';};
+window.closeAvailSheet=function(){document.getElementById('avail-sheet').classList.remove('open');document.body.style.overflow='';};
+window.syncAvailDates=function(src){if(src==='d'){document.getElementById('sb-start-m').value=document.getElementById('sb-start').value;document.getElementById('sb-end-m').value=document.getElementById('sb-end').value;}else{document.getElementById('sb-start').value=document.getElementById('sb-start-m').value;document.getElementById('sb-end').value=document.getElementById('sb-end-m').value;}};
+
+// ── TOOLTIP ──
+window.toggleTip=function(e,id){
+  e.stopPropagation();
+  const box=document.getElementById(id);if(!box)return;
+  const isOpen=box.classList.contains('open');
+  closeAllTips();
+  if(!isOpen){
+    box.style.visibility='hidden';box.style.left='0px';box.style.top='0px';
+    box.classList.add('open');document.getElementById('tip-overlay').classList.add('open');
+    requestAnimationFrame(()=>{
+      const hostRect=box.parentElement.getBoundingClientRect();
+      const bw=box.offsetWidth||270,bh=box.offsetHeight||260;
+      const vw=window.innerWidth,vh=window.innerHeight,margin=8;
+      let left=hostRect.left;
+      if(left+bw>vw-margin)left=vw-bw-margin;if(left<margin)left=margin;
+      let top=hostRect.bottom+4;
+      if(top+bh>vh-margin)top=hostRect.top-bh-4;
+      if(top<margin)top=margin;
+      box.style.left=left+'px';box.style.top=top+'px';box.style.visibility='visible';
+    });
+  }
+};
+window.closeAllTips=function(){
+  document.querySelectorAll('.tip-box.open').forEach(b=>{b.classList.remove('open');b.style.left='';b.style.top='';});
+  document.getElementById('tip-overlay').classList.remove('open');
+};
+
+// ── INIT ──
+const _td=new Date();
+const _today=`${_td.getFullYear()}-${String(_td.getMonth()+1).padStart(2,'0')}-${String(_td.getDate()).padStart(2,'0')}`;
+['sb-start','sb-end','sb-start-m','sb-end-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=_today;});
+const now=new Date();
+document.getElementById('rev-month').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+seedIfEmpty().then(()=>{startListeners();updateELFeeLabels();renderCalendar();});
+</script>
+</body>
+</html>
