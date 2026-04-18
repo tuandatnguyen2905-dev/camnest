@@ -1262,16 +1262,19 @@ window.removeCam=async function(idx){if(!confirm('Xóa máy '+cameras[idx].name+
 // ── PROMOS ──
 function renderPromos(){
   const list=document.getElementById('promo-list-admin');
-  if(!promos.length){list.innerHTML=`<div style="color:var(--ink4);font-size:13px;padding:12px 0">Chưa có mã khuyến mãi nào.</div>`;return;}
-  list.innerHTML=promos.map(p=>`
-    <div class="promo-item">
-      <span class="promo-code">${esc(p.code)}</span>
-      <span class="promo-desc">${esc(p.desc||'')}${p.expiry?' · HH: '+fmtD(p.expiry.replace(/-/g,'-'))':''}</span>
-      <span class="promo-val">${p.type==='percent'?'-'+p.value+'%':'-'+fmtVND(p.value)}</span>
-      <button class="cost-del" onclick="deletePromo('${p.id}')">✕</button>
-    </div>`).join('');
+  if(!promos.length){list.innerHTML='<div style="color:var(--ink4);font-size:13px;padding:12px 0">Chưa có mã khuyến mãi nào.</div>';return;}
+  list.innerHTML=promos.map(function(p,i){
+    const exStr=p.expiry?' · HH: '+fmtD(p.expiry):'';
+    const valStr=p.type==='percent'?'-'+p.value+'%':'-'+fmtVND(p.value);
+    return '<div class="promo-item">'+
+      '<span class="promo-code">'+esc(p.code)+'</span>'+
+      '<span class="promo-desc">'+esc(p.desc||'')+exStr+'</span>'+
+      '<span class="promo-val">'+valStr+'</span>'+
+      '<button class="cost-del" data-pid="'+esc(p.id)+'" onclick="deletePromoByBtn(this)">✕</button>'+
+    '</div>';
+  }).join('');
 }
-
+window.deletePromoByBtn=function(btn){deletePromo(btn.getAttribute('data-pid'));};
 window.addPromo=function(){document.getElementById('promo-form').style.display='block';};
 window.savePromo=async function(){
   const code=document.getElementById('p-code').value.trim().toUpperCase();
