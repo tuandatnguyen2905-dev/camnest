@@ -17,16 +17,18 @@
   --green:#2E6B47;--green-bg:rgba(46,107,71,0.09);
   --orange:#B35A1A;--orange-bg:rgba(179,90,26,0.08);
   --gold:#8B6914;--gold-bg:rgba(139,105,20,0.08);
+  --blue:#1E4D6B;--blue-bg:rgba(30,77,107,0.09);
+  --purple:#4A2060;--purple-bg:rgba(74,32,96,0.09);
   --shadow:0 1px 12px rgba(28,20,16,0.07);
   --shadow-lg:0 8px 40px rgba(28,20,16,0.15);
-  --c1:#5C3D11;--c1bg:rgba(92,61,17,0.09);
-  --c2:#1E4D6B;--c2bg:rgba(30,77,107,0.09);
-  --c3:#2D4A22;--c3bg:rgba(45,74,34,0.09);
-  --c4:#4A2060;--c4bg:rgba(74,32,96,0.09);
-  --c5:#6B1A1A;--c5bg:rgba(107,26,26,0.09);
-  --c6:#1A4A4A;--c6bg:rgba(26,74,74,0.09);
-  --c7:#4A3A10;--c7bg:rgba(74,58,16,0.09);
-  --c8:#30304A;--c8bg:rgba(48,48,74,0.09);
+  --c0:#5C3D11;--c0bg:rgba(92,61,17,0.09);
+  --c1:#1E4D6B;--c1bg:rgba(30,77,107,0.09);
+  --c2:#2D4A22;--c2bg:rgba(45,74,34,0.09);
+  --c3:#4A2060;--c3bg:rgba(74,32,96,0.09);
+  --c4:#6B1A1A;--c4bg:rgba(107,26,26,0.09);
+  --c5:#1A4A4A;--c5bg:rgba(26,74,74,0.09);
+  --c6:#4A3A10;--c6bg:rgba(74,58,16,0.09);
+  --c7:#30304A;--c7bg:rgba(48,48,74,0.09);
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;line-height:1.5;}
 
@@ -58,6 +60,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .avail-cam-pill.free{background:var(--green-bg);color:var(--green);border:1px solid rgba(46,107,71,0.2);}
 .avail-cam-pill.busy{background:var(--bg2);color:var(--ink4);text-decoration:line-through;border:1px solid var(--line);}
 .avail-cam-price{font-size:9px;font-weight:500;opacity:0.7;}
+.promo-row{display:flex;gap:6px;align-items:center;}
+.promo-input{padding:5px 9px;font-size:11px;border:1px solid var(--line2);border-radius:7px;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;width:120px;}
+.promo-input:focus{border-color:var(--cr);outline:none;}
+.promo-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:var(--green-bg);color:var(--green);}
 
 /* STATS */
 .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
@@ -96,20 +102,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .bpill.mode-daily{background:rgba(28,20,16,0.07);color:var(--ink2);}
 .bpill.mode-blocked{background:rgba(107,26,26,0.07);color:var(--cr);border:1px dashed rgba(107,26,26,0.25);}
 .note-dot{width:4px;height:4px;border-radius:50%;background:var(--orange);flex-shrink:0;}
-.cc-0{background:var(--c1bg)!important;color:var(--c1)!important;}
-.cc-1{background:var(--c2bg)!important;color:var(--c2)!important;}
-.cc-2{background:var(--c3bg)!important;color:var(--c3)!important;}
-.cc-3{background:var(--c4bg)!important;color:var(--c4)!important;}
-.cc-4{background:var(--c5bg)!important;color:var(--c5)!important;}
-.cc-5{background:var(--c6bg)!important;color:var(--c6)!important;}
-.cc-6{background:var(--c7bg)!important;color:var(--c7)!important;}
-.cc-7{background:var(--c8bg)!important;color:var(--c8)!important;}
+.cc-0{background:var(--c0bg)!important;color:var(--c0)!important;}
+.cc-1{background:var(--c1bg)!important;color:var(--c1)!important;}
+.cc-2{background:var(--c2bg)!important;color:var(--c2)!important;}
+.cc-3{background:var(--c3bg)!important;color:var(--c3)!important;}
+.cc-4{background:var(--c4bg)!important;color:var(--c4)!important;}
+.cc-5{background:var(--c5bg)!important;color:var(--c5)!important;}
+.cc-6{background:var(--c6bg)!important;color:var(--c6)!important;}
+.cc-7{background:var(--c7bg)!important;color:var(--c7)!important;}
 
 /* TOOLTIP */
 .tip-host{position:relative;display:block;}
-.tip-box{display:none;position:fixed;z-index:600;background:var(--white);border:1px solid var(--line2);border-radius:12px;padding:13px 15px;width:270px;max-width:calc(100vw - 16px);max-height:calc(100vh - 48px);overflow-y:auto;box-shadow:var(--shadow-lg);white-space:normal;pointer-events:auto;}
+.tip-box{display:none;position:fixed;z-index:600;background:var(--white);border:1px solid var(--line2);border-radius:12px;padding:13px 15px;width:290px;max-width:calc(100vw - 16px);max-height:calc(100vh - 48px);overflow-y:auto;box-shadow:var(--shadow-lg);white-space:normal;pointer-events:auto;}
 .tip-box.open{display:block;}
-.tip-h{font-size:10px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;color:var(--cr);margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:5px;}
+.tip-h{font-size:10px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;color:var(--cr);margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:5px;display:flex;align-items:center;justify-content:space-between;}
+.tip-copy-btn{background:var(--bg2);border:1px solid var(--line2);border-radius:5px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer;color:var(--ink3);font-family:'DM Sans',sans-serif;transition:all 0.15s;flex-shrink:0;}
+.tip-copy-btn:hover{background:var(--cr);color:#fff;border-color:var(--cr);}
 .tip-r{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;margin-bottom:3px;gap:10px;}
 .tip-l{color:var(--ink3);font-weight:500;}
 .tip-v{color:var(--ink);font-weight:700;text-align:right;}
@@ -139,18 +147,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 input,select,textarea{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:9px 12px;outline:none;transition:border-color 0.15s,background 0.15s;width:100%;}
 input::placeholder,textarea::placeholder{color:var(--ink5);}
 input:focus,select:focus,textarea:focus{border-color:var(--cr);background:var(--white);}
+input.cam-disabled{opacity:0.4;cursor:not-allowed;background:var(--bg3);}
 select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239C8E85'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;}
 textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .slbl{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink4);margin-top:14px;margin-bottom:8px;display:block;}
 .divline{border:none;border-top:1px solid var(--line);margin:14px 0;}
 .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px;}
-.ctile{border:1px solid var(--line2);border-radius:9px;padding:11px 12px;cursor:pointer;background:var(--bg);transition:all 0.15s;}
+.ctile{border:1px solid var(--line2);border-radius:9px;padding:11px 12px;cursor:pointer;background:var(--bg);transition:all 0.15s;position:relative;}
 .ctile:hover{border-color:var(--cr-l);}
 .ctile.on{background:var(--cr-d);border-color:var(--cr-d);}
+.ctile.busy-tile{border-color:var(--line);opacity:0.45;cursor:not-allowed;background:var(--bg3);}
+.ctile.busy-tile:hover{border-color:var(--line);}
 .ctile .cn{font-size:13px;font-weight:800;color:var(--ink);}
 .ctile.on .cn{color:#fff;}
 .ctile .cs{font-size:9px;font-weight:600;color:var(--ink4);}
 .ctile.on .cs{color:rgba(255,255,255,0.5);}
+.busy-badge{position:absolute;top:5px;right:5px;font-size:7px;font-weight:800;background:var(--cr-bg2);color:var(--cr);padding:1px 5px;border-radius:3px;letter-spacing:0.5px;}
 .eltile{border:1px solid var(--line2);border-radius:9px;padding:10px 12px;cursor:pointer;background:var(--bg);transition:all 0.15s;}
 .eltile:hover{border-color:var(--ink3);}
 .eltile.on{border-color:var(--orange);background:var(--orange-bg);}
@@ -167,13 +179,18 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .btn-ok{padding:9px 22px;background:var(--cr);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.15s;}
 .btn-ok:hover{background:var(--cr-l);}
 
+/* DISCOUNT TYPE TOGGLE */
+.disc-type-row{display:flex;gap:4px;margin-bottom:6px;}
+.disc-tab{padding:4px 10px;font-size:10px;font-weight:700;border:1px solid var(--line2);border-radius:6px;cursor:pointer;background:var(--bg);color:var(--ink4);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.disc-tab.on{background:var(--cr-d);color:#fff;border-color:var(--cr-d);}
+
 /* MGMT */
 .mgmt-wrap{padding:20px 28px;}
 .mgmt-lock{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:48px;text-align:center;max-width:380px;margin:60px auto;box-shadow:var(--shadow);}
 .mgmt-lock-icon{font-size:36px;margin-bottom:12px;opacity:0.25;}
 .mgmt-lock-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:18px;color:var(--ink);}
-.mgmt-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:22px;}
-.mtab{padding:10px 20px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--ink4);cursor:pointer;margin-bottom:-1px;transition:all 0.15s;}
+.mgmt-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;}
+.mtab{padding:10px 20px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--ink4);cursor:pointer;margin-bottom:-1px;transition:all 0.15s;white-space:nowrap;}
 .mtab:hover{color:var(--ink);}
 .mtab.on{color:var(--cr);border-bottom-color:var(--cr);}
 .mpanel{display:none;}
@@ -190,11 +207,58 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .bt td{padding:8px 11px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:middle;}
 .bt tr:last-child td{border-bottom:none;}
 .bt tr:hover td{background:var(--bg);}
+
+/* REVENUE */
 .rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
 .rev-card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
 .rev-m{font-size:10px;font-weight:700;color:var(--ink4);margin-bottom:3px;}
 .rev-v{font-size:17px;font-weight:900;color:var(--ink);}
 .rev-s{font-size:10px;color:var(--ink4);margin-top:2px;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:18px;}
+.kpi-card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+.kpi-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);margin-bottom:4px;display:flex;align-items:center;gap:5px;}
+.kpi-val{font-size:22px;font-weight:900;color:var(--ink);line-height:1.1;}
+.kpi-sub{font-size:10px;color:var(--ink4);margin-top:3px;}
+.kpi-good{color:var(--green)!important;}
+.kpi-warn{color:var(--gold)!important;}
+.kpi-bad{color:var(--cr)!important;}
+.kpi-tip{font-size:9px;color:var(--ink4);cursor:help;border-bottom:1px dotted var(--ink5);}
+
+/* ASSET TABLE */
+.asset-section{margin-top:16px;}
+.asset-row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);}
+.asset-row:last-child{border-bottom:none;}
+.asset-name{font-size:12px;font-weight:700;}
+.asset-input{padding:5px 9px;font-size:11px;border-radius:6px;border:1px solid var(--line2);background:var(--bg);width:110px;}
+
+/* COST SECTION */
+.cost-entry{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px;}
+.cost-entry input,.cost-entry select{padding:7px 10px;font-size:12px;}
+.cost-del{background:none;border:1px solid var(--line2);border-radius:6px;padding:5px 8px;cursor:pointer;color:var(--cr);font-size:12px;}
+.cost-del:hover{background:var(--cr-bg);border-color:var(--cr);}
+
+/* ADS FORM */
+.ads-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* UTILIZATION BAR */
+.util-bar-wrap{margin-bottom:10px;}
+.util-bar-bg{background:var(--bg2);border-radius:4px;height:8px;overflow:hidden;margin-top:4px;}
+.util-bar-fill{height:100%;border-radius:4px;transition:width 0.4s;}
+
+/* PROMOS */
+.promo-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.promo-item{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;}
+.promo-code{font-size:12px;font-weight:800;font-family:monospace;color:var(--cr);}
+.promo-desc{font-size:11px;color:var(--ink3);flex:1;}
+.promo-val{font-size:11px;font-weight:700;color:var(--green);}
+
+/* SAVE CONFIRM BANNER */
+.save-banner{background:var(--green-bg);border:1px solid rgba(46,107,71,0.3);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;color:var(--green);display:none;align-items:center;gap:6px;margin-top:10px;}
+.save-banner.show{display:flex;}
+
+/* BUTTONS */
 .btn-sm{padding:5px 11px;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--ink3);cursor:pointer;transition:all 0.15s;}
 .btn-sm:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
 .btn-sm.red{color:var(--cr);}
@@ -204,6 +268,8 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .btn-exp{padding:7px 14px;background:transparent;border:1px solid var(--line2);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--ink3);cursor:pointer;transition:all 0.15s;}
 .btn-exp:hover{background:var(--cr);color:#fff;border-color:var(--cr);}
 .bk-chk{padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:11px;border-radius:7px;border:1px solid var(--line2);background:var(--bg);color:var(--ink);cursor:pointer;}
+.btn-save-price{padding:8px 18px;background:var(--green);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.15s;}
+.btn-save-price:hover{opacity:0.88;}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--cr-d);color:#fff;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:700;opacity:0;transition:all 0.22s;z-index:700;white-space:nowrap;}
@@ -234,6 +300,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .sb-cam-price{font-size:11px;color:var(--ink3);margin-top:1px;}
 .sb-cam-total{font-size:13px;font-weight:900;color:var(--green);margin-top:3px;}
 .sb-cam-busy{font-size:11px;font-weight:600;color:var(--cr);margin-top:3px;}
+.sb-cam-promo{font-size:11px;color:var(--green);margin-top:2px;font-weight:700;}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -246,8 +313,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
   .mgmt-wrap{padding:8px 10px;}
   .stats-strip{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
   .stat-card{padding:8px 10px;border-radius:8px;}
-  .stat-lbl{font-size:7.5px;letter-spacing:0.8px;margin-bottom:2px;}
-  .stat-val{font-size:16px;}
   .cal-controls{margin-bottom:8px;}
   .cal-title{font-size:17px;min-width:0;}
   .arr{width:26px;height:26px;font-size:11px;}
@@ -258,7 +323,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
   .cal-day.is-today .day-num{width:16px;height:16px;font-size:8px;}
   .bpill{font-size:7.5px;padding:2px 3px;border-radius:3px;gap:2px;margin-bottom:1px;}
   .bpill-label{font-size:7px;}
-  .note-dot{width:3px;height:3px;}
   .avail-bar{display:none;}
   .overlay{padding:0;}
   .modal{border-radius:18px 18px 0 0;max-width:100%;width:100%;max-height:92dvh;overflow-y:auto;margin:auto 0 0;}
@@ -274,11 +338,9 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
   .ptotal{font-size:13px;}
   .mcard{padding:12px 12px;border-radius:10px;}
   .mcard-title{flex-direction:column;align-items:flex-start;gap:6px;}
-  .mgmt-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .mtab{white-space:nowrap;padding:8px 12px;font-size:10px;}
-  .rev-grid{grid-template-columns:1fr 1fr;}
-  .bt{font-size:9.5px;}
-  .bt th,.bt td{padding:5px 6px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .ads-form{grid-template-columns:1fr;}
+  .cost-entry{grid-template-columns:1fr 1fr auto;}
   .mgmt-lock{padding:28px 20px;margin:32px auto;}
   .mgmt-lock-title{font-size:20px;}
 }
@@ -286,15 +348,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
   .cal-head-cell{font-size:6.5px;padding:5px 0;}
   .cal-day{min-height:54px;padding:2px 2px 3px;}
   .bpill{font-size:6.5px;padding:1px 3px;}
-  .bpill-label{max-width:38px;}
-  .stats-strip{gap:5px;}
-  .stat-card{padding:7px 8px;}
-  .stat-val{font-size:14px;}
-  .cg{grid-template-columns:1fr 1fr;}
-  .bottom-nav{padding:6px 0 max(6px,env(safe-area-inset-bottom));}
-  .bnav-btn{padding:3px 10px;min-width:50px;}
-  .bnav-icon{font-size:18px;}
-  .bnav-lbl{font-size:8px;}
+  .kpi-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -335,8 +389,15 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
     </div>
     <div class="avail-panel-body">
       <div style="margin-bottom:10px"><div class="flbl" style="margin-bottom:6px">Ngày bắt đầu</div><input type="date" id="sb-start-m" onchange="syncAvailDates('m')"></div>
-      <div style="margin-bottom:14px"><div class="flbl" style="margin-bottom:6px">Ngày kết thúc</div><input type="date" id="sb-end-m" onchange="syncAvailDates('m')"></div>
-      <button class="btn-ok" style="width:100%;margin-bottom:14px" onclick="runAvailMobile()">Kiểm tra ngay</button>
+      <div style="margin-bottom:10px"><div class="flbl" style="margin-bottom:6px">Ngày kết thúc</div><input type="date" id="sb-end-m" onchange="syncAvailDates('m')"></div>
+      <div style="margin-bottom:14px">
+        <div class="flbl" style="margin-bottom:6px">Mã khuyến mãi (tuỳ chọn)</div>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="sb-promo-m" placeholder="VD: SUMMER20" style="text-transform:uppercase;font-size:12px;padding:8px 10px;flex:1">
+          <button class="btn-ok" style="padding:8px 14px;font-size:11px" onclick="runAvailMobile()">Kiểm tra</button>
+        </div>
+        <div id="sb-promo-msg-m" style="font-size:11px;margin-top:5px;font-weight:600"></div>
+      </div>
       <div id="sb-result-m" class="sb-result"></div>
     </div>
   </div>
@@ -357,6 +418,10 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
         <input type="date" id="sb-start" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
         <span style="font-size:11px;color:var(--ink4)">→</span>
         <input type="date" id="sb-end" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
+      </div>
+      <div class="promo-row">
+        <input type="text" id="sb-promo" class="promo-input" placeholder="Promo code" oninput="this.value=this.value.toUpperCase()" onchange="runAvail()">
+        <div id="sb-promo-badge" style="display:none" class="promo-badge"></div>
       </div>
       <div class="avail-bar-result" id="sb-result"></div>
     </div>
@@ -396,11 +461,56 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="mgmt-tabs">
         <button class="mtab on" onclick="switchTab('cameras',this)">Máy & Giá</button>
+        <button class="mtab" onclick="switchTab('promos',this)">Khuyến mãi</button>
         <button class="mtab" onclick="switchTab('bookings',this)">Lịch thuê</button>
         <button class="mtab" onclick="switchTab('revenue',this)">Doanh thu</button>
         <button class="mtab" onclick="switchTab('settings',this)">Cài đặt</button>
       </div>
-      <div class="mpanel on" id="mp-cameras"><div class="mcard"><div class="mcard-title">Danh sách máy <button class="btn-add" onclick="addCamera()">+ Thêm máy</button></div><div id="cam-list"></div></div></div>
+      <div class="mpanel on" id="mp-cameras">
+        <div class="mcard">
+          <div class="mcard-title">Danh sách máy & Bảng giá
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="btn-add" onclick="addCamera()">+ Thêm máy</button>
+              <button class="btn-save-price" onclick="savePrices()">✓ Xác nhận lưu giá</button>
+            </div>
+          </div>
+          <div id="cam-list"></div>
+          <div id="price-save-banner" class="save-banner">✓ Giá đã được lưu thành công vào Firestore</div>
+        </div>
+      </div>
+      <div class="mpanel" id="mp-promos">
+        <div class="mcard">
+          <div class="mcard-title">Mã khuyến mãi
+            <button class="btn-add" onclick="addPromo()">+ Thêm mã</button>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Mã khuyến mãi có thể dùng khi kiểm tra giá và khi đặt lịch. Hỗ trợ giảm theo % hoặc theo số tiền cố định.</p>
+          <div id="promo-list-admin"></div>
+          <div id="promo-form" style="display:none;margin-top:14px;background:var(--bg2);border-radius:10px;padding:14px 16px;">
+            <div class="fg">
+              <div class="field"><label>Mã code *</label><input type="text" id="p-code" placeholder="SUMMER20" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+              <div class="field"><label>Mô tả</label><input type="text" id="p-desc" placeholder="Khuyến mãi hè 2025"></div>
+            </div>
+            <div class="fg">
+              <div class="field">
+                <label>Loại giảm giá</label>
+                <select id="p-type">
+                  <option value="percent">Giảm theo %</option>
+                  <option value="fixed">Giảm số tiền cố định</option>
+                </select>
+              </div>
+              <div class="field"><label>Giá trị</label><input type="number" id="p-value" placeholder="20" min="0"></div>
+            </div>
+            <div class="fg">
+              <div class="field"><label>Ngày hết hạn (tuỳ chọn)</label><input type="date" id="p-expiry"></div>
+              <div class="field"><label>Số lần dùng tối đa (0 = không giới hạn)</label><input type="number" id="p-maxuse" value="0" min="0"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button class="btn-ok" onclick="savePromo()">Lưu mã</button>
+              <button class="btn-cancel" onclick="document.getElementById('promo-form').style.display='none'">Hủy</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="mpanel" id="mp-bookings">
         <div class="mcard">
           <div class="mcard-title"><span>Lịch thuê tổng hợp</span>
@@ -415,13 +525,44 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
         </div>
       </div>
       <div class="mpanel" id="mp-revenue">
-        <div class="mcard"><div class="mcard-title"><span>Thống kê tháng</span><input type="month" id="rev-month" class="bk-chk" onchange="renderRevenue()"></div><div id="rev-detail"></div></div>
-        <div class="mcard"><div class="mcard-title">Tất cả các tháng</div><div class="rev-grid" id="rev-grid"></div></div>
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Phân tích doanh thu</span>
+            <input type="month" id="rev-month" class="bk-chk" onchange="renderRevenue()">
+          </div>
+          <div id="rev-detail"></div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-title">Chi phí Marketing / Ads tháng này</div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:12px">Nhập số liệu ads để tính CAC và Conversion Rate</p>
+          <div class="ads-form" id="ads-form-wrap">
+            <div class="field"><label>Tổng chi phí ads (đ)</label><input type="number" id="ads-spend" placeholder="0" min="0" onchange="renderRevenue()"></div>
+            <div class="field"><label>Số lượt tiếp cận (reach)</label><input type="number" id="ads-reach" placeholder="0" min="0" onchange="renderRevenue()"></div>
+            <div class="field"><label>Số lượt click / DM</label><input type="number" id="ads-clicks" placeholder="0" min="0" onchange="renderRevenue()"></div>
+          </div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Chi phí phát sinh tháng</span>
+            <button class="btn-add" onclick="addCostEntry()">+ Thêm chi phí</button>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:12px">Nhập các chi phí vận hành, bảo dưỡng, v.v.</p>
+          <div id="cost-entries"></div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-title">Tất cả các tháng</div>
+          <div class="rev-grid" id="rev-grid"></div>
+        </div>
       </div>
       <div class="mpanel" id="mp-settings">
         <div class="mcard">
+          <div class="mcard-title">Thông tin tài sản (để tính ROA)</div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Điền giá trị thiết bị để tính tỷ suất lợi nhuận tài sản (ROA).</p>
+          <div id="asset-info-list"></div>
+          <button class="btn-ok" style="margin-top:14px" onclick="saveAssetInfo()">Lưu thông tin tài sản</button>
+        </div>
+        <div class="mcard">
           <div class="mcard-title">Phí lấy sớm / Trả muộn</div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Phí cộng thêm khi khách lấy máy sớm hoặc trả máy muộn.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
             <div class="field"><label>Phí lấy sớm (đ)</label><input type="number" id="fee-early" min="0" step="10000" value="50000"></div>
             <div class="field"><label>Phí trả muộn (đ)</label><input type="number" id="fee-late" min="0" step="10000" value="50000"></div>
@@ -466,7 +607,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
         <div class="prow"><span>Mức giá áp dụng</span><b id="pp-tier">—</b></div>
         <div id="pp-cam-rows"></div>
       </div>
-      <span class="slbl">Chọn máy ảnh</span>
+      <span class="slbl">Chọn máy ảnh <span style="font-size:9px;color:var(--ink4);font-weight:500;text-transform:none;letter-spacing:0">(máy đang bận sẽ bị gạch)</span></span>
       <div class="cg" id="cam-grid"></div>
       <span class="slbl">Lấy sớm / Trả muộn</span>
       <div class="fg">
@@ -480,14 +621,38 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="fg">
         <div class="field"><label>Số tiền đã cọc (đ)</label><input type="number" id="f-dep-amt" value="100000" min="0"></div>
-        <div class="field"><label>Chiết khấu (%)</label><input type="number" id="f-disc" value="0" min="0" max="100" oninput="updateFinal()"></div>
+        <div class="field">
+          <label>Mã khuyến mãi</label>
+          <div style="display:flex;gap:5px">
+            <input type="text" id="f-promo" placeholder="Nhập mã..." style="text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()" onchange="applyPromoToForm()">
+            <button class="btn-sm" onclick="applyPromoToForm()" style="flex-shrink:0;padding:0 10px">Áp dụng</button>
+          </div>
+          <div id="f-promo-msg" style="font-size:11px;margin-top:4px;font-weight:600"></div>
+        </div>
       </div>
-      <div class="field" style="margin-bottom:4px"><label>Ghi chú / Yêu cầu đặc biệt</label><input type="text" id="f-note" placeholder="Ví dụ: cần thêm lens 35mm..."></div>
+      <div class="fg">
+        <div class="field">
+          <label>Giảm giá</label>
+          <div class="disc-type-row">
+            <button class="disc-tab on" id="disc-tab-pct" onclick="setDiscType('pct')">Theo %</button>
+            <button class="disc-tab" id="disc-tab-fixed" onclick="setDiscType('fixed')">Số tiền</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" id="f-disc" value="0" min="0" oninput="updateFinal()" style="flex:1">
+            <span id="disc-unit" style="font-size:13px;font-weight:700;color:var(--ink3);flex-shrink:0">%</span>
+          </div>
+        </div>
+        <div class="field"><label>Ghi chú / Yêu cầu</label><input type="text" id="f-note" placeholder="Ví dụ: cần thêm lens 35mm..."></div>
+      </div>
       <div id="final-box" class="pbox" style="display:none;margin-top:12px">
-        <div class="prow"><span>Tiền thuê</span><b id="fb-sub">—</b></div>
+        <div class="prow"><span>Tiền thuê gốc</span><b id="fb-sub">—</b></div>
         <div id="fb-el"></div>
-        <div class="prow" id="fb-disc-r" style="display:none"><span>Chiết khấu</span><b id="fb-disc" style="color:var(--green)"></b></div>
+        <div class="prow" id="fb-promo-r" style="display:none"><span>Mã khuyến mãi</span><b id="fb-promo" style="color:var(--green)"></b></div>
+        <div class="prow" id="fb-disc-r" style="display:none"><span>Giảm giá</span><b id="fb-disc" style="color:var(--green)"></b></div>
         <div class="ptotal"><span>Khách phải trả</span><span id="fb-total">—</span></div>
+        <div id="fb-refund-row" style="display:none;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)">
+          <div class="prow"><span id="fb-refund-lbl">Hoàn lại</span><b id="fb-refund" style="color:var(--green)"></b></div>
+        </div>
       </div>
     </div>
     <div class="modal-ft"><button class="btn-cancel" onclick="closeModal()">Hủy</button><button class="btn-ok" onclick="submitBooking()">Xác nhận đặt lịch</button></div>
@@ -501,9 +666,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDocs,writeBatch,getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// ════════════════════════════════════════════════
-// 🔥 FIREBASE CONFIG — điền config project MỚI vào đây
-// ════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey:            "AIzaSyCsRKyA333pg1weXh3SbCbwdN8yVMfjz3M",
   authDomain:        "camnest-691a0.firebaseapp.com",
@@ -512,13 +674,11 @@ const firebaseConfig = {
   messagingSenderId: "111270540160",
   appId:             "1:111270540160:web:dacaa4a861df4dd43dc765"
 };
-// ════════════════════════════════════════════════
 
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
 const MONTHS_VI=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
-const CAM_COLORS=['c0','c1','c2','c3','c4','c5','c6','c7'];
 const DEFAULT_CAMERAS=[
   {id:'X100V',name:'X100V',p1:250000,p3:220000,p5:190000,p10:170000,p15:150000},
   {id:'XS20', name:'X-S20',p1:220000,p3:200000,p5:175000,p10:155000,p15:135000},
@@ -526,14 +686,36 @@ const DEFAULT_CAMERAS=[
   {id:'XT4',  name:'X-T4', p1:230000,p3:210000,p5:185000,p10:165000,p15:145000},
 ];
 
-let cameras=[...DEFAULT_CAMERAS],bookings=[],EL_FEES={early:50000,late:50000};
+let cameras=[...DEFAULT_CAMERAS];
+let bookings=[];
+let promos=[];
+let assetInfo={};
+let EL_FEES={early:50000,late:50000};
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let fSelCams=[],fEL={early:false,late:false},editingId=null;
+let discType='pct'; // 'pct' or 'fixed'
+let activePromoCode=null,activePromoObj=null;
+let costEntries=[];
+let deletedBookingIds=[];
 
+// ── LISTENERS ──
 function startListeners(){
-  onSnapshot(collection(db,'bookings'),snap=>{bookings=snap.docs.map(d=>d.data());if(document.getElementById('page-calendar').classList.contains('active')){renderCalendar();window.runAvail();}});
-  onSnapshot(collection(db,'cameras'),snap=>{if(!snap.empty)cameras=snap.docs.map(d=>d.data());if(document.getElementById('page-calendar').classList.contains('active'))renderCalendar();});
-  onSnapshot(collection(db,'settings'),snap=>{snap.docs.forEach(d=>{if(d.id==='fees'){EL_FEES.early=d.data().early||50000;EL_FEES.late=d.data().late||50000;updateELFeeLabels();}});});
+  onSnapshot(collection(db,'bookings'),snap=>{
+    bookings=snap.docs.map(d=>d.data());
+    if(document.getElementById('page-calendar').classList.contains('active')){renderCalendar();window.runAvail();}
+  });
+  onSnapshot(collection(db,'cameras'),snap=>{
+    if(!snap.empty)cameras=snap.docs.map(d=>d.data());
+    if(document.getElementById('page-calendar').classList.contains('active'))renderCalendar();
+  });
+  onSnapshot(collection(db,'settings'),snap=>{
+    snap.docs.forEach(d=>{
+      if(d.id==='fees'){EL_FEES.early=d.data().early||50000;EL_FEES.late=d.data().late||50000;updateELFeeLabels();}
+    });
+  });
+  onSnapshot(collection(db,'promos'),snap=>{
+    promos=snap.docs.map(d=>d.data());
+  });
 }
 
 async function seedIfEmpty(){
@@ -543,6 +725,7 @@ async function seedIfEmpty(){
   const ps=await getDoc(doc(db,'settings','auth'));if(!ps.exists())await setDoc(doc(db,'settings','auth'),{password:'nest2024'});
 }
 
+// ── UTILS ──
 function fmtD(ds){if(!ds)return'';const[y,m,d]=ds.split('-');return`${d}/${m}/${y}`;}
 function fmtVND(n){return(Math.round(n)||0).toLocaleString('vi-VN')+'đ';}
 function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -552,16 +735,35 @@ function getTierKey(d){if(d>=15)return'p15';if(d>=10)return'p10';if(d>=5)return'
 function getTierLabel(d){return{p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'}[getTierKey(d)]||'';}
 function localDs(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
+// ── PROMO LOGIC ──
+function findPromo(code){
+  if(!code)return null;
+  const p=promos.find(x=>x.code===code.toUpperCase().trim());
+  if(!p)return null;
+  if(p.expiry&&p.expiry<localDs(new Date()))return null;
+  return p;
+}
+function applyPromoDiscount(price,promo){
+  if(!promo)return{final:price,disc:0,label:''};
+  let disc=0;
+  if(promo.type==='percent') disc=Math.round(price*promo.value/100);
+  else disc=promo.value;
+  disc=Math.min(disc,price);
+  return{final:price-disc,disc,label:promo.type==='percent'?`-${promo.value}% (${fmtVND(disc)})`:`-${fmtVND(disc)}`};
+}
+
+// ── PAGE NAV ──
 window.showPage=function(p,el){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   if(el)el.classList.add('active');
-  if(p==='calendar')renderCalendar();if(p==='mgmt')renderMgmt();
+  if(p==='calendar')renderCalendar();
+  if(p==='mgmt')renderMgmt();
 };
-
 window.changeMonth=function(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();};
 
+// ── CALENDAR ──
 function getWeeks(){
   const first=new Date(calYear,calMonth,1),last=new Date(calYear,calMonth+1,0);
   const weeks=[],cur=new Date(first);
@@ -572,8 +774,7 @@ function getWeeks(){
 
 function renderCalendar(){
   document.getElementById('cal-title').textContent=MONTHS_VI[calMonth]+' '+calYear;
-  const todayLocal=new Date();
-  const today=localDs(todayLocal);
+  const today=localDs(new Date());
   let html='';
   getWeeks().forEach(week=>{
     html+='<div class="cal-week">';
@@ -588,24 +789,35 @@ function renderCalendar(){
         const camObj=cameras.find(c=>c.id===b.cam),camName=camObj?camObj.name:(b.camName||b.cam);
         const lbl=isBlocked?(b.name.includes('Lấy sớm')?'Lấy sớm':'Trả muộn')+' · '+camName:b.name+' · '+camName;
         const refund=(b.depositAmt||0)-(b.price||0);
-        let tip=`<div class="tip-h">${esc(b.name)} · ${esc(camName)}</div>`;
+
+        // Build copy text for invoice
+        const copyText=buildInvoiceText(b,camName);
+
+        let tip=`<div class="tip-h"><span>${esc(b.name)} · ${esc(camName)}</span>`;
+        if(!isBlocked) tip+=`<button class="tip-copy-btn" onclick="copyInvoice('${b.id}');event.stopPropagation()">📋 Copy</button>`;
+        tip+=`</div>`;
+
         if(!isBlocked){
           tip+=`<div class="tip-r"><span class="tip-l">Thời gian</span><span class="tip-v">${fmtD(b.start)}${b.start!==b.end?' → '+fmtD(b.end):''}</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">Số ngày</span><span class="tip-v">${b.days||1} ngày</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">SĐT</span><span class="tip-v">${esc(b.phone||'—')}</span></div>`;
+          tip+=`<div class="tip-r"><span class="tip-l">Máy</span><span class="tip-v">${esc(camName)}</span></div>`;
+          if(b.deposit)tip+=`<div class="tip-r"><span class="tip-l">Hình thức cọc</span><span class="tip-v">${esc(b.deposit)}</span></div>`;
+          if(b.delivery)tip+=`<div class="tip-r"><span class="tip-l">Giao máy</span><span class="tip-v">${esc(b.delivery)}</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">Đã cọc</span><span class="tip-v">${fmtVND(b.depositAmt||0)}</span></div>`;
+          if(b.promoCode)tip+=`<div class="tip-r"><span class="tip-l">Mã KM</span><span class="tip-v" style="color:var(--green)">${esc(b.promoCode)}</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">Phải trả</span><span class="tip-v">${fmtVND(b.price||0)}</span></div>`;
           tip+=`<div class="tip-refund ${refund>=0?'pos':'neg'}">${refund>=0?'Hoàn lại':'Còn nợ'}: ${fmtVND(Math.abs(refund))}</div>`;
           tip+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:6px">
             <button onclick="openEditModal('${b.id}')" style="background:var(--cr-d);border:none;color:#fff;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">✏ Sửa</button>
             <button onclick="deleteBookingId('${b.id}')" style="background:var(--cr-bg);border:1px solid rgba(107,26,26,0.3);color:var(--cr);border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">✕ Xóa</button>
           </div>`;
-        }else{
+        } else {
           tip+=`<div class="tip-r"><span class="tip-l">Trạng thái</span><span class="tip-v" style="color:var(--cr)">Khóa lịch</span></div>`;
           tip+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--line)"><button onclick="deleteBookingId('${b.id}')" style="background:var(--cr-bg);border:1px solid rgba(107,26,26,0.3);color:var(--cr);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif">Xóa</button></div>`;
         }
         if(hasNote)tip+=`<div class="tip-note">⚠ ${esc(b.note)}</div>`;
-        html+=`<div class="tip-host" onclick="toggleTip(event,'tip-${b.id}')"><div class="${pillCls}"><span class="bpill-label">${esc(lbl)}</span>${hasNote&&!isBlocked?'<span class="note-dot"></span>':''}</div><div class="tip-box" id="tip-${b.id}" onclick="event.stopPropagation()">${tip}</div></div>`;
+        html+=`<div class="tip-host" onclick="toggleTip(event,'tip-${b.id}')"><div class="${pillCls}"><span class="bpill-label">${esc(lbl)}</span>${hasNote&&!isBlocked?'<span class="note-dot"></span>':''}</div><div class="tip-box" id="tip-${b.id}" onclick="event.stopPropagation()" data-invoice="${esc(copyText)}">${tip}</div></div>`;
       });
       html+='</div>';
     });
@@ -615,16 +827,62 @@ function renderCalendar(){
   updateStats();
 }
 
+function buildInvoiceText(b,camName){
+  const refund=(b.depositAmt||0)-(b.price||0);
+  let txt=`📷 HÓA ĐƠN THUÊ MÁY - camera.nest\n`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━━\n`;
+  txt+=`👤 Khách hàng: ${b.name}\n`;
+  if(b.phone)txt+=`📞 SĐT: ${b.phone}\n`;
+  txt+=`📷 Máy: ${camName}\n`;
+  txt+=`📅 Thời gian: ${fmtD(b.start)}${b.start!==b.end?' → '+fmtD(b.end):''} (${b.days||1} ngày)\n`;
+  if(b.delivery)txt+=`🚚 Giao máy: ${b.delivery}\n`;
+  if(b.deposit)txt+=`🔒 Hình thức cọc: ${b.deposit}\n`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━━\n`;
+  if(b.subTotal&&b.subTotal!==b.price)txt+=`💰 Tiền thuê gốc: ${fmtVND(b.subTotal)}\n`;
+  if(b.promoCode)txt+=`🎟 Mã KM (${b.promoCode}): -${fmtVND(b.promoDis||0)}\n`;
+  if(b.discount&&b.discount>0){
+    if(b.discType==='fixed')txt+=`🏷 Giảm giá: -${fmtVND(b.discount)}\n`;
+    else txt+=`🏷 Giảm giá: -${b.discount}%\n`;
+  }
+  if(b.elFee&&b.elFee>0)txt+=`⏰ Phí L/S: +${fmtVND(b.elFee)}\n`;
+  txt+=`💵 Khách phải trả: ${fmtVND(b.price||0)}\n`;
+  txt+=`💳 Đã cọc: ${fmtVND(b.depositAmt||0)}\n`;
+  txt+=`${refund>=0?'✅ Hoàn lại':'❗ Còn nợ'}: ${fmtVND(Math.abs(refund))}\n`;
+  if(b.note)txt+=`📝 Ghi chú: ${b.note}\n`;
+  return txt;
+}
+
+window.copyInvoice=function(id){
+  const box=document.getElementById('tip-'+id);
+  if(!box)return;
+  const b=bookings.find(x=>x.id===id);
+  if(!b)return;
+  const camObj=cameras.find(c=>c.id===b.cam);
+  const camName=camObj?camObj.name:(b.camName||b.cam);
+  const txt=buildInvoiceText(b,camName);
+  navigator.clipboard.writeText(txt).then(()=>toast('✓ Đã copy thông tin hóa đơn!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✓ Đã copy!');
+  });
+};
+
 window.deleteBookingId=async function(id){
-  if(!confirm('Xác nhận xóa lịch này?'))return;closeAllTips();
+  if(!confirm('Xác nhận xóa lịch này?'))return;
+  closeAllTips();
+  // Track deletion for cancellation rate
+  deletedBookingIds.push({id,deletedAt:new Date().toISOString(),month:localDs(new Date()).slice(0,7)});
+  try{const ss=await getDoc(doc(db,'settings','deletedBookings'));const arr=ss.exists()?ss.data().ids||[]:[...deletedBookingIds];await setDoc(doc(db,'settings','deletedBookings'),{ids:arr});}catch(e){}
   const batch=writeBatch(db);
-  batch.delete(doc(db,'bookings',id));batch.delete(doc(db,'bookings',id+'-E'));batch.delete(doc(db,'bookings',id+'-L'));
-  await batch.commit();toast('Đã xóa lịch');
+  batch.delete(doc(db,'bookings',id));
+  batch.delete(doc(db,'bookings',id+'-E'));
+  batch.delete(doc(db,'bookings',id+'-L'));
+  await batch.commit();
+  toast('Đã xóa lịch');
 };
 
 window.openEditModal=function(id){
-  closeAllTips();const b=bookings.find(x=>x.id===id);if(!b)return;
-  editingId=id;resetForm();buildCamGrid();updateELFeeLabels();
+  closeAllTips();
+  const b=bookings.find(x=>x.id===id);if(!b)return;
+  editingId=id;resetForm();buildCamGrid(b.start,b.end);updateELFeeLabels();
   document.getElementById('modal-title').textContent='Sửa lịch';
   document.getElementById('f-name').value=b.name||'';
   document.getElementById('f-phone').value=b.phone||'';
@@ -632,9 +890,13 @@ window.openEditModal=function(id){
   document.getElementById('f-dep').value=b.deposit||'';
   document.getElementById('f-del').value=b.delivery||'';
   document.getElementById('f-dep-amt').value=b.depositAmt??100000;
-  document.getElementById('f-disc').value=b.discount||0;
   document.getElementById('f-start').value=b.start||'';
   document.getElementById('f-end').value=b.end||'';
+  // Restore discount
+  if(b.discType==='fixed'){setDiscType('fixed');document.getElementById('f-disc').value=b.discount||0;}
+  else{setDiscType('pct');document.getElementById('f-disc').value=b.discount||0;}
+  // Restore promo
+  if(b.promoCode){document.getElementById('f-promo').value=b.promoCode;activePromoCode=b.promoCode;activePromoObj=findPromo(b.promoCode);}
   fSelCams=[b.cam];
   document.querySelectorAll('.ctile').forEach(el=>{if(el.dataset.cam===b.cam)el.classList.add('on');});
   if(b.earlyLate?.early){fEL.early=true;document.getElementById('el-early').classList.add('on');}
@@ -658,58 +920,167 @@ function updateStats(){
   document.getElementById('s-deliver-chips').innerHTML=delivBks.length?[...new Set(delivBks.map(b=>b.cam))].map(id=>{const c=cameras.find(x=>x.id===id);return`<span class="chip-tag" style="background:var(--gold-bg);color:var(--gold)">${c?c.name:id}</span>`;}).join(''):`<span style="font-size:10px;color:var(--ink4)">Không có</span>`;
 }
 
-function camAvail(camId,s,e){return !bookings.some(b=>{if(b.blocked||b.cam!==camId)return false;if(e<b.start||s>b.end)return false;return true;});}
-
-function buildCompact(s,e,days){
+// ── AVAILABILITY ──
+function camAvail(camId,s,e){
+  return !bookings.some(b=>{
+    if(b.cam!==camId)return false;
+    if(e<b.start||s>b.end)return false;
+    return true;
+  });
+}
+function buildCompact(s,e,days,promo){
   const key=getTierKey(days);
   let h=`<span style="font-size:9px;color:var(--ink4);font-weight:600;white-space:nowrap">${days}ng · ${getTierLabel(days)}</span>`;
-  cameras.forEach(c=>{const ok=camAvail(c.id,s,e);const ppd=c[key]||c.p1||0;h+=ok?`<span class="avail-cam-pill free">${c.name} <span class="avail-cam-price">${fmtVND(ppd)}</span></span>`:`<span class="avail-cam-pill busy">${c.name}</span>`;});
+  cameras.forEach(c=>{
+    const ok=camAvail(c.id,s,e);
+    const ppd=c[key]||c.p1||0;
+    const base=ppd*days;
+    if(ok){
+      const pd=applyPromoDiscount(base,promo);
+      h+=`<span class="avail-cam-pill free">${c.name} <span class="avail-cam-price">${promo?fmtVND(pd.final):fmtVND(base)}</span></span>`;
+    }else{
+      h+=`<span class="avail-cam-pill busy">${c.name}</span>`;
+    }
+  });
   return h;
 }
-function buildCards(s,e,days){
+function buildCards(s,e,days,promo){
   const key=getTierKey(days);
   let h=`<div style="font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600">${days} ngày · mức ${getTierLabel(days)}</div>`;
-  cameras.forEach(c=>{const ok=camAvail(c.id,s,e);const ppd=c[key]||c.p1||0;h+=ok?`<div class="sb-cam-row available"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-price">${fmtVND(ppd)}/ngày</div><div class="sb-cam-total">Tổng: ${fmtVND(ppd*days)}</div></div>`:`<div class="sb-cam-row busy"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-busy">Đã được đặt</div></div>`;});
+  cameras.forEach(c=>{
+    const ok=camAvail(c.id,s,e);
+    const ppd=c[key]||c.p1||0;
+    const base=ppd*days;
+    const pd=applyPromoDiscount(base,promo);
+    if(ok){
+      h+=`<div class="sb-cam-row available"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-price">${fmtVND(ppd)}/ngày × ${days} = ${fmtVND(base)}</div>`;
+      if(promo)h+=`<div class="sb-cam-promo">🎟 Sau KM ${promo.code}: ${fmtVND(pd.final)}</div>`;
+      else h+=`<div class="sb-cam-total">Tổng: ${fmtVND(base)}</div>`;
+      h+=`</div>`;
+    } else {
+      h+=`<div class="sb-cam-row busy"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-busy">Đã được đặt</div></div>`;
+    }
+  });
   return h;
 }
 
 window.runAvail=function(){
   const res=document.getElementById('sb-result');
   const s=document.getElementById('sb-start').value,e=document.getElementById('sb-end').value;
-  if(!s||!e){res.innerHTML='';return;}
+  const promoCode=document.getElementById('sb-promo').value.trim();
+  const badge=document.getElementById('sb-promo-badge');
+  if(!s||!e){res.innerHTML='';badge.style.display='none';return;}
   const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
   if(days<=0){res.innerHTML=`<span style="font-size:10px;color:var(--cr)">Ngày không hợp lệ</span>`;return;}
-  res.innerHTML=buildCompact(s,e,days);
+  let promo=null;
+  if(promoCode){
+    promo=findPromo(promoCode);
+    if(promo){badge.textContent=`✓ ${promo.type==='percent'?'-'+promo.value+'%':'-'+fmtVND(promo.value)}`;badge.style.display='inline-flex';}
+    else{badge.textContent='Mã không hợp lệ';badge.style.cssText='display:inline-flex;background:var(--cr-bg);color:var(--cr);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px';}
+  } else badge.style.display='none';
+  res.innerHTML=buildCompact(s,e,days,promo);
 };
+
 window.runAvailMobile=function(){
   syncAvailDates('m');
-  const res=document.getElementById('sb-result-m');
   const s=document.getElementById('sb-start-m').value,e=document.getElementById('sb-end-m').value;
+  const promoCode=document.getElementById('sb-promo-m').value.trim();
+  const msg=document.getElementById('sb-promo-msg-m');
+  const res=document.getElementById('sb-result-m');
   if(!s||!e){res.innerHTML='';return;}
   const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
   if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--cr)">Ngày không hợp lệ</div>`;return;}
-  res.innerHTML=buildCards(s,e,days);
-  document.getElementById('sb-result').innerHTML=buildCompact(s,e,days);
+  let promo=null;
+  if(promoCode){
+    promo=findPromo(promoCode);
+    msg.textContent=promo?`✓ Áp dụng ${promo.code} — ${promo.type==='percent'?'-'+promo.value+'%':'-'+fmtVND(promo.value)}`:'❌ Mã không hợp lệ hoặc đã hết hạn';
+    msg.style.color=promo?'var(--green)':'var(--cr)';
+  } else msg.textContent='';
+  res.innerHTML=buildCards(s,e,days,promo);
+  document.getElementById('sb-result').innerHTML=buildCompact(s,e,days,promo);
 };
 
-window.openModal=function(){editingId=null;resetForm();buildCamGrid();updateELFeeLabels();document.getElementById('modal-title').textContent='Đặt lịch mới';document.getElementById('overlay').classList.add('open');};
+// ── MODAL ──
+window.openModal=function(){
+  editingId=null;activePromoCode=null;activePromoObj=null;
+  resetForm();buildCamGrid(null,null);updateELFeeLabels();
+  document.getElementById('modal-title').textContent='Đặt lịch mới';
+  document.getElementById('overlay').classList.add('open');
+};
 window.closeModal=function(){editingId=null;document.getElementById('modal-title').textContent='Đặt lịch mới';document.getElementById('overlay').classList.remove('open');};
 
 function resetForm(){
-  fSelCams=[];fEL={early:false,late:false};
-  ['f-name','f-phone','f-start','f-end','f-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  fSelCams=[];fEL={early:false,late:false};activePromoCode=null;activePromoObj=null;discType='pct';
+  ['f-name','f-phone','f-start','f-end','f-note','f-promo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-dep').value='';document.getElementById('f-del').value='';
   document.getElementById('f-dep-amt').value=100000;document.getElementById('f-disc').value=0;
+  document.getElementById('f-promo-msg').textContent='';
   ['el-early','el-late'].forEach(id=>document.getElementById(id).classList.remove('on'));
   ['daily-preview','final-box'].forEach(id=>document.getElementById(id).style.display='none');
-  updateELDesc();
+  setDiscType('pct');updateELDesc();
 }
-function buildCamGrid(){
-  document.getElementById('cam-grid').innerHTML=cameras.map(c=>`<div class="ctile" data-cam="${c.id}" onclick="toggleCam('${c.id}',this)"><div class="cn">${c.name}</div><div class="cs">Camera</div></div>`).join('');
+
+function buildCamGrid(startDs,endDs){
+  const grid=document.getElementById('cam-grid');
+  if(!grid)return;
+  grid.innerHTML=cameras.map(c=>{
+    let isBusy=false;
+    if(startDs&&endDs){
+      isBusy=bookings.some(b=>{
+        if(b.cam!==c.id)return false;
+        if(editingId&&(b.id===editingId||b.id===editingId+'-E'||b.id===editingId+'-L'))return false;
+        return!(endDs<b.start||startDs>b.end);
+      });
+    }
+    return `<div class="ctile${isBusy?' busy-tile':''}" data-cam="${c.id}" onclick="toggleCam('${c.id}',this,${isBusy})">
+      <div class="cn">${c.name}</div>
+      <div class="cs">${isBusy?'Đã có lịch':'Camera'}</div>
+      ${isBusy?'<span class="busy-badge">BẬN</span>':''}
+    </div>`;
+  }).join('');
 }
-window.toggleCam=function(id,el){const i=fSelCams.indexOf(id);if(i>-1){fSelCams.splice(i,1);el.classList.remove('on');}else{fSelCams.push(id);el.classList.add('on');}updatePricePreview();updateFinal();};
+
+window.toggleCam=function(id,el,isBusy){
+  if(isBusy){toast('Máy này đã có lịch trong khoảng ngày đó!');return;}
+  const i=fSelCams.indexOf(id);
+  if(i>-1){fSelCams.splice(i,1);el.classList.remove('on');}
+  else{fSelCams.push(id);el.classList.add('on');}
+  updatePricePreview();updateFinal();
+};
 window.toggleEL=function(w){fEL[w]=!fEL[w];document.getElementById('el-'+w).classList.toggle('on',fEL[w]);updateFinal();};
-window.onDateChange=function(){updatePricePreview();updateFinal();updateELDesc();};
+window.onDateChange=function(){
+  const s=document.getElementById('f-start').value,e=document.getElementById('f-end').value;
+  buildCamGrid(s,e);
+  updatePricePreview();updateFinal();updateELDesc();
+};
+
+// ── DISCOUNT TYPE ──
+window.setDiscType=function(t){
+  discType=t;
+  document.getElementById('disc-tab-pct').classList.toggle('on',t==='pct');
+  document.getElementById('disc-tab-fixed').classList.toggle('on',t==='fixed');
+  document.getElementById('disc-unit').textContent=t==='pct'?'%':'đ';
+  document.getElementById('f-disc').value=0;
+  updateFinal();
+};
+
+// ── PROMO IN FORM ──
+window.applyPromoToForm=function(){
+  const code=document.getElementById('f-promo').value.trim();
+  const msg=document.getElementById('f-promo-msg');
+  if(!code){activePromoCode=null;activePromoObj=null;msg.textContent='';updateFinal();return;}
+  const p=findPromo(code);
+  if(p){
+    activePromoCode=code;activePromoObj=p;
+    msg.textContent=`✓ ${p.code} — ${p.type==='percent'?'-'+p.value+'%':'-'+fmtVND(p.value)}`;
+    msg.style.color='var(--green)';
+  } else {
+    activePromoCode=null;activePromoObj=null;
+    msg.textContent='❌ Mã không hợp lệ hoặc đã hết hạn';
+    msg.style.color='var(--cr)';
+  }
+  updateFinal();
+};
 
 function updateELDesc(){
   const s=document.getElementById('f-start').value,e=document.getElementById('f-end').value;
@@ -723,26 +1094,57 @@ function updatePricePreview(){
   const days=getDays();
   if(!days||!fSelCams.length){document.getElementById('daily-preview').style.display='none';return;}
   const key=getTierKey(days);
-  document.getElementById('pp-days').textContent=days+' ngày';document.getElementById('pp-tier').textContent=getTierLabel(days);
-  let rows='';fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(!c)return;rows+=`<div class="prow"><span>${c.name}</span><b>${fmtVND(c[key]||c.p1||0)}/ngày × ${days} = ${fmtVND((c[key]||c.p1||0)*days)}</b></div>`;});
-  document.getElementById('pp-cam-rows').innerHTML=rows;document.getElementById('daily-preview').style.display='block';
+  document.getElementById('pp-days').textContent=days+' ngày';
+  document.getElementById('pp-tier').textContent=getTierLabel(days);
+  let rows='';
+  fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(!c)return;rows+=`<div class="prow"><span>${c.name}</span><b>${fmtVND(c[key]||c.p1||0)}/ngày × ${days} = ${fmtVND((c[key]||c.p1||0)*days)}</b></div>`;});
+  document.getElementById('pp-cam-rows').innerHTML=rows;
+  document.getElementById('daily-preview').style.display='block';
 }
 function updateFinal(){
   const days=getDays();
   if(!fSelCams.length||!days){document.getElementById('final-box').style.display='none';return;}
-  const key=getTierKey(days);let sub=0;
+  const key=getTierKey(days);
+  let sub=0;
   fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(c)sub+=(c[key]||c.p1||0)*days;});
   const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
-  const disc=parseFloat(document.getElementById('f-disc').value)||0;
-  const total=Math.round(sub*(1-disc/100))+elFee;
+  const discVal=parseFloat(document.getElementById('f-disc').value)||0;
+  let discAmt=0;
+  if(discType==='pct') discAmt=Math.round(sub*discVal/100);
+  else discAmt=Math.min(discVal,sub);
+  const afterDisc=sub-discAmt;
+  // Apply promo on top
+  const promoApply=applyPromoDiscount(afterDisc,activePromoObj);
+  const total=promoApply.final+elFee;
+  const depAmt=parseFloat(document.getElementById('f-dep-amt').value)||0;
+  const refund=depAmt-total;
+
   document.getElementById('fb-sub').textContent=fmtVND(sub);
-  let elH='';if(fEL.early)elH+=`<div class="prow"><span>Lấy sớm</span><b>+${fmtVND(EL_FEES.early)}</b></div>`;if(fEL.late)elH+=`<div class="prow"><span>Trả muộn</span><b>+${fmtVND(EL_FEES.late)}</b></div>`;
+  let elH='';
+  if(fEL.early)elH+=`<div class="prow"><span>Lấy sớm</span><b>+${fmtVND(EL_FEES.early)}</b></div>`;
+  if(fEL.late)elH+=`<div class="prow"><span>Trả muộn</span><b>+${fmtVND(EL_FEES.late)}</b></div>`;
   document.getElementById('fb-el').innerHTML=elH;
-  const dr=document.getElementById('fb-disc-r');if(disc>0){dr.style.display='flex';document.getElementById('fb-disc').textContent='-'+disc+'%';}else dr.style.display='none';
-  document.getElementById('fb-total').textContent=fmtVND(total);document.getElementById('final-box').style.display='block';
+  const dr=document.getElementById('fb-disc-r');
+  if(discAmt>0){dr.style.display='flex';document.getElementById('fb-disc').textContent=discType==='pct'?`-${discVal}% (${fmtVND(discAmt)})`:`-${fmtVND(discAmt)}`;}
+  else dr.style.display='none';
+  const pr=document.getElementById('fb-promo-r');
+  if(activePromoObj&&promoApply.disc>0){pr.style.display='flex';document.getElementById('fb-promo').textContent=promoApply.label;}
+  else pr.style.display='none';
+  document.getElementById('fb-total').textContent=fmtVND(total);
+  document.getElementById('final-box').style.display='block';
+  // Refund row
+  const refRow=document.getElementById('fb-refund-row');
+  if(depAmt>0){
+    refRow.style.display='block';
+    document.getElementById('fb-refund-lbl').textContent=refund>=0?'Hoàn lại':'Còn nợ';
+    const refEl=document.getElementById('fb-refund');
+    refEl.textContent=fmtVND(Math.abs(refund));
+    refEl.style.color=refund>=0?'var(--green)':'var(--cr)';
+  } else refRow.style.display='none';
 }
 window.updateFinal=updateFinal;
 
+// ── SUBMIT BOOKING ──
 window.submitBooking=async function(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){toast('Vui lòng nhập tên khách hàng');return;}
@@ -751,38 +1153,57 @@ window.submitBooking=async function(){
   if(!start||!end){toast('Vui lòng chọn ngày bắt đầu và kết thúc');return;}
   if(new Date(end)<new Date(start)){toast('Ngày kết thúc phải sau ngày bắt đầu');return;}
   const days=getDays(),key=getTierKey(days);
-  const disc=parseFloat(document.getElementById('f-disc').value)||0;
+  const discVal=parseFloat(document.getElementById('f-disc').value)||0;
   const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
   const depAmt=parseFloat(document.getElementById('f-dep-amt').value)||0;
   const phone=document.getElementById('f-phone').value.trim(),note=document.getElementById('f-note').value.trim();
   const deposit=document.getElementById('f-dep').value,delivery=document.getElementById('f-del').value;
 
+  const calcBookingPrice=(c)=>{
+    const base=(c[key]||c.p1||0)*days;
+    let discAmt=0;
+    if(discType==='pct') discAmt=Math.round(base*discVal/100);
+    else discAmt=Math.min(discVal,base);
+    const afterDisc=base-discAmt;
+    const promoApply=applyPromoDiscount(afterDisc,activePromoObj);
+    return{base,discAmt,promoDisc:promoApply.disc,total:promoApply.final+elFee};
+  };
+
   if(editingId){
     const orig=bookings.find(x=>x.id===editingId);if(!orig){toast('Không tìm thấy lịch gốc');return;}
     const camId=fSelCams[0],c=cameras.find(x=>x.id===camId);if(!c){toast('Máy không hợp lệ');return;}
-    const base=(c[key]||c.p1||0)*days,price=Math.round(base*(1-disc/100))+elFee;
-    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',shift:null,start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:base,discount:disc,elFee,price,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
-    const batch=writeBatch(db);batch.set(doc(db,'bookings',editingId),updated);
-    batch.delete(doc(db,'bookings',editingId+'-E'));batch.delete(doc(db,'bookings',editingId+'-L'));
-    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);batch.set(doc(db,'bookings',editingId+'-E'),{id:editingId+'-E',name:name+' (Lấy sớm)',cam:camId,camName:c.name,mode:'shift',shift:'afternoon-evening',start:localDs(prev),end:localDs(prev),days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:orig.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
-    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);batch.set(doc(db,'bookings',editingId+'-L'),{id:editingId+'-L',name:name+' (Trả muộn)',cam:camId,camName:c.name,mode:'shift',shift:'morning-afternoon',start:localDs(nxt),end:localDs(nxt),days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:orig.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    const prices=calcBookingPrice(c);
+    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:prices.base,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
+    const batch=writeBatch(db);
+    batch.set(doc(db,'bookings',editingId),updated);
+    batch.delete(doc(db,'bookings',editingId+'-E'));
+    batch.delete(doc(db,'bookings',editingId+'-L'));
+    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);batch.set(doc(db,'bookings',editingId+'-E'),mkBlockedDoc(editingId+'-E',name,camId,c.name,localDs(prev),orig.createdAt));}
+    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);batch.set(doc(db,'bookings',editingId+'-L'),mkBlockedDoc(editingId+'-L',name,camId,c.name,localDs(nxt),orig.createdAt));}
     try{await batch.commit();toast('Đã cập nhật lịch!');window.closeModal();}catch(err){toast('Lỗi: '+err.message);}
     return;
   }
 
   const batch=writeBatch(db);
+  const now=new Date().toISOString();
   fSelCams.forEach(id=>{
     const c=cameras.find(x=>x.id===id);if(!c)return;
-    const base=(c[key]||c.p1||0)*days,price=Math.round(base*(1-disc/100))+elFee;
+    const prices=calcBookingPrice(c);
     const bkId=Date.now()+'-'+id+'-'+Math.random().toString(36).slice(2,6);
-    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',shift:null,start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:base,discount:disc,elFee,price,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:new Date().toISOString()};
+    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:prices.base,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:now};
     batch.set(doc(db,'bookings',bkId),bk);
-    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);const eid=bkId+'-E';batch.set(doc(db,'bookings',eid),{id:eid,name:name+' (Lấy sớm)',cam:id,camName:c.name,mode:'shift',shift:'afternoon-evening',start:localDs(prev),end:localDs(prev),days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
-    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);const lid=bkId+'-L';batch.set(doc(db,'bookings',lid),{id:lid,name:name+' (Trả muộn)',cam:id,camName:c.name,mode:'shift',shift:'morning-afternoon',start:localDs(nxt),end:localDs(nxt),days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);batch.set(doc(db,'bookings',bkId+'-E'),mkBlockedDoc(bkId+'-E',name,id,c.name,localDs(prev),now));}
+    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);batch.set(doc(db,'bookings',bkId+'-L'),mkBlockedDoc(bkId+'-L',name,id,c.name,localDs(nxt),now));}
   });
   try{await batch.commit();toast('Đặt lịch thành công!');window.closeModal();}catch(err){toast('Lỗi: '+err.message);}
 };
 
+function mkBlockedDoc(id,name,camId,camName,ds,createdAt){
+  const isEarly=id.endsWith('-E');
+  return{id,name:name+' ('+(isEarly?'Lấy sớm':'Trả muộn')+')',cam:camId,camName,mode:'shift',start:ds,end:ds,days:1,price:0,depositAmt:0,discount:0,discType:'pct',elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false},promoCode:'',promoDis:0};
+}
+
+// ── PASSWORD ──
 window.checkPw=async function(){
   const pw=document.getElementById('mgmt-pw').value;
   try{const snap=await getDoc(doc(db,'settings','auth'));if(snap.exists()&&snap.data().password===pw){document.getElementById('mgmt-lock').style.display='none';document.getElementById('mgmt-body').style.display='block';renderMgmt();}else document.getElementById('pw-err').style.display='block';}
@@ -790,44 +1211,98 @@ window.checkPw=async function(){
 };
 window.lockMgmt=function(){document.getElementById('mgmt-lock').style.display='block';document.getElementById('mgmt-body').style.display='none';document.getElementById('mgmt-pw').value='';document.getElementById('pw-err').style.display='none';};
 window.switchTab=function(p,el){
-  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.mpanel').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.mpanel').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');document.getElementById('mp-'+p).classList.add('on');
-  if(p==='bookings')renderBkTable();if(p==='revenue')renderRevenue();if(p==='cameras')renderCamList();if(p==='settings')renderSettings();
+  if(p==='bookings')renderBkTable();
+  if(p==='revenue')renderRevenue();
+  if(p==='cameras')renderCamList();
+  if(p==='settings')renderSettings();
+  if(p==='promos')renderPromos();
 };
 function renderMgmt(){renderCamList();}
 
+// ── CAMERAS & PRICES ──
 function renderCamList(){
   const tiers=['p1','p3','p5','p10','p15'],tLabels={p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'};
   document.getElementById('cam-list').innerHTML=cameras.map((c,idx)=>`
     <div style="border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div><input type="text" value="${esc(c.name)}" id="cn-${idx}" onchange="saveCamName(${idx})"></div>
+        <div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div><input type="text" value="${esc(c.name)}" id="cn-${idx}" style="font-size:13px;padding:8px 11px"></div>
         <button class="btn-sm red" onclick="removeCam(${idx})">Xóa</button>
       </div>
       <table class="pt"><thead><tr><th>Mức thuê</th><th>Đơn giá / ngày (đ)</th></tr></thead>
-        <tbody>${tiers.map(t=>`<tr><td>${tLabels[t]}</td><td><input type="number" value="${c[t]||0}" min="0" step="1000" onchange="saveCamPrice(${idx},'${t}',this.value)"></td></tr>`).join('')}</tbody>
+        <tbody>${tiers.map(t=>`<tr><td>${tLabels[t]}</td><td><input type="number" id="cp-${idx}-${t}" value="${c[t]||0}" min="0" step="1000" style="font-size:12px;padding:6px 9px"></td></tr>`).join('')}</tbody>
       </table>
     </div>`).join('');
+  document.getElementById('price-save-banner').classList.remove('show');
 }
-window.saveCamName=async function(idx){const v=document.getElementById('cn-'+idx).value.trim();if(!v){toast('Tên không được để trống');return;}cameras[idx].name=v;await setDoc(doc(db,'cameras',cameras[idx].id),cameras[idx]);toast('Đã cập nhật');};
-window.saveCamPrice=async function(idx,tier,val){cameras[idx][tier]=parseInt(val)||0;await setDoc(doc(db,'cameras',cameras[idx].id),cameras[idx]);};
+
+window.savePrices=async function(){
+  const tiers=['p1','p3','p5','p10','p15'];
+  const batch=writeBatch(db);
+  cameras.forEach((c,idx)=>{
+    const nameEl=document.getElementById('cn-'+idx);
+    if(nameEl)c.name=nameEl.value.trim()||c.name;
+    tiers.forEach(t=>{const el=document.getElementById(`cp-${idx}-${t}`);if(el)c[t]=parseInt(el.value)||0;});
+    batch.set(doc(db,'cameras',c.id),c);
+  });
+  try{
+    await batch.commit();
+    const banner=document.getElementById('price-save-banner');
+    banner.classList.add('show');
+    setTimeout(()=>banner.classList.remove('show'),4000);
+    toast('✓ Đã lưu tất cả giá thành công!');
+  }catch(e){toast('Lỗi lưu giá: '+e.message);}
+};
+
 window.addCamera=async function(){const newId='CAM'+Date.now();const nc={id:newId,name:'Máy mới',p1:200000,p3:180000,p5:160000,p10:140000,p15:120000};await setDoc(doc(db,'cameras',newId),nc);toast('Đã thêm máy mới');};
 window.removeCam=async function(idx){if(!confirm('Xóa máy '+cameras[idx].name+'?'))return;await deleteDoc(doc(db,'cameras',cameras[idx].id));toast('Đã xóa');};
 
+// ── PROMOS ──
+function renderPromos(){
+  const list=document.getElementById('promo-list-admin');
+  if(!promos.length){list.innerHTML=`<div style="color:var(--ink4);font-size:13px;padding:12px 0">Chưa có mã khuyến mãi nào.</div>`;return;}
+  list.innerHTML=promos.map(p=>`
+    <div class="promo-item">
+      <span class="promo-code">${esc(p.code)}</span>
+      <span class="promo-desc">${esc(p.desc||'')}${p.expiry?' · HH: '+fmtD(p.expiry.replace(/-/g,'-'))':''}</span>
+      <span class="promo-val">${p.type==='percent'?'-'+p.value+'%':'-'+fmtVND(p.value)}</span>
+      <button class="cost-del" onclick="deletePromo('${p.id}')">✕</button>
+    </div>`).join('');
+}
+
+window.addPromo=function(){document.getElementById('promo-form').style.display='block';};
+window.savePromo=async function(){
+  const code=document.getElementById('p-code').value.trim().toUpperCase();
+  if(!code){toast('Nhập mã code');return;}
+  const val=parseFloat(document.getElementById('p-value').value)||0;
+  if(!val){toast('Nhập giá trị giảm');return;}
+  const p={id:code,code,desc:document.getElementById('p-desc').value.trim(),type:document.getElementById('p-type').value,value:val,expiry:document.getElementById('p-expiry').value||'',maxUse:parseInt(document.getElementById('p-maxuse').value)||0,usedCount:0,createdAt:new Date().toISOString()};
+  await setDoc(doc(db,'promos',code),p);
+  document.getElementById('promo-form').style.display='none';
+  ['p-code','p-desc','p-value','p-expiry'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-maxuse').value='0';
+  toast('✓ Đã lưu mã khuyến mãi');renderPromos();
+};
+window.deletePromo=async function(id){if(!confirm('Xóa mã '+id+'?'))return;await deleteDoc(doc(db,'promos',id));toast('Đã xóa mã');renderPromos();};
+
+// ── BOOKING TABLE ──
 function renderBkTable(){
   const month=document.getElementById('f-month').value,from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
   let list=bookings.filter(b=>!b.blocked);
   if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
   if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
-  list.sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  list.sort((a,b)=>b.createdAt?.localeCompare(a.createdAt||'')||0);
   const t=document.getElementById('bk-table');
-  t.querySelector('thead').innerHTML=`<tr><th>Khách hàng</th><th>SĐT</th><th>Máy</th><th>Bắt đầu</th><th>Kết thúc</th><th>Ngày</th><th>Đơn giá</th><th>Phải trả</th><th>Đã cọc</th><th>Hoàn/Nợ</th><th>CK</th><th>Ghi chú</th><th></th><th></th></tr>`;
+  t.querySelector('thead').innerHTML=`<tr><th>Khách hàng</th><th>SĐT</th><th>Máy</th><th>Bắt đầu</th><th>Kết thúc</th><th>Ngày</th><th>Đơn giá</th><th>Phải trả</th><th>Đã cọc</th><th>Hoàn/Nợ</th><th>KM</th><th>CK</th><th>Ghi chú</th><th></th><th></th></tr>`;
   t.querySelector('tbody').innerHTML=list.map(b=>{
     const rf=(b.depositAmt||0)-(b.price||0);
-    return`<tr><td style="font-weight:700">${esc(b.name)}</td><td>${esc(b.phone||'—')}</td><td>${esc(b.camName||b.cam)}</td><td>${fmtD(b.start)}</td><td>${fmtD(b.end)}</td><td>${b.days||1}</td><td>${fmtVND(b.pricePerUnit||0)}</td><td style="font-weight:700">${fmtVND(b.price||0)}</td><td>${fmtVND(b.depositAmt||0)}</td><td style="color:${rf>=0?'var(--green)':'var(--cr)'}">${rf>=0?'+':''}${fmtVND(rf)}</td><td>${b.discount?'-'+b.discount+'%':'—'}</td><td style="color:var(--orange)">${esc(b.note||'')}</td>
+    const discLbl=b.discount?(b.discType==='fixed'?'-'+fmtVND(b.discount):'-'+b.discount+'%'):'—';
+    return`<tr><td style="font-weight:700">${esc(b.name)}</td><td>${esc(b.phone||'—')}</td><td>${esc(b.camName||b.cam)}</td><td>${fmtD(b.start)}</td><td>${fmtD(b.end)}</td><td>${b.days||1}</td><td>${fmtVND(b.pricePerUnit||0)}</td><td style="font-weight:700">${fmtVND(b.price||0)}</td><td>${fmtVND(b.depositAmt||0)}</td><td style="color:${rf>=0?'var(--green)':'var(--cr)'}">${rf>=0?'+':''}${fmtVND(rf)}</td><td style="color:var(--green)">${esc(b.promoCode||'—')}</td><td>${discLbl}</td><td style="color:var(--orange)">${esc(b.note||'')}</td>
     <td><button onclick="openEditModal('${b.id}')" style="background:var(--cr-d);border:none;color:#fff;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700">Sửa</button></td>
     <td><button onclick="deleteBookingId('${b.id}')" style="background:none;border:1px solid var(--cr);color:var(--cr);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700">Xóa</button></td></tr>`;
-  }).join('')||`<tr><td colspan="14" style="text-align:center;padding:28px;color:var(--ink4)">Không có dữ liệu</td></tr>`;
+  }).join('')||`<tr><td colspan="15" style="text-align:center;padding:28px;color:var(--ink4)">Không có dữ liệu</td></tr>`;
 }
 window.renderBkTable=renderBkTable;
 
@@ -836,31 +1311,60 @@ window.exportCSV=function(){
   let list=bookings.filter(b=>!b.blocked);
   if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
   if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
-  const H=['Khách hàng','SĐT','Máy','Bắt đầu','Kết thúc','Số ngày','Đơn giá','Phải trả','Đã cọc','Hoàn/Nợ','Chiết khấu','Ghi chú'];
-  const R=list.map(b=>{const rf=(b.depositAmt||0)-(b.price||0);return[b.name,b.phone||'',b.camName||b.cam,b.start,b.end,b.days||1,b.pricePerUnit||0,b.price||0,b.depositAmt||0,rf,b.discount?'-'+b.discount+'%':'',b.note||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');});
+  const H=['Khách hàng','SĐT','Máy','Bắt đầu','Kết thúc','Số ngày','Đơn giá','Phải trả','Đã cọc','Hoàn/Nợ','Mã KM','Chiết khấu','Ghi chú'];
+  const R=list.map(b=>{const rf=(b.depositAmt||0)-(b.price||0);const discLbl=b.discount?(b.discType==='fixed'?'-'+b.discount+'đ':'-'+b.discount+'%'):'';return[b.name,b.phone||'',b.camName||b.cam,b.start,b.end,b.days||1,b.pricePerUnit||0,b.price||0,b.depositAmt||0,rf,b.promoCode||'',discLbl,b.note||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');});
   const csv='\uFEFF'+[H.join(','),...R].join('\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
   const a=document.createElement('a');a.href=url;a.download='camera-nest-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
 };
 
+// ── REVENUE ──
 window.renderRevenue=function(){
+  // All months overview
   const byM={};
   bookings.filter(b=>!b.blocked).forEach(b=>{
     const s=new Date(b.start+'T00:00:00'),e=new Date(b.end+'T00:00:00');
     const td=Math.round((e-s)/86400000)+1;if(td<=0)return;
     const ppd=(b.price||0)/td;const cur=new Date(s);
-    while(cur<=e){const mk=cur.getFullYear()+'-'+(cur.getMonth()+1);if(!byM[mk])byM[mk]={rev:0,custs:new Set()};byM[mk].rev+=ppd;byM[mk].custs.add(b.name);cur.setDate(cur.getDate()+1);}
+    while(cur<=e){const mk=cur.getFullYear()+'-'+(String(cur.getMonth()+1).padStart(2,'0'));if(!byM[mk])byM[mk]={rev:0,custs:new Set()};byM[mk].rev+=ppd;byM[mk].custs.add(b.name);cur.setDate(cur.getDate()+1);}
   });
   const keys=Object.keys(byM).sort().reverse();
-  document.getElementById('rev-grid').innerHTML=keys.length?keys.map(k=>{const[y,m]=k.split('-');return`<div class="rev-card"><div class="rev-m">Tháng ${m}/${y}</div><div class="rev-v">${fmtVND(Math.round(byM[k].rev))}</div><div class="rev-s">${byM[k].custs.size} khách hàng</div></div>`;}).join(''):`<div style="color:var(--ink4);font-size:13px">Chưa có dữ liệu</div>`;
+  document.getElementById('rev-grid').innerHTML=keys.length?keys.map(k=>{const[y,m]=k.split('-');return`<div class="rev-card"><div class="rev-m">Tháng ${parseInt(m)}/${y}</div><div class="rev-v">${fmtVND(Math.round(byM[k].rev))}</div><div class="rev-s">${byM[k].custs.size} khách hàng</div></div>`;}).join(''):`<div style="color:var(--ink4);font-size:13px">Chưa có dữ liệu</div>`;
+
   const selMonth=document.getElementById('rev-month').value;
   if(!selMonth){document.getElementById('rev-detail').innerHTML='<div style="color:var(--ink4);font-size:12px;margin-bottom:16px">Chọn tháng để xem chi tiết</div>';return;}
   const[sy,sm]=selMonth.split('-'),y=parseInt(sy),m=parseInt(sm)-1;
   const dim=new Date(y,m+1,0).getDate();
   const monthBks=bookings.filter(b=>{if(b.blocked)return false;const s=new Date(b.start),e=new Date(b.end);return!(new Date(y,m+1,1)<=s||new Date(y,m,1)>e);});
-  const uniq=new Set(monthBks.map(b=>b.name)).size;
+  const nonBlockedBks=bookings.filter(b=>!b.blocked);
+
+  // Phones for recurring detection
+  const phones=monthBks.map(b=>b.phone||b.name).filter(Boolean);
+  const uniquePhones=new Set(phones);
+  const allPhonesBefore=new Set(nonBlockedBks.filter(b=>b.start<`${sy}-${sm}-01`).map(b=>b.phone||b.name).filter(Boolean));
+  const recurringCount=[...uniquePhones].filter(p=>allPhonesBefore.has(p)).length;
+  const newCount=uniquePhones.size-recurringCount;
+  const recurRate=uniquePhones.size>0?Math.round(recurringCount/uniquePhones.size*100):0;
+
+  // Revenue for month
   let revM=0;
   monthBks.forEach(b=>{const s=new Date(b.start+'T00:00:00'),e=new Date(b.end+'T00:00:00');const td=Math.round((e-s)/86400000)+1;if(td<=0)return;const ppd=(b.price||0)/td;const cur=new Date(s);while(cur<=e){if(cur.getFullYear()===y&&cur.getMonth()===m)revM+=ppd;cur.setDate(cur.getDate()+1);}});
+  const uniq=uniquePhones.size;
+  const aov=uniq>0?revM/uniq:0;
+
+  // Asset & cost info from local state
+  const adsSpend=parseFloat(document.getElementById('ads-spend')?.value)||0;
+  const adsClicks=parseFloat(document.getElementById('ads-clicks')?.value)||0;
+  const totalAssetValue=cameras.reduce((sum,c)=>{const ai=assetInfo[c.id]||{};return sum+(ai.body||0)+(ai.lens||0)+(ai.acc||0);},0);
+  const revenuePerAsset=totalAssetValue>0?Math.round(revM/totalAssetValue*100)/100:null;
+  const cac=adsSpend>0&&uniq>0?Math.round(adsSpend/uniq):null;
+  const convRate=adsClicks>0&&uniq>0?Math.round(uniq/adsClicks*100):null;
+
+  // Costs
+  const totalCosts=costEntries.reduce((s,c)=>s+(parseFloat(c.amount)||0),0);
+  const netRev=revM-adsSpend-totalCosts;
+
+  // Utilization
   const camStats=cameras.map(c=>{
     const busy=new Set();
     bookings.filter(b=>!b.blocked&&b.cam===c.id).forEach(b=>{
@@ -868,28 +1372,146 @@ window.renderRevenue=function(){
       const e=new Date(Math.min(new Date(b.end+'T00:00:00'),new Date(y,m,dim)));
       const cur=new Date(s);while(cur<=e){busy.add(cur.toISOString().split('T')[0]);cur.setDate(cur.getDate()+1);}
     });
-    const pct=Math.round(busy.size/dim*100);return{name:c.name,days:busy.size,pct};
+    const pct=Math.round(busy.size/dim*100);
+    const camRev=monthBks.filter(b=>b.cam===c.id).reduce((s,b)=>s+(b.price||0),0);
+    const ai=assetInfo[c.id]||{};
+    const assetVal=(ai.body||0)+(ai.lens||0)+(ai.acc||0);
+    const roa=assetVal>0?Math.round(camRev/assetVal*1000)/10:null;
+    const mCost=(ai.maintenanceCost||0);
+    return{name:c.name,days:busy.size,pct,camRev,roa,mCost,assetVal,bkCount:monthBks.filter(b=>b.cam===c.id).length};
   });
-  document.getElementById('rev-detail').innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-      <div class="rev-card" style="background:var(--white)"><div class="rev-m">Khách tháng ${sm}/${sy}</div><div class="rev-v">${uniq}</div><div class="rev-s">khách hàng</div></div>
-      <div class="rev-card" style="background:var(--white)"><div class="rev-m">Doanh thu tháng ${sm}/${sy}</div><div class="rev-v">${fmtVND(Math.round(revM))}</div><div class="rev-s">ước tính</div></div>
-    </div>
-    <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink4);margin-bottom:8px">Tỷ lệ lấp đầy (${dim} ngày)</div>
-    ${camStats.map(c=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:700">${c.name}</span><span style="color:var(--ink3)">${c.days} ngày · <strong style="color:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'}">${c.pct}%</strong></span></div><div style="background:var(--bg2);border-radius:4px;height:8px;overflow:hidden"><div style="background:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'};height:100%;width:${c.pct}%;border-radius:4px;transition:width 0.4s"></div></div></div>`).join('')}
-    <div style="height:12px"></div>`;
+
+  // Cancellation rate (deletions tracked)
+  const cancelSnap=bookings.length+deletedBookingIds.length;
+  const cancRate=cancelSnap>0?Math.round(deletedBookingIds.filter(d=>d.month===selMonth).length/(cancelSnap)*100):0;
+
+  // Inventory turnover
+  const invTurnover=cameras.length>0?Math.round(monthBks.length/cameras.length*10)/10:0;
+
+  // CLV estimation (avg revenue per customer * avg retention)
+  const allCustRevs={};
+  nonBlockedBks.forEach(b=>{const k=b.phone||b.name;if(!allCustRevs[k])allCustRevs[k]=0;allCustRevs[k]+=b.price||0;});
+  const revArr=Object.values(allCustRevs);
+  const avgCLV=revArr.length>0?Math.round(revArr.reduce((a,b)=>a+b,0)/revArr.length):0;
+
+  const kpiSection=(label,items)=>`
+    <div style="font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin:16px 0 10px">${label}</div>
+    <div class="kpi-grid">${items.join('')}</div>`;
+
+  const kpi=(label,val,sub,colorClass,tip)=>`
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-tip" title="${tip||''}">${label}</span></div>
+      <div class="kpi-val ${colorClass||''}">${val}</div>
+      ${sub?`<div class="kpi-sub">${sub}</div>`:''}
+    </div>`;
+
+  let html='';
+
+  // Revenue KPIs
+  html+=kpiSection('💰 Chỉ số doanh thu',[
+    kpi('Doanh thu tháng',fmtVND(Math.round(revM)),'Ước tính theo ngày','','Tổng doanh thu phân bổ theo ngày trong tháng'),
+    kpi('AOV (Average Order Value)',fmtVND(Math.round(aov)),'Doanh thu / khách hàng','',`Doanh thu trung bình mỗi khách = ${fmtVND(Math.round(revM))} / ${uniq} khách`),
+    revenuePerAsset!==null?kpi('Revenue per Asset',revenuePerAsset+'x',`Trên ${fmtVND(totalAssetValue)} tài sản`,revenuePerAsset>=0.1?'kpi-good':'kpi-warn','Doanh thu / Tổng giá trị thiết bị'):kpi('Revenue per Asset','—','Cần điền thông tin tài sản','kpi-warn','Vào Cài đặt > Thông tin tài sản'),
+    kpi('Khách hàng cũ',`${recurRate}%`,`${recurringCount} cũ / ${newCount} mới`,recurRate>=30?'kpi-good':'kpi-warn',`Recurring Rate: tỷ lệ khách quay lại. ${recurringCount} khách đã từng thuê trước tháng này.`),
+  ]);
+
+  // Asset KPIs
+  html+=kpiSection('📷 Hiệu suất tài sản',camStats.map(c=>`
+    <div class="kpi-card">
+      <div class="kpi-label">${c.name}</div>
+      <div class="kpi-val ${c.pct>=70?'kpi-good':c.pct>=40?'kpi-warn':'kpi-bad'}">${c.pct}%</div>
+      <div class="kpi-sub">Utilization · ${c.days}/${dim} ngày</div>
+      <div class="kpi-sub">Thuê ${c.bkCount} lần · ${fmtVND(c.camRev)}</div>
+      ${c.roa!==null?`<div class="kpi-sub">ROA: <b style="color:${c.roa>=0.08?'var(--green)':'var(--cr)'}">${c.roa}%</b></div>`:''}
+      ${c.mCost>0?`<div class="kpi-sub">Bảo dưỡng: ${fmtVND(c.mCost)}</div>`:''}
+    </div>`));
+
+  // Utilization bars
+  html+=`<div style="margin-bottom:16px">`;
+  camStats.forEach(c=>{
+    html+=`<div class="util-bar-wrap"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="font-weight:700">${c.name}</span><span style="color:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'}">${c.days} ngày · ${c.pct}%</span></div><div class="util-bar-bg"><div class="util-bar-fill" style="background:${c.pct>=70?'var(--green)':c.pct>=40?'var(--gold)':'var(--cr)'};width:${c.pct}%"></div></div></div>`;
+  });
+  html+=`</div>`;
+
+  // Customer KPIs
+  html+=kpiSection('👥 Chỉ số khách hàng',[
+    kpi('Khách hàng tháng',String(uniq),`${newCount} mới · ${recurringCount} cũ`,'','Tổng khách hàng duy nhất trong tháng'),
+    kpi('CLV (Customer Lifetime Value)',fmtVND(avgCLV),'Trung bình doanh thu/khách','',`Tổng doanh thu / tổng khách hàng từ trước đến nay`),
+    cac!==null?kpi('CAC (Chi phí/khách)',fmtVND(cac),`Ads ${fmtVND(adsSpend)}`,cac<200000?'kpi-good':'kpi-warn','Chi phí marketing / số khách mới trong tháng'):kpi('CAC','—','Nhập chi phí ads','kpi-warn',''),
+    convRate!==null?kpi('Booking Conversion',convRate+'%',`${adsClicks} clicks → ${uniq} khách`,convRate>=5?'kpi-good':'kpi-warn','Tỷ lệ chuyển đổi từ click/DM sang đặt lịch'):kpi('Booking Conversion','—','Nhập số click ads','kpi-warn',''),
+  ]);
+
+  // Operational KPIs
+  html+=kpiSection('⚙️ Chỉ số vận hành',[
+    kpi('Inventory Turnover',invTurnover+'x',`${monthBks.length} lượt / ${cameras.length} máy`,invTurnover>=2?'kpi-good':'kpi-warn','Số lần trung bình mỗi máy được thuê trong tháng'),
+    kpi('Cancellation Rate',cancRate+'%',`Đã xóa trong tháng`,cancRate<=5?'kpi-good':'kpi-warn','Dựa trên số lần xóa lịch trong tháng'),
+    kpi('Doanh thu ròng',fmtVND(Math.round(netRev)),`Sau ads (${fmtVND(adsSpend)}) & chi phí (${fmtVND(totalCosts)})`,netRev>0?'kpi-good':'kpi-bad','Doanh thu - chi phí marketing - chi phí phát sinh'),
+    kpi('Tổng chi phí tháng',fmtVND(totalCosts+adsSpend),'Ads + vận hành','',''),
+  ]);
+
+  document.getElementById('rev-detail').innerHTML=html;
+
+  // Render cost entries UI
+  renderCostEntries();
 };
 
-function renderSettings(){
-  document.getElementById('fee-early').value=EL_FEES.early;document.getElementById('fee-late').value=EL_FEES.late;document.getElementById('fee-saved').style.display='none';
-  ['pw-cur','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');document.getElementById('pw-msg').style.display='none';
+// ── COST ENTRIES ──
+function renderCostEntries(){
+  const wrap=document.getElementById('cost-entries');if(!wrap)return;
+  if(!costEntries.length){wrap.innerHTML=`<div style="color:var(--ink4);font-size:12px;padding:8px 0">Chưa có chi phí nào. Nhấn "+ Thêm chi phí" để thêm.</div>`;return;}
+  wrap.innerHTML=costEntries.map((c,i)=>`
+    <div class="cost-entry">
+      <input type="text" value="${esc(c.desc)}" placeholder="Tên chi phí" onchange="costEntries[${i}].desc=this.value;renderRevenue()">
+      <input type="number" value="${c.amount||0}" placeholder="Số tiền" min="0" onchange="costEntries[${i}].amount=parseFloat(this.value)||0;renderRevenue()">
+      <button class="cost-del" onclick="costEntries.splice(${i},1);renderRevenue()">✕</button>
+    </div>`).join('');
 }
+window.addCostEntry=function(){costEntries.push({desc:'',amount:0});renderCostEntries();};
+
+// ── ASSET INFO ──
+function renderSettings(){
+  document.getElementById('fee-early').value=EL_FEES.early;
+  document.getElementById('fee-late').value=EL_FEES.late;
+  document.getElementById('fee-saved').style.display='none';
+  renderAssetInfo();
+  ['pw-cur','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pw-msg').style.display='none';
+}
+function renderAssetInfo(){
+  document.getElementById('asset-info-list').innerHTML=cameras.map(c=>{
+    const ai=assetInfo[c.id]||{};
+    return`<div class="asset-row">
+      <div class="asset-name">📷 ${esc(c.name)}</div>
+      <div><div class="flbl" style="margin-bottom:3px">Body (đ)</div><input type="number" id="ai-body-${c.id}" class="asset-input" value="${ai.body||0}" min="0" placeholder="0"></div>
+      <div><div class="flbl" style="margin-bottom:3px">Lens (đ)</div><input type="number" id="ai-lens-${c.id}" class="asset-input" value="${ai.lens||0}" min="0" placeholder="0"></div>
+      <div><div class="flbl" style="margin-bottom:3px">Phụ kiện (đ)</div><input type="number" id="ai-acc-${c.id}" class="asset-input" value="${ai.acc||0}" min="0" placeholder="0"></div>
+      <div><div class="flbl" style="margin-bottom:3px">Bảo dưỡng tháng (đ)</div><input type="number" id="ai-mc-${c.id}" class="asset-input" value="${ai.maintenanceCost||0}" min="0" placeholder="0"></div>
+    </div>`;
+  }).join('')||'<div style="color:var(--ink4)">Không có máy nào</div>';
+}
+window.saveAssetInfo=async function(){
+  cameras.forEach(c=>{
+    assetInfo[c.id]={
+      body:parseFloat(document.getElementById('ai-body-'+c.id)?.value)||0,
+      lens:parseFloat(document.getElementById('ai-lens-'+c.id)?.value)||0,
+      acc:parseFloat(document.getElementById('ai-acc-'+c.id)?.value)||0,
+      maintenanceCost:parseFloat(document.getElementById('ai-mc-'+c.id)?.value)||0,
+    };
+  });
+  try{await setDoc(doc(db,'settings','assetInfo'),{data:assetInfo});toast('✓ Đã lưu thông tin tài sản');}
+  catch(e){toast('Lỗi: '+e.message);}
+};
+
 window.saveFees=async function(){
   const early=parseInt(document.getElementById('fee-early').value)||0,late=parseInt(document.getElementById('fee-late').value)||0;
   EL_FEES={early,late};await setDoc(doc(db,'settings','fees'),{early,late});
   updateELFeeLabels();const msg=document.getElementById('fee-saved');msg.style.display='inline';setTimeout(()=>msg.style.display='none',2500);
 };
-function updateELFeeLabels(){const ef=document.getElementById('el-early-fee'),lf=document.getElementById('el-late-fee');if(ef)ef.textContent='+'+fmtVND(EL_FEES.early);if(lf)lf.textContent='+'+fmtVND(EL_FEES.late);}
+function updateELFeeLabels(){
+  const ef=document.getElementById('el-early-fee'),lf=document.getElementById('el-late-fee');
+  if(ef)ef.textContent='+'+fmtVND(EL_FEES.early);
+  if(lf)lf.textContent='+'+fmtVND(EL_FEES.late);
+}
 window.changePassword=async function(){
   const cur=document.getElementById('pw-cur').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-confirm').value;
   const msg=document.getElementById('pw-msg');const show=(t,c)=>{msg.textContent=t;msg.style.color=c;msg.style.display='inline';};
@@ -902,6 +1524,7 @@ window.changePassword=async function(){
   show('✓ Đổi mật khẩu thành công','var(--green)');setTimeout(()=>msg.style.display='none',3000);
 };
 
+// ── NAV ──
 window.setBottomNav=function(w){document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));const el=document.getElementById('bnav-'+w);if(el)el.classList.add('active');};
 window.openAvailSheet=function(){document.getElementById('sb-start-m').value=document.getElementById('sb-start').value;document.getElementById('sb-end-m').value=document.getElementById('sb-end').value;document.getElementById('avail-sheet').classList.add('open');document.body.style.overflow='hidden';};
 window.closeAvailSheet=function(){document.getElementById('avail-sheet').classList.remove('open');document.body.style.overflow='';};
@@ -918,7 +1541,7 @@ window.toggleTip=function(e,id){
     box.classList.add('open');document.getElementById('tip-overlay').classList.add('open');
     requestAnimationFrame(()=>{
       const hr=box.parentElement.getBoundingClientRect();
-      const bw=box.offsetWidth||270,bh=box.offsetHeight||260,vw=window.innerWidth,vh=window.innerHeight,mg=8;
+      const bw=box.offsetWidth||290,bh=box.offsetHeight||280,vw=window.innerWidth,vh=window.innerHeight,mg=8;
       let left=hr.left;if(left+bw>vw-mg)left=vw-bw-mg;if(left<mg)left=mg;
       let top=hr.bottom+4;if(top+bh>vh-mg)top=hr.top-bh-4;if(top<mg)top=mg;
       box.style.left=left+'px';box.style.top=top+'px';box.style.visibility='visible';
@@ -930,12 +1553,23 @@ window.closeAllTips=function(){
   document.getElementById('tip-overlay').classList.remove('open');
 };
 
-// INIT
-const _td=new Date(),_today=localDs(_td);
+// ── INIT ──
+const _today=localDs(new Date());
 ['sb-start','sb-end','sb-start-m','sb-end-m'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=_today;});
 const now=new Date();
 document.getElementById('rev-month').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-seedIfEmpty().then(()=>{startListeners();updateELFeeLabels();renderCalendar();});
+
+// Load asset info from Firestore
+async function loadExtraSettings(){
+  try{
+    const snap=await getDoc(doc(db,'settings','assetInfo'));
+    if(snap.exists())assetInfo=snap.data().data||{};
+    const delSnap=await getDoc(doc(db,'settings','deletedBookings'));
+    if(delSnap.exists())deletedBookingIds=delSnap.data().ids||[];
+  }catch(e){}
+}
+
+seedIfEmpty().then(()=>{startListeners();updateELFeeLabels();renderCalendar();loadExtraSettings();});
 </script>
 </body>
 </html>
