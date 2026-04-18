@@ -662,6 +662,24 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 <div class="toast" id="toast"></div>
 <div class="tip-overlay" id="tip-overlay" onclick="closeAllTips()"></div>
 
+<script>
+// Global dispatcher - captures calls before module loads
+var _q=[];
+var _ready=false;
+function _dispatch(fn,args){if(_ready&&window[fn])window[fn].apply(null,args);else _q.push([fn,args]);}
+function _flush(){_ready=true;_q.forEach(function(x){if(window[x[0]])window[x[0]].apply(null,x[1]);});_q=[];}
+// Stub all onclick functions used in HTML before module loads
+['showPage','changeMonth','openModal','closeModal','runAvail','runAvailMobile',
+ 'syncAvailDates','openAvailSheet','closeAvailSheet','toggleTip','closeAllTips',
+ 'checkPw','lockMgmt','switchTab','submitBooking','deleteBookingId','openEditModal',
+ 'copyInvoice','setBottomNav','toggleCam','toggleEL','onDateChange','setDiscType',
+ 'applyPromoToForm','updateFinal','savePrices','addCamera','removeCam','saveFees',
+ 'changePassword','saveAssetInfo','addCostEntry','addPromo','savePromo','deletePromo',
+ 'deletePromoByBtn','renderBkTable','exportCSV','renderRevenue','goToday'
+].forEach(function(fn){
+  window[fn]=function(){_dispatch(fn,Array.prototype.slice.call(arguments));};
+});
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDocs,writeBatch,getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
@@ -1573,6 +1591,7 @@ async function loadExtraSettings(){
 }
 
 seedIfEmpty().then(()=>{startListeners();updateELFeeLabels();renderCalendar();loadExtraSettings();});
+_flush();
 </script>
 </body>
 </html>
