@@ -461,8 +461,8 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="mgmt-tabs">
         <button class="mtab on" onclick="switchTab('cameras',this)">Máy & Giá</button>
-        <button class="mtab" onclick="switchTab('promos',this)">Khuyến mãi</button>
         <button class="mtab" onclick="switchTab('bookings',this)">Lịch thuê</button>
+        <button class="mtab" onclick="switchTab('costs',this)">Chi phí máy</button>
         <button class="mtab" onclick="switchTab('revenue',this)">Doanh thu</button>
         <button class="mtab" onclick="switchTab('settings',this)">Cài đặt</button>
       </div>
@@ -478,39 +478,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           <div id="price-save-banner" class="save-banner">✓ Giá đã được lưu thành công vào Firestore</div>
         </div>
       </div>
-      <div class="mpanel" id="mp-promos">
-        <div class="mcard">
-          <div class="mcard-title">Mã khuyến mãi
-            <button class="btn-add" onclick="addPromo()">+ Thêm mã</button>
-          </div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Mã khuyến mãi có thể dùng khi kiểm tra giá và khi đặt lịch. Hỗ trợ giảm theo % hoặc theo số tiền cố định.</p>
-          <div id="promo-list-admin"></div>
-          <div id="promo-form" style="display:none;margin-top:14px;background:var(--bg2);border-radius:10px;padding:14px 16px;">
-            <div class="fg">
-              <div class="field"><label>Mã code *</label><input type="text" id="p-code" placeholder="SUMMER20" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-              <div class="field"><label>Mô tả</label><input type="text" id="p-desc" placeholder="Khuyến mãi hè 2025"></div>
-            </div>
-            <div class="fg">
-              <div class="field">
-                <label>Loại giảm giá</label>
-                <select id="p-type">
-                  <option value="percent">Giảm theo %</option>
-                  <option value="fixed">Giảm số tiền cố định</option>
-                </select>
-              </div>
-              <div class="field"><label>Giá trị</label><input type="number" id="p-value" placeholder="20" min="0"></div>
-            </div>
-            <div class="fg">
-              <div class="field"><label>Ngày hết hạn (tuỳ chọn)</label><input type="date" id="p-expiry"></div>
-              <div class="field"><label>Số lần dùng tối đa (0 = không giới hạn)</label><input type="number" id="p-maxuse" value="0" min="0"></div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button class="btn-ok" onclick="savePromo()">Lưu mã</button>
-              <button class="btn-cancel" onclick="document.getElementById('promo-form').style.display='none'">Hủy</button>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="mpanel" id="mp-bookings">
         <div class="mcard">
           <div class="mcard-title"><span>Lịch thuê tổng hợp</span>
@@ -524,6 +491,18 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           <div style="overflow-x:auto"><table class="bt" id="bk-table"><thead></thead><tbody></tbody></table></div>
         </div>
       </div>
+      <div class="mpanel" id="mp-costs">
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Chi phí từng máy</span>
+            <button class="btn-add" onclick="openCostModal()">+ Thêm chi phí</button>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">
+            Khai báo chi phí cố định (body, lens, phụ kiện) và chi phí phát sinh hàng tháng cho từng máy. Hệ thống sẽ tổng hợp và hiển thị chi phí tổng từng máy.
+          </p>
+          <div id="costs-summary"></div>
+        </div>
+      </div>
       <div class="mpanel" id="mp-revenue">
         <div class="mcard">
           <div class="mcard-title">
@@ -532,23 +511,8 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           </div>
           <div id="rev-detail"></div>
         </div>
-        <div class="mcard">
-          <div class="mcard-title">Chi phí Marketing / Ads tháng này</div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:12px">Nhập số liệu ads để tính CAC và Conversion Rate</p>
-          <div class="ads-form" id="ads-form-wrap">
-            <div class="field"><label>Tổng chi phí ads (đ)</label><input type="number" id="ads-spend" placeholder="0" min="0" onchange="renderRevenue()"></div>
-            <div class="field"><label>Số lượt tiếp cận (reach)</label><input type="number" id="ads-reach" placeholder="0" min="0" onchange="renderRevenue()"></div>
-            <div class="field"><label>Số lượt click / DM</label><input type="number" id="ads-clicks" placeholder="0" min="0" onchange="renderRevenue()"></div>
-          </div>
-        </div>
-        <div class="mcard">
-          <div class="mcard-title">
-            <span>Chi phí phát sinh tháng</span>
-            <button class="btn-add" onclick="addCostEntry()">+ Thêm chi phí</button>
-          </div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:12px">Nhập các chi phí vận hành, bảo dưỡng, v.v.</p>
-          <div id="cost-entries"></div>
-        </div>
+        
+        
         <div class="mcard">
           <div class="mcard-title">Tất cả các tháng</div>
           <div class="rev-grid" id="rev-grid"></div>
@@ -585,6 +549,57 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- COST MODAL -->
+<div class="overlay" id="cost-overlay" onclick="if(event.target===this)closeCostModal()">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">
+      <div class="modal-title" id="cost-modal-title">Thêm chi phí máy</div>
+      <button class="modal-x" onclick="closeCostModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="fg">
+        <div class="field f1">
+          <label>Máy ảnh *</label>
+          <select id="cost-cam-sel">
+            <option value="">Chọn máy...</option>
+          </select>
+        </div>
+      </div>
+      <div class="slbl">Chi phí cố định (một lần)</div>
+      <div class="fg">
+        <div class="field"><label>Giá trị Body (đ)</label><input type="number" id="cost-body" placeholder="0" min="0"></div>
+        <div class="field"><label>Giá trị Lens (đ)</label><input type="number" id="cost-lens" placeholder="0" min="0"></div>
+      </div>
+      <div class="fg">
+        <div class="field"><label>Phụ kiện (đ)</label><input type="number" id="cost-acc" placeholder="0" min="0"></div>
+        <div class="field"><label>Chi phí khác cố định (đ)</label><input type="number" id="cost-other-fixed" placeholder="0" min="0"></div>
+      </div>
+      <div class="slbl">Chi phí phát sinh hàng tháng</div>
+      <div class="fg">
+        <div class="field"><label>Bảo dưỡng / tháng (đ)</label><input type="number" id="cost-maintenance" placeholder="0" min="0"></div>
+        <div class="field"><label>Tháng áp dụng</label><input type="month" id="cost-month"></div>
+      </div>
+      <div class="fg">
+        <div class="field f1"><label>Mô tả chi phí phát sinh</label><input type="text" id="cost-desc" placeholder="Vd: Thay pin, vệ sinh cảm biến..."></div>
+      </div>
+      <div class="fg">
+        <div class="field"><label>Chi phí phát sinh tháng (đ)</label><input type="number" id="cost-extra" placeholder="0" min="0"></div>
+        <div class="field"></div>
+      </div>
+      <div id="cost-total-preview" style="background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:12px 15px;margin-top:4px;display:none">
+        <div class="prow"><span>Tổng tài sản cố định</span><b id="ctp-asset">—</b></div>
+        <div class="prow"><span>Chi phí phát sinh tháng này</span><b id="ctp-monthly">—</b></div>
+        <div class="ptotal"><span>Tổng chi phí</span><span id="ctp-total">—</span></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeCostModal()">Hủy</button>
+      <button class="btn-ok" onclick="saveCostEntry()">Lưu chi phí</button>
     </div>
   </div>
 </div>
@@ -1233,6 +1248,7 @@ window.switchTab=function(p,el){
   document.querySelectorAll('.mpanel').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');document.getElementById('mp-'+p).classList.add('on');
   if(p==='bookings')renderBkTable();
+  if(p==='costs')renderCostsSummary();
   if(p==='revenue')renderRevenue();
   if(p==='cameras')renderCamList();
   if(p==='settings')renderSettings();
@@ -1242,27 +1258,47 @@ function renderMgmt(){renderCamList();}
 
 // ── CAMERAS & PRICES ──
 function renderCamList(){
-  const tiers=['p1','p3','p5','p10','p15'],tLabels={p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'};
-  document.getElementById('cam-list').innerHTML=cameras.map((c,idx)=>`
-    <div style="border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div><input type="text" value="${esc(c.name)}" id="cn-${idx}" style="font-size:13px;padding:8px 11px"></div>
-        <button class="btn-sm red" onclick="removeCam(${idx})">Xóa</button>
-      </div>
-      <table class="pt"><thead><tr><th>Mức thuê</th><th>Đơn giá / ngày (đ)</th></tr></thead>
-        <tbody>${tiers.map(t=>`<tr><td>${tLabels[t]}</td><td><input type="number" id="cp-${idx}-${t}" value="${c[t]||0}" min="0" step="1000" style="font-size:12px;padding:6px 9px"></td></tr>`).join('')}</tbody>
-      </table>
-    </div>`).join('');
+  const tiers=['p1','p3','p5','p10','p15'];
+  const tLabels={p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'};
+  document.getElementById('cam-list').innerHTML=cameras.map(function(c,idx){
+    const rows=tiers.map(function(t){
+      const priceVal=c[t]||0;
+      const promoVal=c['promo_'+t]!==undefined?c['promo_'+t]:'';
+      return '<tr>'+
+        '<td style="font-weight:600">'+tLabels[t]+'</td>'+
+        '<td><input type="number" id="cp-'+idx+'-'+t+'" value="'+priceVal+'" min="0" step="1000" style="font-size:12px;padding:6px 9px;width:130px"></td>'+
+        '<td><input type="number" id="cpp-'+idx+'-'+t+'" value="'+promoVal+'" min="0" step="1000" placeholder="Không KM" style="font-size:12px;padding:6px 9px;width:130px;border-color:var(--green)"></td>'+
+        '<td style="font-size:10px;color:var(--ink4)">'+(promoVal&&priceVal?Math.round((1-promoVal/priceVal)*100)+'% off':'—')+'</td>'+
+        '</tr>';
+    }).join('');
+    return '<div style="border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
+        '<div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div><input type="text" value="'+esc(c.name)+'" id="cn-'+idx+'" style="font-size:13px;padding:8px 11px"></div>'+
+        '<button class="btn-sm red" onclick="removeCam('+idx+')">Xóa</button>'+
+      '</div>'+
+      '<table class="pt"><thead><tr>'+
+        '<th>Mức thuê</th>'+
+        '<th>Giá thường / ngày (đ)</th>'+
+        '<th style="color:var(--green)">Giá KM / ngày (đ) <span style="font-weight:500;font-size:9px">tuỳ chọn</span></th>'+
+        '<th>Mức giảm</th>'+
+      '</tr></thead><tbody>'+rows+'</tbody></table>'+
+    '</div>';
+  }).join('');
   document.getElementById('price-save-banner').classList.remove('show');
 }
 
 window.savePrices=async function(){
   const tiers=['p1','p3','p5','p10','p15'];
   const batch=writeBatch(db);
-  cameras.forEach((c,idx)=>{
+  cameras.forEach(function(c,idx){
     const nameEl=document.getElementById('cn-'+idx);
     if(nameEl)c.name=nameEl.value.trim()||c.name;
-    tiers.forEach(t=>{const el=document.getElementById(`cp-${idx}-${t}`);if(el)c[t]=parseInt(el.value)||0;});
+    tiers.forEach(function(t){
+      const el=document.getElementById('cp-'+idx+'-'+t);
+      if(el)c[t]=parseInt(el.value)||0;
+      const pel=document.getElementById('cpp-'+idx+'-'+t);
+      if(pel){const pv=parseInt(pel.value);c['promo_'+t]=isNaN(pv)||pel.value===''?null:pv;}
+    });
     batch.set(doc(db,'cameras',c.id),c);
   });
   try{
@@ -1339,6 +1375,157 @@ window.exportCSV=function(){
   const a=document.createElement('a');a.href=url;a.download='camera-nest-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
 };
 
+
+// ── COST MODAL ──
+let editingCostId = null;
+let camCosts = {}; // {camId: [{id, body, lens, acc, otherFixed, month, maintenance, extra, desc}]}
+
+async function loadCamCosts(){
+  try{
+    const snap = await getDoc(doc(db,'settings','camCosts'));
+    if(snap.exists()) camCosts = snap.data().data || {};
+  }catch(e){}
+}
+
+async function saveCamCosts(){
+  await setDoc(doc(db,'settings','camCosts'),{data:camCosts});
+}
+
+window.openCostModal = function(){
+  editingCostId = null;
+  document.getElementById('cost-modal-title').textContent = 'Thêm chi phí máy';
+  // Populate camera select
+  const sel = document.getElementById('cost-cam-sel');
+  sel.innerHTML = '<option value="">Chọn máy...</option>' + cameras.map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+'</option>';}).join('');
+  // Reset fields
+  ['cost-body','cost-lens','cost-acc','cost-other-fixed','cost-maintenance','cost-extra'].forEach(function(id){
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('cost-desc').value='';
+  const now=new Date();
+  document.getElementById('cost-month').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('cost-total-preview').style.display='none';
+  document.getElementById('cost-overlay').classList.add('open');
+};
+
+window.closeCostModal = function(){
+  document.getElementById('cost-overlay').classList.remove('open');
+};
+
+// Live preview in cost modal
+['cost-body','cost-lens','cost-acc','cost-other-fixed','cost-maintenance','cost-extra'].forEach(function(id){
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',updateCostPreview);
+});
+function updateCostPreview(){
+  const body=parseFloat(document.getElementById('cost-body').value)||0;
+  const lens=parseFloat(document.getElementById('cost-lens').value)||0;
+  const acc=parseFloat(document.getElementById('cost-acc').value)||0;
+  const otherF=parseFloat(document.getElementById('cost-other-fixed').value)||0;
+  const maint=parseFloat(document.getElementById('cost-maintenance').value)||0;
+  const extra=parseFloat(document.getElementById('cost-extra').value)||0;
+  const asset=body+lens+acc+otherF;
+  const monthly=maint+extra;
+  if(!asset&&!monthly){document.getElementById('cost-total-preview').style.display='none';return;}
+  document.getElementById('ctp-asset').textContent=fmtVND(asset);
+  document.getElementById('ctp-monthly').textContent=fmtVND(monthly);
+  document.getElementById('ctp-total').textContent=fmtVND(asset+monthly);
+  document.getElementById('cost-total-preview').style.display='block';
+}
+
+window.saveCostEntry = async function(){
+  const camId=document.getElementById('cost-cam-sel').value;
+  if(!camId){toast('Vui lòng chọn máy');return;}
+  const entry={
+    id: editingCostId || (Date.now()+'-'+Math.random().toString(36).slice(2,5)),
+    body: parseFloat(document.getElementById('cost-body').value)||0,
+    lens: parseFloat(document.getElementById('cost-lens').value)||0,
+    acc:  parseFloat(document.getElementById('cost-acc').value)||0,
+    otherFixed: parseFloat(document.getElementById('cost-other-fixed').value)||0,
+    maintenance: parseFloat(document.getElementById('cost-maintenance').value)||0,
+    extra: parseFloat(document.getElementById('cost-extra').value)||0,
+    desc: document.getElementById('cost-desc').value.trim(),
+    month: document.getElementById('cost-month').value,
+    savedAt: new Date().toISOString(),
+  };
+  if(!camCosts[camId]) camCosts[camId]=[];
+  if(editingCostId){
+    const idx=camCosts[camId].findIndex(function(e){return e.id===editingCostId;});
+    if(idx>-1) camCosts[camId][idx]=entry; else camCosts[camId].push(entry);
+  } else {
+    camCosts[camId].push(entry);
+  }
+  await saveCamCosts();
+  toast('✓ Đã lưu chi phí');
+  closeCostModal();
+  renderCostsSummary();
+};
+
+window.deleteCostEntry = async function(camId, entryId){
+  if(!confirm('Xóa chi phí này?')) return;
+  if(camCosts[camId]) camCosts[camId]=camCosts[camId].filter(function(e){return e.id!==entryId;});
+  await saveCamCosts();
+  toast('Đã xóa');
+  renderCostsSummary();
+};
+
+function renderCostsSummary(){
+  const wrap=document.getElementById('costs-summary');
+  if(!wrap) return;
+  if(!cameras.length){wrap.innerHTML='<div style="color:var(--ink4)">Chưa có máy nào.</div>';return;}
+  let html='';
+  cameras.forEach(function(c){
+    const entries=camCosts[c.id]||[];
+    const totalAsset=entries.reduce(function(s,e){return s+(e.body||0)+(e.lens||0)+(e.acc||0)+(e.otherFixed||0);},0);
+    const totalMaint=entries.reduce(function(s,e){return s+(e.maintenance||0);},0);
+    const totalExtra=entries.reduce(function(s,e){return s+(e.extra||0);},0);
+    const totalMonthly=totalMaint+totalExtra;
+    const grandTotal=totalAsset+totalMonthly;
+    const camCI_val=camCI(c.id);
+    const colorVars=['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
+    const camColor=colorVars[camCI_val]||'var(--ink)';
+    html+='<div style="border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'+
+        '<div style="font-size:14px;font-weight:800;color:'+camColor+'">📷 '+esc(c.name)+'</div>'+
+        '<button class="btn-sm" data-camid="'+c.id+'" onclick="openCostModalForCam(this.getAttribute(\"data-camid\"))">+ Thêm chi phí</button>'+
+      '</div>';
+    // Summary cards
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px">'+
+      '<div class="rev-card"><div class="rev-m">Tài sản cố định</div><div class="rev-v" style="font-size:14px">'+fmtVND(totalAsset)+'</div></div>'+
+      '<div class="rev-card"><div class="rev-m">Bảo dưỡng/tháng</div><div class="rev-v" style="font-size:14px">'+fmtVND(totalMaint)+'</div></div>'+
+      '<div class="rev-card"><div class="rev-m">Chi phí phát sinh</div><div class="rev-v" style="font-size:14px">'+fmtVND(totalExtra)+'</div></div>'+
+      '<div class="rev-card" style="background:var(--cr-bg);border-color:rgba(107,26,26,0.2)"><div class="rev-m" style="color:var(--cr)">Tổng chi phí</div><div class="rev-v" style="font-size:14px;color:var(--cr)">'+fmtVND(grandTotal)+'</div></div>'+
+    '</div>';
+    // Entry list
+    if(entries.length){
+      html+='<table class="pt"><thead><tr><th>Tháng</th><th>Body</th><th>Lens</th><th>Phụ kiện</th><th>Bảo dưỡng</th><th>Phát sinh</th><th>Mô tả</th><th></th></tr></thead><tbody>';
+      entries.forEach(function(e){
+        html+='<tr>'+
+          '<td>'+esc(e.month||'—')+'</td>'+
+          '<td>'+fmtVND(e.body||0)+'</td>'+
+          '<td>'+fmtVND(e.lens||0)+'</td>'+
+          '<td>'+fmtVND((e.acc||0)+(e.otherFixed||0))+'</td>'+
+          '<td>'+fmtVND(e.maintenance||0)+'</td>'+
+          '<td>'+fmtVND(e.extra||0)+'</td>'+
+          '<td style="color:var(--ink3)">'+esc(e.desc||'')+'</td>'+
+          '<td><button class="btn-sm red" data-camid="'+c.id+'" data-eid="'+e.id+'" onclick="deleteCostEntryByBtn(this)">✕</button></td>'+
+        '</tr>';
+      });
+      html+='</tbody></table>';
+    } else {
+      html+='<div style="font-size:12px;color:var(--ink4);padding:8px 0">Chưa có chi phí nào. Nhấn "+ Thêm chi phí" để thêm.</div>';
+    }
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+window.deleteCostEntryByBtn=function(btn){deleteCostEntry(btn.getAttribute('data-camid'),btn.getAttribute('data-eid'));};
+window.openCostModalForCam = function(camId){
+  openCostModal();
+  setTimeout(function(){document.getElementById('cost-cam-sel').value=camId;},50);
+};
+
 // ── REVENUE ──
 window.renderRevenue=function(){
   // All months overview
@@ -1374,15 +1561,15 @@ window.renderRevenue=function(){
   const aov=uniq>0?revM/uniq:0;
 
   // Asset & cost info from local state
-  const adsSpend=parseFloat(document.getElementById('ads-spend')?.value)||0;
-  const adsClicks=parseFloat(document.getElementById('ads-clicks')?.value)||0;
+  const adsSpend=0;
+  const adsClicks=0;
   const totalAssetValue=cameras.reduce((sum,c)=>{const ai=assetInfo[c.id]||{};return sum+(ai.body||0)+(ai.lens||0)+(ai.acc||0);},0);
   const revenuePerAsset=totalAssetValue>0?Math.round(revM/totalAssetValue*100)/100:null;
   const cac=adsSpend>0&&uniq>0?Math.round(adsSpend/uniq):null;
   const convRate=adsClicks>0&&uniq>0?Math.round(uniq/adsClicks*100):null;
 
   // Costs
-  const totalCosts=costEntries.reduce((s,c)=>s+(parseFloat(c.amount)||0),0);
+  const totalCosts=Object.values(camCosts).reduce(function(s,arr){return s+arr.reduce(function(ss,e){return ss+(e.maintenance||0)+(e.extra||0);},0);},0);
   const netRev=revM-adsSpend-totalCosts;
 
   // Utilization
@@ -1472,22 +1659,9 @@ window.renderRevenue=function(){
 
   document.getElementById('rev-detail').innerHTML=html;
 
-  // Render cost entries UI
-  renderCostEntries();
 };
 
-// ── COST ENTRIES ──
-function renderCostEntries(){
-  const wrap=document.getElementById('cost-entries');if(!wrap)return;
-  if(!costEntries.length){wrap.innerHTML=`<div style="color:var(--ink4);font-size:12px;padding:8px 0">Chưa có chi phí nào. Nhấn "+ Thêm chi phí" để thêm.</div>`;return;}
-  wrap.innerHTML=costEntries.map((c,i)=>`
-    <div class="cost-entry">
-      <input type="text" value="${esc(c.desc)}" placeholder="Tên chi phí" onchange="costEntries[${i}].desc=this.value;renderRevenue()">
-      <input type="number" value="${c.amount||0}" placeholder="Số tiền" min="0" onchange="costEntries[${i}].amount=parseFloat(this.value)||0;renderRevenue()">
-      <button class="cost-del" onclick="costEntries.splice(${i},1);renderRevenue()">✕</button>
-    </div>`).join('');
-}
-window.addCostEntry=function(){costEntries.push({desc:'',amount:0});renderCostEntries();};
+// cost entries handled by camCosts system
 
 // ── ASSET INFO ──
 function renderSettings(){
@@ -1582,6 +1756,7 @@ document.getElementById('rev-month').value=`${now.getFullYear()}-${String(now.ge
 
 // Load asset info from Firestore
 async function loadExtraSettings(){
+  await loadCamCosts();
   try{
     const snap=await getDoc(doc(db,'settings','assetInfo'));
     if(snap.exists())assetInfo=snap.data().data||{};
