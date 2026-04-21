@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>camera.nest — Quản Lý Thuê Máy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -302,6 +303,12 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .sb-cam-busy{font-size:11px;font-weight:600;color:var(--cr);margin-top:3px;}
 .sb-cam-promo{font-size:11px;color:var(--green);margin-top:2px;font-weight:700;}
 
+
+/* CAMERA GRID 2 COLUMNS */
+#cam-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;}
+.cam-card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+@media(max-width:768px){#cam-list{grid-template-columns:1fr;}}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .header{padding:0 14px;height:50px;}
@@ -390,14 +397,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
     <div class="avail-panel-body">
       <div style="margin-bottom:10px"><div class="flbl" style="margin-bottom:6px">Ngày bắt đầu</div><input type="date" id="sb-start-m" onchange="syncAvailDates('m')"></div>
       <div style="margin-bottom:10px"><div class="flbl" style="margin-bottom:6px">Ngày kết thúc</div><input type="date" id="sb-end-m" onchange="syncAvailDates('m')"></div>
-      <div style="margin-bottom:14px">
-        <div class="flbl" style="margin-bottom:6px">Mã khuyến mãi (tuỳ chọn)</div>
-        <div style="display:flex;gap:6px">
-          <input type="text" id="sb-promo-m" placeholder="VD: SUMMER20" style="text-transform:uppercase;font-size:12px;padding:8px 10px;flex:1">
-          <button class="btn-ok" style="padding:8px 14px;font-size:11px" onclick="runAvailMobile()">Kiểm tra</button>
-        </div>
-        <div id="sb-promo-msg-m" style="font-size:11px;margin-top:5px;font-weight:600"></div>
-      </div>
+      <button class="btn-ok" style="padding:10px 14px;font-size:12px;width:100%;margin-bottom:14px" onclick="runAvailMobile()">Kiểm tra ngay</button>
       <div id="sb-result-m" class="sb-result"></div>
     </div>
   </div>
@@ -418,10 +418,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
         <input type="date" id="sb-start" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
         <span style="font-size:11px;color:var(--ink4)">→</span>
         <input type="date" id="sb-end" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
-      </div>
-      <div class="promo-row">
-        <input type="text" id="sb-promo" class="promo-input" placeholder="Promo code" oninput="this.value=this.value.toUpperCase()" onchange="runAvail()">
-        <div id="sb-promo-badge" style="display:none" class="promo-badge"></div>
       </div>
       <div class="avail-bar-result" id="sb-result"></div>
     </div>
@@ -461,21 +457,38 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="mgmt-tabs">
         <button class="mtab on" onclick="switchTab('cameras',this)">Máy & Giá</button>
+        <button class="mtab" onclick="switchTab('promos',this)">Khuyến mãi</button>
         <button class="mtab" onclick="switchTab('bookings',this)">Lịch thuê</button>
-        <button class="mtab" onclick="switchTab('costs',this)">Chi phí máy</button>
         <button class="mtab" onclick="switchTab('revenue',this)">Doanh thu</button>
         <button class="mtab" onclick="switchTab('settings',this)">Cài đặt</button>
       </div>
       <div class="mpanel on" id="mp-cameras">
         <div class="mcard">
           <div class="mcard-title">Danh sách máy & Bảng giá
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <button class="btn-add" onclick="addCamera()">+ Thêm máy</button>
-              <button class="btn-save-price" onclick="savePrices()">✓ Xác nhận lưu giá</button>
-            </div>
+            <button class="btn-save-price" onclick="savePrices()">✓ Xác nhận lưu giá</button>
           </div>
           <div id="cam-list"></div>
           <div id="price-save-banner" class="save-banner">✓ Giá đã được lưu thành công vào Firestore</div>
+        </div>
+      </div>
+      
+      <div class="mpanel" id="mp-promos">
+        <div class="mcard">
+          <div class="mcard-title">
+            <span>Lịch khuyến mãi theo máy</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-add" onclick="openPromoSchedModal()">+ Thêm KM</button>
+              <button class="btn-exp" onclick="downloadPromoTemplate()">⬇ Tải mẫu Excel</button>
+              <label class="btn-exp" style="cursor:pointer">
+                ⬆ Upload Excel
+                <input type="file" id="promo-upload" accept=".xlsx,.xls,.csv" style="display:none" onchange="uploadPromoFile(event)">
+              </label>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">
+            Cài giá khuyến mãi cho từng máy trong một khoảng thời gian nhất định. Khi khách đặt lịch trong khoảng đó, hệ thống sẽ tự động áp giá KM. Bạn có thể nhập thủ công hoặc upload file Excel theo mẫu.
+          </p>
+          <div id="promo-sched-list"></div>
         </div>
       </div>
       <div class="mpanel" id="mp-bookings">
@@ -491,18 +504,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           <div style="overflow-x:auto"><table class="bt" id="bk-table"><thead></thead><tbody></tbody></table></div>
         </div>
       </div>
-      <div class="mpanel" id="mp-costs">
-        <div class="mcard">
-          <div class="mcard-title">
-            <span>Chi phí từng máy</span>
-            <button class="btn-add" onclick="openCostModal()">+ Thêm chi phí</button>
-          </div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">
-            Khai báo chi phí cố định (body, lens, phụ kiện) và chi phí phát sinh hàng tháng cho từng máy. Hệ thống sẽ tổng hợp và hiển thị chi phí tổng từng máy.
-          </p>
-          <div id="costs-summary"></div>
-        </div>
-      </div>
+      
       <div class="mpanel" id="mp-revenue">
         <div class="mcard">
           <div class="mcard-title">
@@ -520,10 +522,14 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="mpanel" id="mp-settings">
         <div class="mcard">
-          <div class="mcard-title">Thông tin tài sản (để tính ROA)</div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.6">Điền giá trị thiết bị để tính tỷ suất lợi nhuận tài sản (ROA).</p>
-          <div id="asset-info-list"></div>
-          <button class="btn-ok" style="margin-top:14px" onclick="saveAssetInfo()">Lưu thông tin tài sản</button>
+          <div class="mcard-title">
+            <span>Quản lý máy ảnh & chi phí</span>
+            <button class="btn-add" onclick="addCamera()">+ Thêm máy mới</button>
+          </div>
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">
+            Thêm / xóa máy, khai báo chi phí tài sản cố định (body, lens, phụ kiện), chi phí sửa chữa và chi phí phát sinh cho từng máy. Hệ thống sẽ tự động tính tổng chi phí.
+          </p>
+          <div id="costs-summary"></div>
         </div>
         <div class="mcard">
           <div class="mcard-title">Phí lấy sớm / Trả muộn</div>
@@ -550,9 +556,68 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
         </div>
       </div>
     </div>
+    </div>
   </div>
 </div>
 
+
+
+<!-- PROMO SCHEDULE MODAL -->
+<div class="overlay" id="promo-sched-overlay" onclick="if(event.target===this)closePromoSchedModal()">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">
+      <div class="modal-title">Thêm lịch khuyến mãi</div>
+      <button class="modal-x" onclick="closePromoSchedModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="fg">
+        <div class="field f1">
+          <label>Máy ảnh áp dụng *</label>
+          <select id="ps-cam">
+            <option value="">Chọn máy...</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="field">
+          <label>Mức thuê áp dụng *</label>
+          <select id="ps-tier">
+            <option value="">Tất cả mức thuê</option>
+            <option value="p1">1 ngày</option>
+            <option value="p3">3-4 ngày</option>
+            <option value="p5">5-9 ngày</option>
+            <option value="p10">10-14 ngày</option>
+            <option value="p15">15+ ngày</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Giá KM / ngày (đ) *</label>
+          <input type="number" id="ps-price" placeholder="VD: 180000" min="0" step="1000">
+        </div>
+      </div>
+      <div class="fg">
+        <div class="field">
+          <label>Ngày bắt đầu *</label>
+          <input type="date" id="ps-start">
+        </div>
+        <div class="field">
+          <label>Ngày kết thúc *</label>
+          <input type="date" id="ps-end">
+        </div>
+      </div>
+      <div class="fg">
+        <div class="field f1">
+          <label>Ghi chú (tuỳ chọn)</label>
+          <input type="text" id="ps-note" placeholder="VD: KM Tết 2026">
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closePromoSchedModal()">Hủy</button>
+      <button class="btn-ok" onclick="savePromoSched()">Lưu lịch KM</button>
+    </div>
+  </div>
+</div>
 
 <!-- COST MODAL -->
 <div class="overlay" id="cost-overlay" onclick="if(event.target===this)closeCostModal()">
@@ -636,14 +701,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
       <div class="fg">
         <div class="field"><label>Số tiền đã cọc (đ)</label><input type="number" id="f-dep-amt" value="100000" min="0"></div>
-        <div class="field">
-          <label>Mã khuyến mãi</label>
-          <div style="display:flex;gap:5px">
-            <input type="text" id="f-promo" placeholder="Nhập mã..." style="text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()" onchange="applyPromoToForm()">
-            <button class="btn-sm" onclick="applyPromoToForm()" style="flex-shrink:0;padding:0 10px">Áp dụng</button>
-          </div>
-          <div id="f-promo-msg" style="font-size:11px;margin-top:4px;font-weight:600"></div>
-        </div>
+        <div class="field"></div>
       </div>
       <div class="fg">
         <div class="field">
@@ -690,7 +748,7 @@ function _flush(){_ready=true;_q.forEach(function(x){if(window[x[0]])window[x[0]
  'copyInvoice','setBottomNav','toggleCam','toggleEL','onDateChange','setDiscType',
  'applyPromoToForm','updateFinal','savePrices','addCamera','removeCam','saveFees',
  'changePassword','saveAssetInfo','addCostEntry','addPromo','savePromo','deletePromo',
- 'deletePromoByBtn','renderBkTable','exportCSV','renderRevenue','goToday'
+ 'deletePromoByBtn','renderBkTable','exportCSV','renderRevenue','goToday','openPromoSchedModal','closePromoSchedModal','savePromoSched','deletePromoSchedByBtn','downloadPromoTemplate','uploadPromoFile'
 ].forEach(function(fn){
   window[fn]=function(){_dispatch(fn,Array.prototype.slice.call(arguments));};
 });
@@ -721,13 +779,14 @@ const DEFAULT_CAMERAS=[
 
 let cameras=[...DEFAULT_CAMERAS];
 let bookings=[];
+let promoSchedules=[]; // [{camId, price, startDate, endDate, tierKey?}]
 let promos=[];
 let assetInfo={};
 let EL_FEES={early:50000,late:50000};
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let fSelCams=[],fEL={early:false,late:false},editingId=null;
 let discType='pct'; // 'pct' or 'fixed'
-let activePromoCode=null,activePromoObj=null;
+let activePromoCode=null,activePromoObj=null; // legacy - unused
 let costEntries=[];
 let deletedBookingIds=[];
 
@@ -768,6 +827,32 @@ function getTierKey(d){if(d>=15)return'p15';if(d>=10)return'p10';if(d>=5)return'
 function getTierLabel(d){return{p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'}[getTierKey(d)]||'';}
 function localDs(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
+
+// Returns effective promo price per day if active, else null
+function getActivePromoPrice(cam, tierKey, s, e){
+  // Check scheduled promos (date-range based) first
+  const now=new Date();
+  const ds=s||localDs(now);
+  const active=promoSchedules.filter(function(p){
+    if(p.camId!==cam.id) return false;
+    if(p.tierKey && p.tierKey!==tierKey) return false;
+    // price applies if rental period overlaps schedule
+    const pStart=p.startDate, pEnd=p.endDate;
+    if(!pStart||!pEnd) return false;
+    const rentalEnd=e||ds;
+    // overlap check: rental starts before schedule ends AND rental ends after schedule starts
+    return ds<=pEnd && rentalEnd>=pStart;
+  });
+  if(active.length>0){
+    // Use lowest scheduled price
+    return Math.min.apply(null, active.map(function(p){return p.price;}));
+  }
+  // Fallback to cam.promo_tier field (always-on promo)
+  const alwaysPromo=cam['promo_'+tierKey];
+  if(alwaysPromo!==null&&alwaysPromo!==undefined&&alwaysPromo>0) return alwaysPromo;
+  return null;
+}
+
 // ── PROMO LOGIC ──
 function findPromo(code){
   if(!code)return null;
@@ -776,14 +861,7 @@ function findPromo(code){
   if(p.expiry&&p.expiry<localDs(new Date()))return null;
   return p;
 }
-function applyPromoDiscount(price,promo){
-  if(!promo)return{final:price,disc:0,label:''};
-  let disc=0;
-  if(promo.type==='percent') disc=Math.round(price*promo.value/100);
-  else disc=promo.value;
-  disc=Math.min(disc,price);
-  return{final:price-disc,disc,label:promo.type==='percent'?`-${promo.value}% (${fmtVND(disc)})`:`-${fmtVND(disc)}`};
-}
+// applyPromoDiscount removed
 
 // ── PAGE NAV ──
 window.showPage=function(p,el){
@@ -928,8 +1006,6 @@ window.openEditModal=function(id){
   // Restore discount
   if(b.discType==='fixed'){setDiscType('fixed');document.getElementById('f-disc').value=b.discount||0;}
   else{setDiscType('pct');document.getElementById('f-disc').value=b.discount||0;}
-  // Restore promo
-  if(b.promoCode){document.getElementById('f-promo').value=b.promoCode;activePromoCode=b.promoCode;activePromoObj=findPromo(b.promoCode);}
   fSelCams=[b.cam];
   document.querySelectorAll('.ctile').forEach(el=>{if(el.dataset.cam===b.cam)el.classList.add('on');});
   if(b.earlyLate?.early){fEL.early=true;document.getElementById('el-early').classList.add('on');}
@@ -961,37 +1037,44 @@ function camAvail(camId,s,e){
     return true;
   });
 }
-function buildCompact(s,e,days,promo){
+function buildCompact(s,e,days){
   const key=getTierKey(days);
-  let h=`<span style="font-size:9px;color:var(--ink4);font-weight:600;white-space:nowrap">${days}ng · ${getTierLabel(days)}</span>`;
-  cameras.forEach(c=>{
+  let h='<span style="font-size:9px;color:var(--ink4);font-weight:600;white-space:nowrap">'+days+'ng · '+getTierLabel(days)+'</span>';
+  cameras.forEach(function(c){
     const ok=camAvail(c.id,s,e);
-    const ppd=c[key]||c.p1||0;
-    const base=ppd*days;
+    const regular=c[key]||c.p1||0;
+    const promoPrice=getActivePromoPrice(c,key,s,e);
+    const displayPrice=promoPrice!==null?promoPrice:regular;
+    const total=displayPrice*days;
     if(ok){
-      const pd=applyPromoDiscount(base,promo);
-      h+=`<span class="avail-cam-pill free">${c.name} <span class="avail-cam-price">${promo?fmtVND(pd.final):fmtVND(base)}</span></span>`;
-    }else{
-      h+=`<span class="avail-cam-pill busy">${c.name}</span>`;
+      const priceHtml=promoPrice!==null&&promoPrice<regular
+        ? '<span class="avail-cam-price" style="text-decoration:line-through;opacity:0.5">'+fmtVND(regular*days)+'</span> <span class="avail-cam-price" style="color:var(--green);font-weight:700">'+fmtVND(total)+'</span>'
+        : '<span class="avail-cam-price">'+fmtVND(total)+'</span>';
+      h+='<span class="avail-cam-pill free">'+esc(c.name)+' '+priceHtml+'</span>';
+    } else {
+      h+='<span class="avail-cam-pill busy">'+esc(c.name)+'</span>';
     }
   });
   return h;
 }
-function buildCards(s,e,days,promo){
+function buildCards(s,e,days){
   const key=getTierKey(days);
-  let h=`<div style="font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600">${days} ngày · mức ${getTierLabel(days)}</div>`;
-  cameras.forEach(c=>{
+  let h='<div style="font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600">'+days+' ngày · mức '+getTierLabel(days)+'</div>';
+  cameras.forEach(function(c){
     const ok=camAvail(c.id,s,e);
-    const ppd=c[key]||c.p1||0;
-    const base=ppd*days;
-    const pd=applyPromoDiscount(base,promo);
+    const regular=c[key]||c.p1||0;
+    const promoPrice=getActivePromoPrice(c,key,s,e);
     if(ok){
-      h+=`<div class="sb-cam-row available"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-price">${fmtVND(ppd)}/ngày × ${days} = ${fmtVND(base)}</div>`;
-      if(promo)h+=`<div class="sb-cam-promo">🎟 Sau KM ${promo.code}: ${fmtVND(pd.final)}</div>`;
-      else h+=`<div class="sb-cam-total">Tổng: ${fmtVND(base)}</div>`;
-      h+=`</div>`;
+      h+='<div class="sb-cam-row available"><div class="sb-cam-name">'+esc(c.name)+'</div>';
+      h+='<div class="sb-cam-price">'+fmtVND(regular)+'/ngày × '+days+' = '+fmtVND(regular*days)+'</div>';
+      if(promoPrice!==null&&promoPrice<regular){
+        h+='<div class="sb-cam-promo">🎟 Giá KM: '+fmtVND(promoPrice)+'/ngày × '+days+' = '+fmtVND(promoPrice*days)+'</div>';
+      } else {
+        h+='<div class="sb-cam-total">Tổng: '+fmtVND(regular*days)+'</div>';
+      }
+      h+='</div>';
     } else {
-      h+=`<div class="sb-cam-row busy"><div class="sb-cam-name">${c.name}</div><div class="sb-cam-busy">Đã được đặt</div></div>`;
+      h+='<div class="sb-cam-row busy"><div class="sb-cam-name">'+esc(c.name)+'</div><div class="sb-cam-busy">Đã được đặt</div></div>';
     }
   });
   return h;
@@ -1000,42 +1083,26 @@ function buildCards(s,e,days,promo){
 window.runAvail=function(){
   const res=document.getElementById('sb-result');
   const s=document.getElementById('sb-start').value,e=document.getElementById('sb-end').value;
-  const promoCode=document.getElementById('sb-promo').value.trim();
-  const badge=document.getElementById('sb-promo-badge');
-  if(!s||!e){res.innerHTML='';badge.style.display='none';return;}
+  if(!s||!e){res.innerHTML='';return;}
   const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
-  if(days<=0){res.innerHTML=`<span style="font-size:10px;color:var(--cr)">Ngày không hợp lệ</span>`;return;}
-  let promo=null;
-  if(promoCode){
-    promo=findPromo(promoCode);
-    if(promo){badge.textContent=`✓ ${promo.type==='percent'?'-'+promo.value+'%':'-'+fmtVND(promo.value)}`;badge.style.display='inline-flex';}
-    else{badge.textContent='Mã không hợp lệ';badge.style.cssText='display:inline-flex;background:var(--cr-bg);color:var(--cr);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px';}
-  } else badge.style.display='none';
-  res.innerHTML=buildCompact(s,e,days,promo);
+  if(days<=0){res.innerHTML='<span style="font-size:10px;color:var(--cr)">Ngày không hợp lệ</span>';return;}
+  res.innerHTML=buildCompact(s,e,days);
 };
 
 window.runAvailMobile=function(){
   syncAvailDates('m');
   const s=document.getElementById('sb-start-m').value,e=document.getElementById('sb-end-m').value;
-  const promoCode=document.getElementById('sb-promo-m').value.trim();
-  const msg=document.getElementById('sb-promo-msg-m');
   const res=document.getElementById('sb-result-m');
   if(!s||!e){res.innerHTML='';return;}
   const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
-  if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--cr)">Ngày không hợp lệ</div>`;return;}
-  let promo=null;
-  if(promoCode){
-    promo=findPromo(promoCode);
-    msg.textContent=promo?`✓ Áp dụng ${promo.code} — ${promo.type==='percent'?'-'+promo.value+'%':'-'+fmtVND(promo.value)}`:'❌ Mã không hợp lệ hoặc đã hết hạn';
-    msg.style.color=promo?'var(--green)':'var(--cr)';
-  } else msg.textContent='';
-  res.innerHTML=buildCards(s,e,days,promo);
-  document.getElementById('sb-result').innerHTML=buildCompact(s,e,days,promo);
+  if(days<=0){res.innerHTML='<div style="font-size:12px;color:var(--cr)">Ngày không hợp lệ</div>';return;}
+  res.innerHTML=buildCards(s,e,days);
+  document.getElementById('sb-result').innerHTML=buildCompact(s,e,days);
 };
 
 // ── MODAL ──
 window.openModal=function(){
-  editingId=null;activePromoCode=null;activePromoObj=null;
+  editingId=null;
   resetForm();buildCamGrid(null,null);updateELFeeLabels();
   document.getElementById('modal-title').textContent='Đặt lịch mới';
   document.getElementById('overlay').classList.add('open');
@@ -1043,11 +1110,10 @@ window.openModal=function(){
 window.closeModal=function(){editingId=null;document.getElementById('modal-title').textContent='Đặt lịch mới';document.getElementById('overlay').classList.remove('open');};
 
 function resetForm(){
-  fSelCams=[];fEL={early:false,late:false};activePromoCode=null;activePromoObj=null;discType='pct';
-  ['f-name','f-phone','f-start','f-end','f-note','f-promo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  fSelCams=[];fEL={early:false,late:false};discType='pct';
+  ['f-name','f-phone','f-start','f-end','f-note'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-dep').value='';document.getElementById('f-del').value='';
   document.getElementById('f-dep-amt').value=100000;document.getElementById('f-disc').value=0;
-  document.getElementById('f-promo-msg').textContent='';
   ['el-early','el-late'].forEach(id=>document.getElementById(id).classList.remove('on'));
   ['daily-preview','final-box'].forEach(id=>document.getElementById(id).style.display='none');
   setDiscType('pct');updateELDesc();
@@ -1097,23 +1163,7 @@ window.setDiscType=function(t){
   updateFinal();
 };
 
-// ── PROMO IN FORM ──
-window.applyPromoToForm=function(){
-  const code=document.getElementById('f-promo').value.trim();
-  const msg=document.getElementById('f-promo-msg');
-  if(!code){activePromoCode=null;activePromoObj=null;msg.textContent='';updateFinal();return;}
-  const p=findPromo(code);
-  if(p){
-    activePromoCode=code;activePromoObj=p;
-    msg.textContent=`✓ ${p.code} — ${p.type==='percent'?'-'+p.value+'%':'-'+fmtVND(p.value)}`;
-    msg.style.color='var(--green)';
-  } else {
-    activePromoCode=null;activePromoObj=null;
-    msg.textContent='❌ Mã không hợp lệ hoặc đã hết hạn';
-    msg.style.color='var(--cr)';
-  }
-  updateFinal();
-};
+// promo form function removed - using tier-based promo pricing now
 
 function updateELDesc(){
   const s=document.getElementById('f-start').value,e=document.getElementById('f-end').value;
@@ -1127,10 +1177,21 @@ function updatePricePreview(){
   const days=getDays();
   if(!days||!fSelCams.length){document.getElementById('daily-preview').style.display='none';return;}
   const key=getTierKey(days);
+  const s=document.getElementById('f-start').value;
+  const e=document.getElementById('f-end').value;
   document.getElementById('pp-days').textContent=days+' ngày';
   document.getElementById('pp-tier').textContent=getTierLabel(days);
   let rows='';
-  fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(!c)return;rows+=`<div class="prow"><span>${c.name}</span><b>${fmtVND(c[key]||c.p1||0)}/ngày × ${days} = ${fmtVND((c[key]||c.p1||0)*days)}</b></div>`;});
+  fSelCams.forEach(function(id){
+    const c=cameras.find(function(x){return x.id===id;});if(!c)return;
+    const regular=c[key]||c.p1||0;
+    const promo=getActivePromoPrice(c,key,s,e);
+    if(promo!==null&&promo<regular){
+      rows+='<div class="prow"><span>'+esc(c.name)+' <span style="font-size:9px;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:3px;margin-left:4px">KM</span></span><b><span style="text-decoration:line-through;color:var(--ink4);font-weight:500">'+fmtVND(regular)+'</span> → '+fmtVND(promo)+'/ngày × '+days+' = <span style="color:var(--green)">'+fmtVND(promo*days)+'</span></b></div>';
+    } else {
+      rows+='<div class="prow"><span>'+esc(c.name)+'</span><b>'+fmtVND(regular)+'/ngày × '+days+' = '+fmtVND(regular*days)+'</b></div>';
+    }
+  });
   document.getElementById('pp-cam-rows').innerHTML=rows;
   document.getElementById('daily-preview').style.display='block';
 }
@@ -1138,34 +1199,42 @@ function updateFinal(){
   const days=getDays();
   if(!fSelCams.length||!days){document.getElementById('final-box').style.display='none';return;}
   const key=getTierKey(days);
-  let sub=0;
-  fSelCams.forEach(id=>{const c=cameras.find(x=>x.id===id);if(c)sub+=(c[key]||c.p1||0)*days;});
+  const s=document.getElementById('f-start').value;
+  const e=document.getElementById('f-end').value;
+  let sub=0, promoSaved=0;
+  fSelCams.forEach(function(id){
+    const c=cameras.find(function(x){return x.id===id;});if(!c)return;
+    const regular=c[key]||c.p1||0;
+    const promo=getActivePromoPrice(c,key,s,e);
+    if(promo!==null&&promo<regular){
+      sub+=promo*days;
+      promoSaved+=(regular-promo)*days;
+    } else {
+      sub+=regular*days;
+    }
+  });
   const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
   const discVal=parseFloat(document.getElementById('f-disc').value)||0;
   let discAmt=0;
   if(discType==='pct') discAmt=Math.round(sub*discVal/100);
   else discAmt=Math.min(discVal,sub);
-  const afterDisc=sub-discAmt;
-  // Apply promo on top
-  const promoApply=applyPromoDiscount(afterDisc,activePromoObj);
-  const total=promoApply.final+elFee;
+  const total=sub-discAmt+elFee;
   const depAmt=parseFloat(document.getElementById('f-dep-amt').value)||0;
   const refund=depAmt-total;
 
   document.getElementById('fb-sub').textContent=fmtVND(sub);
   let elH='';
-  if(fEL.early)elH+=`<div class="prow"><span>Lấy sớm</span><b>+${fmtVND(EL_FEES.early)}</b></div>`;
-  if(fEL.late)elH+=`<div class="prow"><span>Trả muộn</span><b>+${fmtVND(EL_FEES.late)}</b></div>`;
+  if(promoSaved>0) elH+='<div class="prow"><span style="color:var(--green)">🎟 Đã áp dụng KM</span><b style="color:var(--green)">-'+fmtVND(promoSaved)+'</b></div>';
+  if(fEL.early)elH+='<div class="prow"><span>Lấy sớm</span><b>+'+fmtVND(EL_FEES.early)+'</b></div>';
+  if(fEL.late)elH+='<div class="prow"><span>Trả muộn</span><b>+'+fmtVND(EL_FEES.late)+'</b></div>';
   document.getElementById('fb-el').innerHTML=elH;
   const dr=document.getElementById('fb-disc-r');
-  if(discAmt>0){dr.style.display='flex';document.getElementById('fb-disc').textContent=discType==='pct'?`-${discVal}% (${fmtVND(discAmt)})`:`-${fmtVND(discAmt)}`;}
+  if(discAmt>0){dr.style.display='flex';document.getElementById('fb-disc').textContent=discType==='pct'?'-'+discVal+'% ('+fmtVND(discAmt)+')':'-'+fmtVND(discAmt);}
   else dr.style.display='none';
   const pr=document.getElementById('fb-promo-r');
-  if(activePromoObj&&promoApply.disc>0){pr.style.display='flex';document.getElementById('fb-promo').textContent=promoApply.label;}
-  else pr.style.display='none';
+  if(pr)pr.style.display='none';
   document.getElementById('fb-total').textContent=fmtVND(total);
   document.getElementById('final-box').style.display='block';
-  // Refund row
   const refRow=document.getElementById('fb-refund-row');
   if(depAmt>0){
     refRow.style.display='block';
@@ -1192,21 +1261,23 @@ window.submitBooking=async function(){
   const phone=document.getElementById('f-phone').value.trim(),note=document.getElementById('f-note').value.trim();
   const deposit=document.getElementById('f-dep').value,delivery=document.getElementById('f-del').value;
 
-  const calcBookingPrice=(c)=>{
-    const base=(c[key]||c.p1||0)*days;
+  const calcBookingPrice=function(c){
+    const regular=c[key]||c.p1||0;
+    const promo=getActivePromoPrice(c,key,start,end);
+    const ppd=(promo!==null&&promo<regular)?promo:regular;
+    const promoSaved=(promo!==null&&promo<regular)?(regular-promo)*days:0;
+    const base=ppd*days;
     let discAmt=0;
     if(discType==='pct') discAmt=Math.round(base*discVal/100);
     else discAmt=Math.min(discVal,base);
-    const afterDisc=base-discAmt;
-    const promoApply=applyPromoDiscount(afterDisc,activePromoObj);
-    return{base,discAmt,promoDisc:promoApply.disc,total:promoApply.final+elFee};
+    return{base:base,subTotal:regular*days,discAmt:discAmt,promoDisc:promoSaved,total:base-discAmt+elFee,pricePerUnit:ppd};
   };
 
   if(editingId){
     const orig=bookings.find(x=>x.id===editingId);if(!orig){toast('Không tìm thấy lịch gốc');return;}
     const camId=fSelCams[0],c=cameras.find(x=>x.id===camId);if(!c){toast('Máy không hợp lệ');return;}
     const prices=calcBookingPrice(c);
-    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:prices.base,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
+    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
     const batch=writeBatch(db);
     batch.set(doc(db,'bookings',editingId),updated);
     batch.delete(doc(db,'bookings',editingId+'-E'));
@@ -1223,7 +1294,7 @@ window.submitBooking=async function(){
     const c=cameras.find(x=>x.id===id);if(!c)return;
     const prices=calcBookingPrice(c);
     const bkId=Date.now()+'-'+id+'-'+Math.random().toString(36).slice(2,6);
-    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:prices.base,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:now};
+    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:now};
     batch.set(doc(db,'bookings',bkId),bk);
     if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);batch.set(doc(db,'bookings',bkId+'-E'),mkBlockedDoc(bkId+'-E',name,id,c.name,localDs(prev),now));}
     if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);batch.set(doc(db,'bookings',bkId+'-L'),mkBlockedDoc(bkId+'-L',name,id,c.name,localDs(nxt),now));}
@@ -1248,7 +1319,7 @@ window.switchTab=function(p,el){
   document.querySelectorAll('.mpanel').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');document.getElementById('mp-'+p).classList.add('on');
   if(p==='bookings')renderBkTable();
-  if(p==='costs')renderCostsSummary();
+  if(p==='promos')renderPromoSchedules();
   if(p==='revenue')renderRevenue();
   if(p==='cameras')renderCamList();
   if(p==='settings')renderSettings();
@@ -1259,28 +1330,23 @@ function renderMgmt(){renderCamList();}
 // ── CAMERAS & PRICES ──
 function renderCamList(){
   const tiers=['p1','p3','p5','p10','p15'];
-  const tLabels={p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10+ ngày',p15:'15+ ngày'};
+  const tLabels={p1:'1 ngày',p3:'3-4 ngày',p5:'5-9 ngày',p10:'10-14 ngày',p15:'15+ ngày'};
   document.getElementById('cam-list').innerHTML=cameras.map(function(c,idx){
     const rows=tiers.map(function(t){
       const priceVal=c[t]||0;
-      const promoVal=c['promo_'+t]!==undefined?c['promo_'+t]:'';
       return '<tr>'+
-        '<td style="font-weight:600">'+tLabels[t]+'</td>'+
-        '<td><input type="number" id="cp-'+idx+'-'+t+'" value="'+priceVal+'" min="0" step="1000" style="font-size:12px;padding:6px 9px;width:130px"></td>'+
-        '<td><input type="number" id="cpp-'+idx+'-'+t+'" value="'+promoVal+'" min="0" step="1000" placeholder="Không KM" style="font-size:12px;padding:6px 9px;width:130px;border-color:var(--green)"></td>'+
-        '<td style="font-size:10px;color:var(--ink4)">'+(promoVal&&priceVal?Math.round((1-promoVal/priceVal)*100)+'% off':'—')+'</td>'+
+        '<td style="font-weight:600;font-size:11px;padding:5px 8px">'+tLabels[t]+'</td>'+
+        '<td style="padding:5px 8px"><input type="number" id="cp-'+idx+'-'+t+'" value="'+priceVal+'" min="0" step="1000" style="font-size:11px;padding:5px 7px;width:100%"></td>'+
         '</tr>';
     }).join('');
-    return '<div style="border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;">'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
-        '<div style="flex:1"><div class="flbl" style="margin-bottom:4px">Tên máy</div><input type="text" value="'+esc(c.name)+'" id="cn-'+idx+'" style="font-size:13px;padding:8px 11px"></div>'+
-        '<button class="btn-sm red" onclick="removeCam('+idx+')">Xóa</button>'+
+    return '<div class="cam-card">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+        '<div style="flex:1"><div class="flbl" style="margin-bottom:3px">Tên máy</div><input type="text" value="'+esc(c.name)+'" id="cn-'+idx+'" style="font-size:12px;padding:6px 9px"></div>'+
+        '<button class="btn-sm red" onclick="removeCam('+idx+')" style="padding:4px 9px;font-size:10px;margin-top:12px">Xóa</button>'+
       '</div>'+
-      '<table class="pt"><thead><tr>'+
-        '<th>Mức thuê</th>'+
-        '<th>Giá thường / ngày (đ)</th>'+
-        '<th style="color:var(--green)">Giá KM / ngày (đ) <span style="font-weight:500;font-size:9px">tuỳ chọn</span></th>'+
-        '<th>Mức giảm</th>'+
+      '<table class="pt" style="font-size:11px"><thead><tr>'+
+        '<th style="padding:5px 8px">Mức thuê</th>'+
+        '<th style="padding:5px 8px">Giá thường / ngày (đ)</th>'+
       '</tr></thead><tbody>'+rows+'</tbody></table>'+
     '</div>';
   }).join('');
@@ -1296,8 +1362,6 @@ window.savePrices=async function(){
     tiers.forEach(function(t){
       const el=document.getElementById('cp-'+idx+'-'+t);
       if(el)c[t]=parseInt(el.value)||0;
-      const pel=document.getElementById('cpp-'+idx+'-'+t);
-      if(pel){const pv=parseInt(pel.value);c['promo_'+t]=isNaN(pv)||pel.value===''?null:pv;}
     });
     batch.set(doc(db,'cameras',c.id),c);
   });
@@ -1375,6 +1439,174 @@ window.exportCSV=function(){
   const a=document.createElement('a');a.href=url;a.download='camera-nest-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
 };
 
+
+
+// ── PROMO SCHEDULES ──
+async function loadPromoSchedules(){
+  try{
+    const snap=await getDoc(doc(db,'settings','promoSchedules'));
+    if(snap.exists()) promoSchedules=snap.data().list||[];
+  }catch(e){}
+}
+async function savePromoSchedules(){
+  await setDoc(doc(db,'settings','promoSchedules'),{list:promoSchedules});
+}
+
+function renderPromoSchedules(){
+  const wrap=document.getElementById('promo-sched-list');
+  if(!wrap)return;
+  if(!promoSchedules.length){
+    wrap.innerHTML='<div style="color:var(--ink4);font-size:13px;padding:14px 0;text-align:center">Chưa có lịch khuyến mãi nào.<br><span style="font-size:11px">Nhấn "+ Thêm KM" hoặc upload file Excel để bắt đầu.</span></div>';
+    return;
+  }
+  const tLabels={'':'Tất cả',p1:'1 ngày',p3:'3-4 ngày',p5:'5-9 ngày',p10:'10-14 ngày',p15:'15+ ngày'};
+  const today=localDs(new Date());
+  let html='<table class="bt"><thead><tr><th>Máy</th><th>Mức thuê</th><th>Giá KM/ngày</th><th>Từ ngày</th><th>Đến ngày</th><th>Ghi chú</th><th>Trạng thái</th><th></th></tr></thead><tbody>';
+  promoSchedules.forEach(function(p,idx){
+    const cam=cameras.find(function(c){return c.id===p.camId;});
+    const camName=cam?cam.name:p.camId;
+    const isActive=p.startDate<=today&&p.endDate>=today;
+    const isUpcoming=p.startDate>today;
+    const status=isActive?'<span style="color:var(--green);font-weight:700">🟢 Đang chạy</span>':(isUpcoming?'<span style="color:var(--gold)">🟡 Sắp tới</span>':'<span style="color:var(--ink4)">⚪ Đã hết</span>');
+    html+='<tr>'+
+      '<td style="font-weight:700">'+esc(camName)+'</td>'+
+      '<td>'+(tLabels[p.tierKey||'']||p.tierKey)+'</td>'+
+      '<td style="color:var(--green);font-weight:700">'+fmtVND(p.price)+'</td>'+
+      '<td>'+fmtD(p.startDate)+'</td>'+
+      '<td>'+fmtD(p.endDate)+'</td>'+
+      '<td style="color:var(--ink3)">'+esc(p.note||'')+'</td>'+
+      '<td>'+status+'</td>'+
+      '<td><button class="btn-sm red" data-pidx="'+idx+'" onclick="deletePromoSchedByBtn(this)">✕</button></td>'+
+    '</tr>';
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+}
+
+window.deletePromoSchedByBtn=async function(btn){
+  const idx=parseInt(btn.getAttribute('data-pidx'));
+  if(!confirm('Xóa lịch KM này?'))return;
+  promoSchedules.splice(idx,1);
+  await savePromoSchedules();
+  renderPromoSchedules();
+  toast('Đã xóa');
+};
+
+window.openPromoSchedModal=function(){
+  const sel=document.getElementById('ps-cam');
+  sel.innerHTML='<option value="">Chọn máy...</option>'+cameras.map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+'</option>';}).join('');
+  ['ps-price','ps-note'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('ps-tier').value='';
+  const today=new Date();
+  const week=new Date();week.setDate(week.getDate()+7);
+  document.getElementById('ps-start').value=localDs(today);
+  document.getElementById('ps-end').value=localDs(week);
+  document.getElementById('promo-sched-overlay').classList.add('open');
+};
+window.closePromoSchedModal=function(){document.getElementById('promo-sched-overlay').classList.remove('open');};
+
+window.savePromoSched=async function(){
+  const camId=document.getElementById('ps-cam').value;
+  const price=parseInt(document.getElementById('ps-price').value)||0;
+  const startDate=document.getElementById('ps-start').value;
+  const endDate=document.getElementById('ps-end').value;
+  if(!camId){toast('Chọn máy');return;}
+  if(!price||price<=0){toast('Nhập giá KM');return;}
+  if(!startDate||!endDate){toast('Chọn khoảng thời gian');return;}
+  if(endDate<startDate){toast('Ngày kết thúc phải sau ngày bắt đầu');return;}
+  promoSchedules.push({
+    id:Date.now()+'-'+Math.random().toString(36).slice(2,5),
+    camId:camId,
+    tierKey:document.getElementById('ps-tier').value||'',
+    price:price,
+    startDate:startDate,
+    endDate:endDate,
+    note:document.getElementById('ps-note').value.trim(),
+    createdAt:new Date().toISOString()
+  });
+  await savePromoSchedules();
+  closePromoSchedModal();
+  renderPromoSchedules();
+  toast('✓ Đã thêm lịch KM');
+};
+
+// Excel upload/download
+window.downloadPromoTemplate=function(){
+  const data=[
+    ['Tên máy','Mức thuê (p1/p3/p5/p10/p15 hoặc để trống = tất cả)','Giá KM/ngày','Ngày bắt đầu (YYYY-MM-DD)','Ngày kết thúc (YYYY-MM-DD)','Ghi chú'],
+  ];
+  cameras.slice(0,2).forEach(function(c){
+    data.push([c.name,'p1',Math.round((c.p1||200000)*0.8),'2026-05-01','2026-05-31','VD: KM tháng 5']);
+  });
+  if(typeof XLSX==='undefined'){toast('Thư viện Excel chưa sẵn sàng');return;}
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:20},{wch:35},{wch:15},{wch:22},{wch:22},{wch:25}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Khuyen mai');
+  XLSX.writeFile(wb,'mau-khuyen-mai-cameranest.xlsx');
+};
+
+window.uploadPromoFile=function(ev){
+  const file=ev.target.files[0];
+  if(!file){return;}
+  if(typeof XLSX==='undefined'){toast('Thư viện Excel chưa sẵn sàng');return;}
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{header:1});
+      let added=0,errors=0;
+      for(let i=1;i<rows.length;i++){
+        const r=rows[i];
+        if(!r||!r[0])continue;
+        const camName=String(r[0]).trim();
+        const tierKey=String(r[1]||'').trim();
+        const price=parseInt(r[2])||0;
+        const startDate=parseExcelDate(r[3]);
+        const endDate=parseExcelDate(r[4]);
+        const note=String(r[5]||'').trim();
+        const cam=cameras.find(function(c){return c.name.toLowerCase()===camName.toLowerCase();});
+        if(!cam||!price||!startDate||!endDate){errors++;continue;}
+        promoSchedules.push({
+          id:Date.now()+'-'+i+'-'+Math.random().toString(36).slice(2,5),
+          camId:cam.id,
+          tierKey:tierKey,
+          price:price,
+          startDate:startDate,
+          endDate:endDate,
+          note:note,
+          createdAt:new Date().toISOString()
+        });
+        added++;
+      }
+      await savePromoSchedules();
+      renderPromoSchedules();
+      toast('✓ Đã import '+added+' lịch KM'+(errors>0?' ('+errors+' dòng lỗi)':''));
+      ev.target.value='';
+    }catch(err){
+      toast('Lỗi đọc file: '+err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+function parseExcelDate(v){
+  if(!v)return null;
+  if(typeof v==='number'){
+    // Excel date serial
+    const d=new Date((v-25569)*86400*1000);
+    return localDs(d);
+  }
+  const s=String(v).trim();
+  // Try YYYY-MM-DD
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  // Try DD/MM/YYYY
+  const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  return null;
+}
 
 // ── COST MODAL ──
 let editingCostId = null;
@@ -1643,18 +1875,15 @@ window.renderRevenue=function(){
 
   // Customer KPIs
   html+=kpiSection('👥 Chỉ số khách hàng',[
-    kpi('Khách hàng tháng',String(uniq),`${newCount} mới · ${recurringCount} cũ`,'','Tổng khách hàng duy nhất trong tháng'),
-    kpi('CLV (Customer Lifetime Value)',fmtVND(avgCLV),'Trung bình doanh thu/khách','',`Tổng doanh thu / tổng khách hàng từ trước đến nay`),
-    cac!==null?kpi('CAC (Chi phí/khách)',fmtVND(cac),`Ads ${fmtVND(adsSpend)}`,cac<200000?'kpi-good':'kpi-warn','Chi phí marketing / số khách mới trong tháng'):kpi('CAC','—','Nhập chi phí ads','kpi-warn',''),
-    convRate!==null?kpi('Booking Conversion',convRate+'%',`${adsClicks} clicks → ${uniq} khách`,convRate>=5?'kpi-good':'kpi-warn','Tỷ lệ chuyển đổi từ click/DM sang đặt lịch'):kpi('Booking Conversion','—','Nhập số click ads','kpi-warn',''),
+    kpi('Khách hàng tháng',String(uniq),newCount+' mới · '+recurringCount+' cũ','','Tổng khách hàng duy nhất trong tháng'),
+    kpi('CLV (Customer Lifetime Value)',fmtVND(avgCLV),'Trung bình doanh thu/khách','','Tổng doanh thu / tổng khách hàng từ trước đến nay'),
   ]);
 
   // Operational KPIs
   html+=kpiSection('⚙️ Chỉ số vận hành',[
-    kpi('Inventory Turnover',invTurnover+'x',`${monthBks.length} lượt / ${cameras.length} máy`,invTurnover>=2?'kpi-good':'kpi-warn','Số lần trung bình mỗi máy được thuê trong tháng'),
-    kpi('Cancellation Rate',cancRate+'%',`Đã xóa trong tháng`,cancRate<=5?'kpi-good':'kpi-warn','Dựa trên số lần xóa lịch trong tháng'),
-    kpi('Doanh thu ròng',fmtVND(Math.round(netRev)),`Sau ads (${fmtVND(adsSpend)}) & chi phí (${fmtVND(totalCosts)})`,netRev>0?'kpi-good':'kpi-bad','Doanh thu - chi phí marketing - chi phí phát sinh'),
-    kpi('Tổng chi phí tháng',fmtVND(totalCosts+adsSpend),'Ads + vận hành','',''),
+    kpi('Inventory Turnover',invTurnover+'x',monthBks.length+' lượt / '+cameras.length+' máy',invTurnover>=2?'kpi-good':'kpi-warn','Số lần trung bình mỗi máy được thuê trong tháng'),
+    kpi('Cancellation Rate',cancRate+'%','Đã xóa trong tháng',cancRate<=5?'kpi-good':'kpi-warn','Dựa trên số lần xóa lịch trong tháng'),
+    kpi('Doanh thu ròng',fmtVND(Math.round(netRev)),'Sau chi phí phát sinh ('+fmtVND(totalCosts)+')',netRev>0?'kpi-good':'kpi-bad','Doanh thu - chi phí phát sinh'),
   ]);
 
   document.getElementById('rev-detail').innerHTML=html;
@@ -1668,22 +1897,12 @@ function renderSettings(){
   document.getElementById('fee-early').value=EL_FEES.early;
   document.getElementById('fee-late').value=EL_FEES.late;
   document.getElementById('fee-saved').style.display='none';
-  renderAssetInfo();
-  ['pw-cur','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  renderCostsSummary();
+  ['pw-cur','pw-new','pw-confirm'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('pw-msg').style.display='none';
 }
-function renderAssetInfo(){
-  document.getElementById('asset-info-list').innerHTML=cameras.map(c=>{
-    const ai=assetInfo[c.id]||{};
-    return`<div class="asset-row">
-      <div class="asset-name">📷 ${esc(c.name)}</div>
-      <div><div class="flbl" style="margin-bottom:3px">Body (đ)</div><input type="number" id="ai-body-${c.id}" class="asset-input" value="${ai.body||0}" min="0" placeholder="0"></div>
-      <div><div class="flbl" style="margin-bottom:3px">Lens (đ)</div><input type="number" id="ai-lens-${c.id}" class="asset-input" value="${ai.lens||0}" min="0" placeholder="0"></div>
-      <div><div class="flbl" style="margin-bottom:3px">Phụ kiện (đ)</div><input type="number" id="ai-acc-${c.id}" class="asset-input" value="${ai.acc||0}" min="0" placeholder="0"></div>
-      <div><div class="flbl" style="margin-bottom:3px">Bảo dưỡng tháng (đ)</div><input type="number" id="ai-mc-${c.id}" class="asset-input" value="${ai.maintenanceCost||0}" min="0" placeholder="0"></div>
-    </div>`;
-  }).join('')||'<div style="color:var(--ink4)">Không có máy nào</div>';
-}
+function renderAssetInfo(){} // deprecated
+
 window.saveAssetInfo=async function(){
   cameras.forEach(c=>{
     assetInfo[c.id]={
@@ -1757,6 +1976,7 @@ document.getElementById('rev-month').value=`${now.getFullYear()}-${String(now.ge
 // Load asset info from Firestore
 async function loadExtraSettings(){
   await loadCamCosts();
+  await loadPromoSchedules();
   try{
     const snap=await getDoc(doc(db,'settings','assetInfo'));
     if(snap.exists())assetInfo=snap.data().data||{};
