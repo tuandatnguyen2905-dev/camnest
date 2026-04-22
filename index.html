@@ -272,6 +272,10 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .btn-save-price{padding:8px 18px;background:var(--green);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.15s;}
 .btn-save-price:hover{opacity:0.88;}
 
+/* NOTE ICON BUTTON */
+.note-icon-btn{background:var(--orange-bg);border:1px solid rgba(179,90,26,0.3);color:var(--orange);border-radius:5px;width:26px;height:24px;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all 0.15s;}
+.note-icon-btn:hover{background:var(--orange);color:#fff;}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--cr-d);color:#fff;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:700;opacity:0;transition:all 0.22s;z-index:700;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -303,6 +307,11 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 .sb-cam-busy{font-size:11px;font-weight:600;color:var(--cr);margin-top:3px;}
 .sb-cam-promo{font-size:11px;color:var(--green);margin-top:2px;font-weight:700;}
 
+
+
+.note-icon-btn{background:none;border:1px solid var(--orange-bg);border-radius:5px;padding:2px 6px;cursor:pointer;font-size:12px;transition:all 0.15s;}
+.note-icon-btn:hover{background:var(--orange-bg);}
+.note-expand-row td{padding:0 8px 4px !important;}
 
 /* CAMERA GRID 2 COLUMNS */
 #cam-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;}
@@ -486,7 +495,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
             </div>
           </div>
           <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6">
-            Cài giá khuyến mãi cho từng máy trong một khoảng thời gian nhất định. Khi khách đặt lịch trong khoảng đó, hệ thống sẽ tự động áp giá KM. Bạn có thể nhập thủ công hoặc upload file Excel theo mẫu.
+            Cài giá khuyến mãi cho từng máy. Nếu khách <b>nhắn tin đặt lịch</b> trong khoảng thời gian KM, họ sẽ được giữ giá KM ngay cả khi ngày thuê sau khi KM kết thúc, và giá KM được giữ nguyên khi bạn sửa lịch sau này. Bạn có thể nhập thủ công hoặc upload file Excel theo mẫu.
           </p>
           <div id="promo-sched-list"></div>
         </div>
@@ -570,6 +579,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       <button class="modal-x" onclick="closePromoSchedModal()">✕</button>
     </div>
     <div class="modal-bd">
+      <div style="background:var(--blue-bg);border:1px solid rgba(30,77,107,0.2);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--blue);font-weight:600;margin-bottom:14px;line-height:1.6">ℹ️ Khuyến mãi áp dụng theo <b>ngày khách nhắn tin đặt</b> — không phải ngày thuê. Ví dụ: nếu cài 22/04–26/04, khách nhắn vào 23/04 đặt lịch 30/04 vẫn được hưởng giá KM. Giá KM được khoá lại khi khách đặt cọc.</div>
       <div class="fg">
         <div class="field f1">
           <label>Máy ảnh áp dụng *</label>
@@ -591,17 +601,17 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
           </select>
         </div>
         <div class="field">
-          <label>Giá KM / ngày (đ) *</label>
+          <label>Giá KM / ngày (đ) * <span style="font-size:9px;color:var(--ink4);font-weight:500">(áp cho mọi ngày thuê)</span></label>
           <input type="number" id="ps-price" placeholder="VD: 180000" min="0" step="1000">
         </div>
       </div>
       <div class="fg">
         <div class="field">
-          <label>Ngày bắt đầu *</label>
+          <label>KM bắt đầu (ngày khách đặt) *</label>
           <input type="date" id="ps-start">
         </div>
         <div class="field">
-          <label>Ngày kết thúc *</label>
+          <label>KM kết thúc (ngày khách đặt) *</label>
           <input type="date" id="ps-end">
         </div>
       </div>
@@ -748,7 +758,7 @@ function _flush(){_ready=true;_q.forEach(function(x){if(window[x[0]])window[x[0]
  'copyInvoice','setBottomNav','toggleCam','toggleEL','onDateChange','setDiscType',
  'applyPromoToForm','updateFinal','savePrices','addCamera','removeCam','saveFees',
  'changePassword','saveAssetInfo','addCostEntry','addPromo','savePromo','deletePromo',
- 'deletePromoByBtn','renderBkTable','exportCSV','renderRevenue','goToday','openPromoSchedModal','closePromoSchedModal','savePromoSched','deletePromoSchedByBtn','downloadPromoTemplate','uploadPromoFile'
+ 'deletePromoByBtn','renderBkTable','exportCSV','renderRevenue','goToday','openPromoSchedModal','closePromoSchedModal','savePromoSched','deletePromoSchedByBtn','toggleNoteCol','expandNoteCell','removeCamByBtn','removeCamByBtn','showNoteByBtn','downloadPromoTemplate','uploadPromoFile','openCostModalForCam','toggleBkNote','removeCamByBtn'
 ].forEach(function(fn){
   window[fn]=function(){_dispatch(fn,Array.prototype.slice.call(arguments));};
 });
@@ -784,7 +794,7 @@ let promos=[];
 let assetInfo={};
 let EL_FEES={early:50000,late:50000};
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
-let fSelCams=[],fEL={early:false,late:false},editingId=null;
+let fSelCams=[],fEL={early:false,late:false},editingId=null,editingBookingDate=null;
 let discType='pct'; // 'pct' or 'fixed'
 let activePromoCode=null,activePromoObj=null; // legacy - unused
 let costEntries=[];
@@ -828,28 +838,22 @@ function getTierLabel(d){return{p1:'1 ngày',p3:'3+ ngày',p5:'5+ ngày',p10:'10
 function localDs(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
 
-// Returns effective promo price per day if active, else null
-function getActivePromoPrice(cam, tierKey, s, e){
-  // Check scheduled promos (date-range based) first
-  const now=new Date();
-  const ds=s||localDs(now);
-  const active=promoSchedules.filter(function(p){
-    if(p.camId!==cam.id) return false;
-    if(p.tierKey && p.tierKey!==tierKey) return false;
-    // price applies if rental period overlaps schedule
-    const pStart=p.startDate, pEnd=p.endDate;
-    if(!pStart||!pEnd) return false;
-    const rentalEnd=e||ds;
-    // overlap check: rental starts before schedule ends AND rental ends after schedule starts
-    return ds<=pEnd && rentalEnd>=pStart;
+// Returns effective promo price per day based on BOOKING date (when customer messages)
+// Not rental dates - so if customer books during promo window, they keep promo price
+// even if rental is in the future or if they edit later.
+function getActivePromoPrice(cam, tierKey, bookingDate){
+  // bookingDate = when customer contacted (created booking). Default to today.
+  const bd = bookingDate || localDs(new Date());
+  const active = promoSchedules.filter(function(p){
+    if(p.camId !== cam.id) return false;
+    if(p.tierKey && p.tierKey !== tierKey) return false;
+    if(!p.startDate || !p.endDate) return false;
+    // Promo applies if booking date falls within promo window
+    return bd >= p.startDate && bd <= p.endDate;
   });
-  if(active.length>0){
-    // Use lowest scheduled price
+  if(active.length > 0){
     return Math.min.apply(null, active.map(function(p){return p.price;}));
   }
-  // Fallback to cam.promo_tier field (always-on promo)
-  const alwaysPromo=cam['promo_'+tierKey];
-  if(alwaysPromo!==null&&alwaysPromo!==undefined&&alwaysPromo>0) return alwaysPromo;
   return null;
 }
 
@@ -993,7 +997,7 @@ window.deleteBookingId=async function(id){
 window.openEditModal=function(id){
   closeAllTips();
   const b=bookings.find(x=>x.id===id);if(!b)return;
-  editingId=id;resetForm();buildCamGrid(b.start,b.end);updateELFeeLabels();
+  editingId=id;editingBookingDate=b.createdAt?b.createdAt.slice(0,10):localDs(new Date());resetForm();buildCamGrid(b.start,b.end);updateELFeeLabels();
   document.getElementById('modal-title').textContent='Sửa lịch';
   document.getElementById('f-name').value=b.name||'';
   document.getElementById('f-phone').value=b.phone||'';
@@ -1043,7 +1047,7 @@ function buildCompact(s,e,days){
   cameras.forEach(function(c){
     const ok=camAvail(c.id,s,e);
     const regular=c[key]||c.p1||0;
-    const promoPrice=getActivePromoPrice(c,key,s,e);
+    const promoPrice=getActivePromoPrice(c,key,localDs(new Date()));
     const displayPrice=promoPrice!==null?promoPrice:regular;
     const total=displayPrice*days;
     if(ok){
@@ -1063,7 +1067,7 @@ function buildCards(s,e,days){
   cameras.forEach(function(c){
     const ok=camAvail(c.id,s,e);
     const regular=c[key]||c.p1||0;
-    const promoPrice=getActivePromoPrice(c,key,s,e);
+    const promoPrice=getActivePromoPrice(c,key,localDs(new Date()));
     if(ok){
       h+='<div class="sb-cam-row available"><div class="sb-cam-name">'+esc(c.name)+'</div>';
       h+='<div class="sb-cam-price">'+fmtVND(regular)+'/ngày × '+days+' = '+fmtVND(regular*days)+'</div>';
@@ -1102,7 +1106,7 @@ window.runAvailMobile=function(){
 
 // ── MODAL ──
 window.openModal=function(){
-  editingId=null;
+  editingId=null;editingBookingDate=null;
   resetForm();buildCamGrid(null,null);updateELFeeLabels();
   document.getElementById('modal-title').textContent='Đặt lịch mới';
   document.getElementById('overlay').classList.add('open');
@@ -1177,15 +1181,15 @@ function updatePricePreview(){
   const days=getDays();
   if(!days||!fSelCams.length){document.getElementById('daily-preview').style.display='none';return;}
   const key=getTierKey(days);
-  const s=document.getElementById('f-start').value;
-  const e=document.getElementById('f-end').value;
+  // Use booking creation date — for new bookings = today, for edits = original createdAt date
+  const bookingDate = editingBookingDate || localDs(new Date());
   document.getElementById('pp-days').textContent=days+' ngày';
   document.getElementById('pp-tier').textContent=getTierLabel(days);
   let rows='';
   fSelCams.forEach(function(id){
     const c=cameras.find(function(x){return x.id===id;});if(!c)return;
     const regular=c[key]||c.p1||0;
-    const promo=getActivePromoPrice(c,key,s,e);
+    const promo=getActivePromoPrice(c,key,bookingDate);
     if(promo!==null&&promo<regular){
       rows+='<div class="prow"><span>'+esc(c.name)+' <span style="font-size:9px;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:3px;margin-left:4px">KM</span></span><b><span style="text-decoration:line-through;color:var(--ink4);font-weight:500">'+fmtVND(regular)+'</span> → '+fmtVND(promo)+'/ngày × '+days+' = <span style="color:var(--green)">'+fmtVND(promo*days)+'</span></b></div>';
     } else {
@@ -1199,13 +1203,12 @@ function updateFinal(){
   const days=getDays();
   if(!fSelCams.length||!days){document.getElementById('final-box').style.display='none';return;}
   const key=getTierKey(days);
-  const s=document.getElementById('f-start').value;
-  const e=document.getElementById('f-end').value;
+  const bookingDate = editingBookingDate || localDs(new Date());
   let sub=0, promoSaved=0;
   fSelCams.forEach(function(id){
     const c=cameras.find(function(x){return x.id===id;});if(!c)return;
     const regular=c[key]||c.p1||0;
-    const promo=getActivePromoPrice(c,key,s,e);
+    const promo=getActivePromoPrice(c,key,bookingDate);
     if(promo!==null&&promo<regular){
       sub+=promo*days;
       promoSaved+=(regular-promo)*days;
@@ -1261,23 +1264,36 @@ window.submitBooking=async function(){
   const phone=document.getElementById('f-phone').value.trim(),note=document.getElementById('f-note').value.trim();
   const deposit=document.getElementById('f-dep').value,delivery=document.getElementById('f-del').value;
 
+  // Booking date: for NEW bookings = today, for EDITS = original booking's bookingDate (preserves promo)
+  const bookingDate = editingId && editingBookingDate ? editingBookingDate : localDs(new Date());
   const calcBookingPrice=function(c){
     const regular=c[key]||c.p1||0;
-    const promo=getActivePromoPrice(c,key,start,end);
-    const ppd=(promo!==null&&promo<regular)?promo:regular;
-    const promoSaved=(promo!==null&&promo<regular)?(regular-promo)*days:0;
+    let ppd=regular, promoSaved=0;
+    if(editingId){
+      const orig=bookings.find(function(x){return x.id===editingId;});
+      const wasDeposited=(orig&&(orig.depositAmt||0)>=100000);
+      if(wasDeposited&&orig.pricePerUnit){
+        ppd=orig.pricePerUnit; // locked price - customer already deposited
+      } else {
+        const promo=getActivePromoPrice(c,key,orig?orig.bookedAt:null);
+        if(promo!==null&&promo<regular){ppd=promo;promoSaved=(regular-promo)*days;}
+      }
+    } else {
+      const promo=getActivePromoPrice(c,key,bookingDate);
+      if(promo!==null&&promo<regular){ppd=promo;promoSaved=(regular-promo)*days;}
+    }
     const base=ppd*days;
     let discAmt=0;
     if(discType==='pct') discAmt=Math.round(base*discVal/100);
     else discAmt=Math.min(discVal,base);
-    return{base:base,subTotal:regular*days,discAmt:discAmt,promoDisc:promoSaved,total:base-discAmt+elFee,pricePerUnit:ppd};
+    return{base:base,subTotal:regular*days,discAmt:discAmt,promoDisc:promoSaved,total:base-discAmt+elFee,pricePerUnit:ppd,promoLockedPrice:ppd!==regular?ppd:null};
   };
 
   if(editingId){
     const orig=bookings.find(x=>x.id===editingId);if(!orig){toast('Không tìm thấy lịch gốc');return;}
     const camId=fSelCams[0],c=cameras.find(x=>x.id===camId);if(!c){toast('Máy không hợp lệ');return;}
     const prices=calcBookingPrice(c);
-    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
+    const updated={...orig,name,phone,note,cam:camId,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,bookingDate:orig.bookingDate||localDs(new Date()),discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL}};
     const batch=writeBatch(db);
     batch.set(doc(db,'bookings',editingId),updated);
     batch.delete(doc(db,'bookings',editingId+'-E'));
@@ -1294,7 +1310,7 @@ window.submitBooking=async function(){
     const c=cameras.find(x=>x.id===id);if(!c)return;
     const prices=calcBookingPrice(c);
     const bkId=Date.now()+'-'+id+'-'+Math.random().toString(36).slice(2,6);
-    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,discount:discVal,discType,promoCode:activePromoCode||'',promoDis:prices.promoDisc,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:now};
+    const bk={id:bkId,name,phone,note,cam:id,camName:c.name,mode:'daily',start,end,days,tierKey:key,pricePerUnit:prices.pricePerUnit,subTotal:prices.subTotal,bookingDate:localDs(new Date()),discount:discVal,discType,promoCode:'',promoDis:prices.promoDisc,promoLockedPrice:prices.promoLockedPrice||null,elFee,price:prices.total,depositAmt:depAmt,deposit,delivery,earlyLate:{...fEL},blocked:false,createdAt:now,bookingDate:localDs(new Date()),lockedPromoPrice:prices.promoPrice||null};
     batch.set(doc(db,'bookings',bkId),bk);
     if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);batch.set(doc(db,'bookings',bkId+'-E'),mkBlockedDoc(bkId+'-E',name,id,c.name,localDs(prev),now));}
     if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);batch.set(doc(db,'bookings',bkId+'-L'),mkBlockedDoc(bkId+'-L',name,id,c.name,localDs(nxt),now));}
@@ -1340,9 +1356,8 @@ function renderCamList(){
         '</tr>';
     }).join('');
     return '<div class="cam-card">'+
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-        '<div style="flex:1"><div class="flbl" style="margin-bottom:3px">Tên máy</div><input type="text" value="'+esc(c.name)+'" id="cn-'+idx+'" style="font-size:12px;padding:6px 9px"></div>'+
-        '<button class="btn-sm red" onclick="removeCam('+idx+')" style="padding:4px 9px;font-size:10px;margin-top:12px">Xóa</button>'+
+      '<div style="margin-bottom:8px">'+
+        '<div class="flbl" style="margin-bottom:3px">Tên máy</div><input type="text" value="'+esc(c.name)+'" id="cn-'+idx+'" style="font-size:12px;padding:6px 9px">'+
       '</div>'+
       '<table class="pt" style="font-size:11px"><thead><tr>'+
         '<th style="padding:5px 8px">Mức thuê</th>'+
@@ -1375,7 +1390,15 @@ window.savePrices=async function(){
 };
 
 window.addCamera=async function(){const newId='CAM'+Date.now();const nc={id:newId,name:'Máy mới',p1:200000,p3:180000,p5:160000,p10:140000,p15:120000};await setDoc(doc(db,'cameras',newId),nc);toast('Đã thêm máy mới');};
-window.removeCam=async function(idx){if(!confirm('Xóa máy '+cameras[idx].name+'?'))return;await deleteDoc(doc(db,'cameras',cameras[idx].id));toast('Đã xóa');};
+window.removeCam=async function(idx){
+  if(!confirm('Xóa máy '+cameras[idx].name+'? Thao tác này không thể hoàn tác.'))return;
+  await deleteDoc(doc(db,'cameras',cameras[idx].id));
+  toast('Đã xóa máy');
+};
+window.removeCamByBtn=function(btn){
+  const idx=parseInt(btn.getAttribute('data-camidx'));
+  window.removeCam(idx);
+};
 
 // ── PROMOS ──
 function renderPromos(){
@@ -1411,29 +1434,83 @@ window.deletePromo=async function(id){if(!confirm('Xóa mã '+id+'?'))return;awa
 // ── BOOKING TABLE ──
 function renderBkTable(){
   const month=document.getElementById('f-month').value,from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
-  let list=bookings.filter(b=>!b.blocked);
-  if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
-  if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
-  list.sort((a,b)=>b.createdAt?.localeCompare(a.createdAt||'')||0);
+  let list=bookings.filter(function(b){return !b.blocked;});
+  if(month){const parts=month.split('-');const y=parseInt(parts[0]),m=parseInt(parts[1]);list=list.filter(function(b){const s=new Date(b.start);return s.getFullYear()===y&&s.getMonth()===m-1;});}
+  if(from)list=list.filter(function(b){return b.start>=from;});
+  if(to)list=list.filter(function(b){return b.start<=to;});
+  list.sort(function(a,b){return (b.createdAt||'').localeCompare(a.createdAt||'');});
   const t=document.getElementById('bk-table');
-  t.querySelector('thead').innerHTML=`<tr><th>Khách hàng</th><th>SĐT</th><th>Máy</th><th>Bắt đầu</th><th>Kết thúc</th><th>Ngày</th><th>Đơn giá</th><th>Phải trả</th><th>Đã cọc</th><th>Hoàn/Nợ</th><th>KM</th><th>CK</th><th>Ghi chú</th><th></th><th></th></tr>`;
-  t.querySelector('tbody').innerHTML=list.map(b=>{
+  t.querySelector('thead').innerHTML='<tr><th>Khách hàng</th><th>SĐT</th><th>Máy</th><th>Bắt đầu</th><th>Kết thúc</th><th>Ngày</th><th>Đơn giá</th><th>Phải trả</th><th>Đã cọc</th><th>Hoàn/Nợ</th><th>CK</th><th style="text-align:center;width:36px">📝</th><th></th><th></th></tr>';
+  t.querySelector('tbody').innerHTML=list.map(function(b){
     const rf=(b.depositAmt||0)-(b.price||0);
     const discLbl=b.discount?(b.discType==='fixed'?'-'+fmtVND(b.discount):'-'+b.discount+'%'):'—';
-    return`<tr><td style="font-weight:700">${esc(b.name)}</td><td>${esc(b.phone||'—')}</td><td>${esc(b.camName||b.cam)}</td><td>${fmtD(b.start)}</td><td>${fmtD(b.end)}</td><td>${b.days||1}</td><td>${fmtVND(b.pricePerUnit||0)}</td><td style="font-weight:700">${fmtVND(b.price||0)}</td><td>${fmtVND(b.depositAmt||0)}</td><td style="color:${rf>=0?'var(--green)':'var(--cr)'}">${rf>=0?'+':''}${fmtVND(rf)}</td><td style="color:var(--green)">${esc(b.promoCode||'—')}</td><td>${discLbl}</td><td style="color:var(--orange)">${esc(b.note||'')}</td>
-    <td><button onclick="openEditModal('${b.id}')" style="background:var(--cr-d);border:none;color:#fff;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700">Sửa</button></td>
-    <td><button onclick="deleteBookingId('${b.id}')" style="background:none;border:1px solid var(--cr);color:var(--cr);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700">Xóa</button></td></tr>`;
-  }).join('')||`<tr><td colspan="15" style="text-align:center;padding:28px;color:var(--ink4)">Không có dữ liệu</td></tr>`;
+    const hasNote=!!(b.note&&b.note.trim());
+    const noteBtn=hasNote?'<button class="note-icon-btn" data-bid="'+b.id+'" onclick="showNoteByBtn(this)" title="Xem ghi chú">💬</button>':'<span style="color:var(--ink5)">—</span>';
+    return '<tr>'+
+      '<td style="font-weight:700">'+esc(b.name)+'</td>'+
+      '<td>'+esc(b.phone||'—')+'</td>'+
+      '<td>'+esc(b.camName||b.cam)+'</td>'+
+      '<td>'+fmtD(b.start)+'</td>'+
+      '<td>'+fmtD(b.end)+'</td>'+
+      '<td>'+(b.days||1)+'</td>'+
+      '<td>'+fmtVND(b.pricePerUnit||0)+'</td>'+
+      '<td style="font-weight:700">'+fmtVND(b.price||0)+'</td>'+
+      '<td>'+fmtVND(b.depositAmt||0)+'</td>'+
+      '<td style="color:'+(rf>=0?'var(--green)':'var(--cr)')+'">'+(rf>=0?'+':'')+fmtVND(rf)+'</td>'+
+      '<td>'+discLbl+'</td>'+
+      '<td style="text-align:center">'+noteBtn+'</td>'+
+      '<td><button onclick="openEditModal(\''+b.id+'\')" style="background:var(--cr-d);border:none;color:#fff;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-weight:700">Sửa</button></td>'+
+      '<td><button onclick="deleteBookingId(\''+b.id+'\')" style="background:none;border:1px solid var(--cr);color:var(--cr);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-weight:700">Xóa</button></td>'+
+    '</tr>';
+  }).join('')||'<tr><td colspan="14" style="text-align:center;padding:28px;color:var(--ink4)">Không có dữ liệu</td></tr>';
 }
+
+window.showNoteByBtn=function(btn){
+  const bid=btn.getAttribute('data-bid');
+  const b=bookings.find(function(x){return x.id===bid;});
+  if(!b||!b.note)return;
+  alert('📝 Ghi chú của '+b.name+':\n\n'+b.note);
+};
+
+window.toggleNoteCol=function(th){
+  const lbl=document.getElementById('note-col-lbl');
+  const cells=document.querySelectorAll('.note-cell');
+  const isExpanded=lbl&&lbl.textContent==='Ghi chú';
+  if(isExpanded){
+    if(lbl)lbl.textContent='···';
+    cells.forEach(function(td){
+      td.style.maxWidth='0';td.style.overflow='hidden';
+      const full=td.querySelector('.note-full');
+      if(full)full.style.display='none';
+      td.textContent=td.getAttribute('title')?'···':'';
+    });
+  } else {
+    if(lbl)lbl.textContent='Ghi chú';
+    cells.forEach(function(td){
+      td.style.maxWidth='200px';td.style.overflow='visible';td.style.whiteSpace='normal';
+      const full=td.querySelector('.note-full');
+      if(full){full.style.display='inline';td.innerHTML=full.outerHTML;}
+      else td.innerHTML=td.getAttribute('title')||'';
+    });
+  }
+};
+window.expandNoteCell=function(td){
+  const note=td.getAttribute('title');
+  if(!note)return;
+  td.style.maxWidth='200px';td.style.overflow='visible';td.style.whiteSpace='normal';
+  td.textContent=note;
+};
+
 window.renderBkTable=renderBkTable;
+window.toggleBkNote=function(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'table-row':'none';};
 
 window.exportCSV=function(){
   const month=document.getElementById('f-month').value,from=document.getElementById('f-from').value,to=document.getElementById('f-to').value;
   let list=bookings.filter(b=>!b.blocked);
   if(month){const[y,m]=month.split('-');list=list.filter(b=>{const s=new Date(b.start);return s.getFullYear()==+y&&s.getMonth()==+m-1;});}
   if(from)list=list.filter(b=>b.start>=from);if(to)list=list.filter(b=>b.start<=to);
-  const H=['Khách hàng','SĐT','Máy','Bắt đầu','Kết thúc','Số ngày','Đơn giá','Phải trả','Đã cọc','Hoàn/Nợ','Mã KM','Chiết khấu','Ghi chú'];
-  const R=list.map(b=>{const rf=(b.depositAmt||0)-(b.price||0);const discLbl=b.discount?(b.discType==='fixed'?'-'+b.discount+'đ':'-'+b.discount+'%'):'';return[b.name,b.phone||'',b.camName||b.cam,b.start,b.end,b.days||1,b.pricePerUnit||0,b.price||0,b.depositAmt||0,rf,b.promoCode||'',discLbl,b.note||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');});
+  const H=['Khách hàng','SĐT','Máy','Bắt đầu','Kết thúc','Số ngày','Đơn giá','Phải trả','Đã cọc','Hoàn/Nợ','Chiết khấu','Ghi chú'];
+  const R=list.map(function(b){const rf=(b.depositAmt||0)-(b.price||0);const discLbl=b.discount?(b.discType==='fixed'?'-'+b.discount+'đ':'-'+b.discount+'%'):'';return[b.name,b.phone||'',b.camName||b.cam,b.start,b.end,b.days||1,b.pricePerUnit||0,b.price||0,b.depositAmt||0,rf,discLbl,b.note||''].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');});
   const csv='\uFEFF'+[H.join(','),...R].join('\n');
   const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
   const a=document.createElement('a');a.href=url;a.download='camera-nest-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
@@ -1461,7 +1538,7 @@ function renderPromoSchedules(){
   }
   const tLabels={'':'Tất cả',p1:'1 ngày',p3:'3-4 ngày',p5:'5-9 ngày',p10:'10-14 ngày',p15:'15+ ngày'};
   const today=localDs(new Date());
-  let html='<table class="bt"><thead><tr><th>Máy</th><th>Mức thuê</th><th>Giá KM/ngày</th><th>Từ ngày</th><th>Đến ngày</th><th>Ghi chú</th><th>Trạng thái</th><th></th></tr></thead><tbody>';
+  let html='<table class="bt"><thead><tr><th>Máy</th><th>Mức thuê</th><th>Giá KM/ngày</th><th>Nhắn tin từ</th><th>Nhắn tin đến</th><th>Ghi chú</th><th>Trạng thái</th><th></th></tr></thead><tbody>';
   promoSchedules.forEach(function(p,idx){
     const cam=cameras.find(function(c){return c.id===p.camId;});
     const camName=cam?cam.name:p.camId;
@@ -1533,7 +1610,7 @@ window.savePromoSched=async function(){
 // Excel upload/download
 window.downloadPromoTemplate=function(){
   const data=[
-    ['Tên máy','Mức thuê (p1/p3/p5/p10/p15 hoặc để trống = tất cả)','Giá KM/ngày','Ngày bắt đầu (YYYY-MM-DD)','Ngày kết thúc (YYYY-MM-DD)','Ghi chú'],
+    ['Tên máy','Mức thuê (p1/p3/p5/p10/p15 hoặc để trống = tất cả)','Giá KM/ngày','KM bắt đầu — ngày khách đặt (YYYY-MM-DD)','KM kết thúc — ngày khách đặt (YYYY-MM-DD)','Ghi chú'],
   ];
   cameras.slice(0,2).forEach(function(c){
     data.push([c.name,'p1',Math.round((c.p1||200000)*0.8),'2026-05-01','2026-05-31','VD: KM tháng 5']);
@@ -1719,7 +1796,10 @@ function renderCostsSummary(){
     html+='<div style="border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">'+
         '<div style="font-size:14px;font-weight:800;color:'+camColor+'">📷 '+esc(c.name)+'</div>'+
-        '<button class="btn-sm" data-camid="'+c.id+'" onclick="openCostModalForCam(this.getAttribute(\"data-camid\"))">+ Thêm chi phí</button>'+
+        '<div style="display:flex;gap:6px">'+
+          '<button class="btn-sm" data-camid="'+c.id+'" onclick="openCostModalForCam(this.getAttribute(\"data-camid\"))">+ Thêm chi phí</button>'+
+          '<button class="btn-sm red" data-camidx="'+cameras.indexOf(c)+'" onclick="removeCamByBtn(this)">🗑 Xóa máy</button>'+
+        '</div>'+
       '</div>';
     // Summary cards
     html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px">'+
@@ -1753,6 +1833,9 @@ function renderCostsSummary(){
 }
 
 window.deleteCostEntryByBtn=function(btn){deleteCostEntry(btn.getAttribute('data-camid'),btn.getAttribute('data-eid'));};
+window.removeCamByBtn=function(btn){var idx=parseInt(btn.getAttribute('data-camidx'));removeCam(idx);};
+window.removeCamByBtn=async function(btn){const idx=parseInt(btn.getAttribute('data-camidx'));if(isNaN(idx)||!cameras[idx])return;if(!confirm('Xóa máy '+cameras[idx].name+'?'))return;await deleteDoc(doc(db,'cameras',cameras[idx].id));toast('Đã xóa máy');};
+window.removeCamByBtn=function(btn){const idx=parseInt(btn.getAttribute('data-camidx'));removeCam(idx);};
 window.openCostModalForCam = function(camId){
   openCostModal();
   setTimeout(function(){document.getElementById('cost-cam-sel').value=camId;},50);
