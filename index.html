@@ -833,7 +833,7 @@ async function loadExtraSettings(){
   try{const delSnap=await getDoc(doc(db,'settings','deletedBookings'));if(delSnap.exists())deletedBookingIds=delSnap.data().ids||[];}catch(e){}
 }
 
-seedIfEmpty().then(()=>{startListeners();updateELFeeLabels();renderCalendar();loadExtraSettings();});
+seedIfEmpty().catch(e=>console.warn("seedIfEmpty failed:",e)).finally(()=>{startListeners();updateELFeeLabels();renderCalendar();loadExtraSettings();});
 _flush();
 </script>
 </body>
